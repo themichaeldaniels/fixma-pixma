@@ -27,8 +27,9 @@ Windows x64 is the supported platform. Canon maintenance and reset commands are 
 | Standard cleaning and five settings | Hardware tested, settings restored |
 | USB service report, history/export and reset guards | Hardware tested |
 | Waste-counter clear | Original protocol reset succeeded; native nonzero clear remains untested |
-| Nozzle/alignment patterns | Commands and confirmations tested; printed-sheet checks pending |
-| Queue cancellation | Windows held-job tests and printer zero-document cancellation tested; ordinary physical print-job cancellation pending |
+| Nozzle/alignment checks | Matching jobs completed, both sheets printed and photographed; no obvious nozzle defects in the supplied photo |
+| Queue cancellation | Completed, held one-page Canon Windows spool job canceled; changed identity rejected; physical in-flight IPP job cancellation remains untested |
+| Portable startup and upgrade | Extracted ZIP runs with a restricted PATH and unrelated working directory; prior settings, history, guards and saved files preserved |
 
 Ink percentages are stored estimates, not physical tank measurements. Remaining-ink reset and waste-absorber reset are separate operations. A counter reset does not remove waste ink. Full EEPROM backup, firmware flashing, ink flush, deep cleaning, and unvalidated model writes are not implemented.
 
@@ -36,7 +37,7 @@ Ink percentages are stored estimates, not physical tank measurements. Remaining-
 
 Extract the complete Windows ZIP and run `printer_care.exe`. Keep both helper executables, DLLs, and the data directory together. See [START-HERE.txt](START-HERE.txt).
 
-The current package is a preview. Nozzle/alignment paper tests and clean-machine validation remain pending. Distribution files are unsigned. No driver changes or automatic service-mode transitions are performed.
+The current package is a preview. Clean Windows machine validation remains pending. Distribution files are unsigned. No driver changes or automatic service-mode transitions are performed. See [VALIDATION.md](VALIDATION.md) for observed results and limits, including the difference between printing alignment values and adjusting alignment.
 
 ## Build and test
 

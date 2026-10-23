@@ -74,7 +74,7 @@ Future<void> main(List<String> arguments) async {
         .writeAsString(controller.exportText(), flush: true);
     await File(output).writeAsString(
       const JsonEncoder.withIndent('  ').convert({
-        'version': '0.7.0',
+        'version': '0.7.1',
         'nativeLaunch': true,
         'report': r?.toJson(),
         'diagnosticCompleted': r != null && controller.liveValid && !r.sample,
@@ -99,7 +99,7 @@ Future<void> main(List<String> arguments) async {
     final output = diagnosticsProof.substring('--diagnostics-proof='.length);
     await File(output).writeAsString(
       const JsonEncoder.withIndent('  ').convert({
-        'version': '0.7.0',
+        'version': '0.7.1',
         'nativeLaunch': true,
         'error': controller.lastError,
         'checks': controller.connectionChecks.map((v) => v.toJson()).toList(),
@@ -330,7 +330,7 @@ class _PrinterCareState extends State<PrinterCare> with WidgetsBindingObserver {
                         ),
                         const Spacer(),
                         Text(
-                          'Local device access     |     Version 0.7.0',
+                          'Local device access     |     Version 0.7.1',
                           style: TextStyle(
                             fontSize: 12,
                             color: colors(context).muted,

@@ -190,9 +190,12 @@ expands them for each theme/vector. Line locations refer to the current source.
 
 ## Hardware and release checks
 
-Automated tests do not establish every physical outcome. Before promoting the
-preview to a stable release, verify nozzle/alignment sheets, ordinary printer-job
-cancellation, clean-machine installation, and state preservation across upgrades.
+Automated tests do not establish every physical outcome. Nozzle and alignment-value
+sheets were printed and photographed on the G7020. A complete held one-page Canon
+Windows spool job was canceled, while changed job identity was rejected. Native
+export, extracted portable startup, and upgrade data preservation passed.
+Clean Windows machine validation and physical in-flight IPP cancellation remain
+outstanding. See [VALIDATION.md](VALIDATION.md) for the evidence and its limits.
 Keep nonzero native waste-clear validation listed as untested; do not reset a
 healthy zero-counter printer to manufacture evidence. Standard cleaning, settings,
 refill reset and native service diagnostics have prior hardware evidence.

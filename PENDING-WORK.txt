@@ -1,12 +1,22 @@
 PRINTER CARE - RELEASE VALIDATION
 
-Maintenance-only scope, version 0.7.0.
+Maintenance-only scope, version 0.7.1.
 
-Remaining physical validation:
-1. Resolve any current panel error before further maintenance testing.
-2. Nozzle-check and alignment printouts after paper/output setup is confirmed.
-3. Cancellation of an ordinary physical printer job when a suitable test job exists.
-4. Clean Windows machine startup without development tools, and upgrade testing.
+Completed on the G7020:
+1. Panel error cleared; printer returned to Ready after both check prints.
+2. Nozzle and alignment-value pages printed and photographed. No obvious missing
+   nozzle lines, white streaks or missing colors are visible at photo resolution.
+3. A complete held one-page job in the Canon Windows queue was canceled. Reused
+   or changed identity was rejected. No page was sent to the physical printer.
+4. Extracted portable startup, native export and upgrade data preservation passed.
+
+Remaining validation:
+1. Clean Windows machine startup without development tools. The restricted-PATH
+   test and dependency audit passed; a clean Windows VM was unavailable.
+2. Physical in-flight IPP job cancellation when a suitable test job exists.
+
+The alignment-value print is a check, not an automatic alignment adjustment.
+Optimal calibration is not certified from the single photographed check sheet.
 
 The waste counter is already zero. Do not create another reset merely for testing.
 Original protocol reset succeeded; native diagnostics and rejection guards were
@@ -15,7 +25,8 @@ hardware verified. Nonzero native clear remains untested and is documented.
 Scanning and document workflows are removed from the supported scope. The prior
 scan attempt aborted with JobCanceledAtDevice and was followed by DeviceBusy /
 D107. Remote UI called this an operator error without a specific support code.
-The utility does not attempt remote recovery or repeat that scan.
+The panel error has since been cleared manually. The utility does not attempt
+remote recovery or repeat that scan.
 
 EEPROM backup, additional absorber groups, unverified model writes, macOS and
 Android are outside this release. No automatic driver changes or firmware writes.

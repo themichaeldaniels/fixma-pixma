@@ -25,7 +25,8 @@ class ModelSupport {
         ('Page and head replacement counters', 'Read-only firmware counters'),
         ('Remaining-ink reset', 'Hardware verified'),
         ('Standard cleaning and five settings', 'Hardware verified'),
-        ('Nozzle and alignment patterns', 'Printed-sheet tests pending'),
+        ('Nozzle and alignment checks', 'Both sheets physically verified'),
+        ('Windows queue cancellation', 'Held Canon spool job verified'),
         (
           'Network queues',
           'Listing verified; zero-document cancellation acknowledged',

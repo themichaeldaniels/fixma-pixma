@@ -42,7 +42,7 @@ try {
     if (Test-Path -LiteralPath $out) { throw "Release directory already exists. Use a new version or move the previous package: $out" }
     New-Item -ItemType Directory -Path $out | Out-Null
     Get-ChildItem -LiteralPath build/windows/x64/runner/Release | Where-Object { $_.Extension -ne '.pdb' } | Copy-Item -Destination $out -Recurse
-    Copy-Item -LiteralPath START-HERE.txt,PENDING-WORK.txt,THIRD_PARTY_NOTICES.txt,LICENSE,README.md,TESTING.md -Destination $out
+    Copy-Item -LiteralPath START-HERE.txt,PENDING-WORK.txt,THIRD_PARTY_NOTICES.txt,LICENSE,README.md,TESTING.md,VALIDATION.md -Destination $out
     $vswhere = 'C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe'
     $vs = & $vswhere -latest -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
     $redist = Join-Path $vs 'VC/Redist/MSVC'
