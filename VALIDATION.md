@@ -16,6 +16,8 @@ Private captures and photographs are excluded from public source and packages.
 | Portable startup | ZIP extracted to a path with spaces, launched from another working directory with PATH restricted to Windows directories and isolated application data. Live identity and maintenance controls loaded. | Existing Windows host, not a clean VM. |
 | Upgrade | Launched 0.6.1, then 0.7.0 against the same isolated state. Dark preference, older history, reset guard and former document file remained intact; malformed history did not block startup. | Does not cover every former version or third-party cleanup tool. |
 | Runtime dependencies | Audited executable/DLL imports and bundled the Visual C++ runtime. | Clean Windows machine validation remains outstanding. |
+| Beta experimental confirmations | Explicit labels in maintenance/queues and additional acknowledgment before native waste reset or printer-side cancellation. Regression tests cover cancel and confirm paths. | Does not validate the untested physical operations themselves. |
+| Automated Windows test kit | Development-host run passed portable startup, working-directory/PATH isolation, read-only USB/queue helpers and missing-helper handling. Report correctly records cleanWindowsPassed as false on that host. | Fresh Windows Sandbox/PC/VM and native UI inspection remain pending. |
 
 The nozzle assessment follows Canon's [G7000 nozzle check guidance](https://ij.manual.canon/ij/webmanual/Manual/All/G7000%20series/EN/UG/ug-134.html).
 Canon distinguishes [printing alignment values from adjusting alignment](https://ij.manual.canon/ij/webmanual/PrinterDriver/W/G7000%20series/1.0/EN/PPG/Dg-printer_assistant.html).

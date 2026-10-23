@@ -1,4 +1,4 @@
-PRINTER CARE - WINDOWS PREVIEW 0.8.1
+PRINTER CARE - WINDOWS BETA CANDIDATE 0.9.0-beta.1
 
 Extract the complete folder, then run printer_care.exe. Keep the DLLs, data
 directory, printer_care_worker.exe and printer_care_queue.exe beside it.
@@ -37,11 +37,14 @@ EEPROM backup/restore or firmware flashing is implemented.
 The original waste-counter protocol reset succeeded. Native service diagnostics,
 history/export, and reset guards were hardware tested. A nonzero clear through
 the native application remains untested because the repaired printer is at zero.
+This reset is labeled Experimental and requires a separate acknowledgment.
 
 Queues lists jobs received by the printer and jobs in a separately selected
 Windows queue. Cancellation uses the exact confirmed job identity; new arrivals
 are excluded. Other devices' unsent jobs are not visible here. Cancellation
 cannot recall pages already printed. An empty queue does not clear a device fault.
+Canceling jobs already processing inside the printer is Experimental and requires
+an additional acknowledgment. Windows held-job cancellation was verified.
 
 Diagnostics provides connection checks, usage counters, repair follow-ups,
 report comparisons, model evidence and offline captured-reply inspection.

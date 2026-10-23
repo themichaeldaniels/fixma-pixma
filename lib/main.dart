@@ -8,6 +8,7 @@ import 'components.dart';
 import 'theme.dart';
 import 'overview.dart';
 import 'maintenance.dart';
+import 'experimental_reset_dialog.dart';
 import 'queue_view.dart';
 import 'diagnostics_view.dart';
 import 'platform/appearance.dart';
@@ -74,7 +75,7 @@ Future<void> main(List<String> arguments) async {
         .writeAsString(controller.exportText(), flush: true);
     await File(output).writeAsString(
       const JsonEncoder.withIndent('  ').convert({
-        'version': '0.8.1',
+        'version': '0.9.0-beta.1',
         'nativeLaunch': true,
         'report': r?.toJson(),
         'diagnosticCompleted': r != null && controller.liveValid && !r.sample,
@@ -99,7 +100,7 @@ Future<void> main(List<String> arguments) async {
     final output = diagnosticsProof.substring('--diagnostics-proof='.length);
     await File(output).writeAsString(
       const JsonEncoder.withIndent('  ').convert({
-        'version': '0.8.1',
+        'version': '0.9.0-beta.1',
         'nativeLaunch': true,
         'error': controller.lastError,
         'checks': controller.connectionChecks.map((v) => v.toJson()).toList(),
@@ -174,6 +175,7 @@ Future<void> main(List<String> arguments) async {
     await File(smoke.substring('--smoke-output='.length)).writeAsString(
       jsonEncode({
         'launched': true,
+        'version': '0.9.0-beta.1',
         'theme': controller.themeMode.name,
         'usbInterfaces': controller.devices.length,
         'serviceInterfaces': controller.devices
@@ -181,6 +183,7 @@ Future<void> main(List<String> arguments) async {
             .length,
         'error': controller.lastError,
         'counterCommandsSent': false,
+        'usbError': controller.usbError,
         'discoveredPrinters': controller.networkPrinters
             .map((p) => p.toJson())
             .toList(),
@@ -330,7 +333,7 @@ class _PrinterCareState extends State<PrinterCare> with WidgetsBindingObserver {
                         ),
                         const Spacer(),
                         Text(
-                          'Local device access     |     Version 0.8.1',
+                          'Local device access     |     Version 0.9.0-beta.1',
                           style: TextStyle(
                             fontSize: 12,
                             color: colors(context).muted,
@@ -951,7 +954,7 @@ class _PrinterCareState extends State<PrinterCare> with WidgetsBindingObserver {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
               subtitle: const Text(
-                'Advanced · USB service mode',
+                'Experimental reset · USB service mode',
                 style: TextStyle(fontSize: 13),
               ),
               childrenPadding: const EdgeInsets.all(20),
@@ -973,6 +976,20 @@ class _PrinterCareState extends State<PrinterCare> with WidgetsBindingObserver {
           'Waste-counter reset',
           'Read a current report, confirm absorber servicing, then reset the counter.',
         ),
+        Panel(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const BadgeLabel('Experimental reset', warning: true),
+              const SizedBox(height: 10),
+              Text(
+                experimentalWasteResetNotice,
+                style: TextStyle(color: p.warning, fontSize: 14, height: 1.5),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 18),
         Panel(
           padding: EdgeInsets.zero,
           child: Column(
@@ -1282,25 +1299,9 @@ class _PrinterCareState extends State<PrinterCare> with WidgetsBindingObserver {
   Future<void> confirmReset(BuildContext context) async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Reset this printer’s counter?'),
-        content: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 420),
-          child: Text(
-            'Canon PIXMA G7020\n${c.report!.serial}\n\nThe current software counter is ${c.report!.waste!.toStringAsFixed(1)}%. One clear command will be sent after a fresh connection check.\n\nKeep USB connected and leave the printer powered on until the result appears.',
-            style: const TextStyle(height: 1.7),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Reset counter'),
-          ),
-        ],
+      builder: (ctx) => ExperimentalResetDialog(
+        serial: c.report!.serial,
+        counter: c.report!.waste!,
       ),
     );
     if (confirmed == true) await c.reset();

@@ -46,7 +46,7 @@ before and after completion when available, and never repeats an uncertain comma
 
 Extract the complete Windows ZIP and run `printer_care.exe`. Keep both helper executables, DLLs, and the data directory together. See [START-HERE.txt](START-HERE.txt).
 
-The current package is a preview. Clean Windows machine validation remains pending. Distribution files are unsigned. No driver changes or automatic service-mode transitions are performed. See [VALIDATION.md](VALIDATION.md) for observed results and limits, including the difference between printing alignment values and adjusting alignment.
+The current package is a public beta candidate. Clean Windows machine validation remains pending. Distribution files are unsigned. Native nonzero waste-counter clear and printer-side in-flight job cancellation are marked Experimental in the interface and require an additional acknowledgment. No driver changes or automatic service-mode transitions are performed. See [BETA-NOTES.md](BETA-NOTES.md) and [VALIDATION.md](VALIDATION.md) for observed results and limits.
 
 ## Build and test
 

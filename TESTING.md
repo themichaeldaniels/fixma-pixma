@@ -26,6 +26,7 @@ screenshots only after intentional UI changes and visual review.
 | Repair tracking | repair_verification_test | Restart/display confirmation, same-device pinning, busy/error refusal, persistent guards, failed checks revoke verification |
 | Reliability | release_reliability_test | Corrupt history, unwritable/failing storage, cleanup errors, cross-instance locking, preference preservation, invalid reset evidence, upgrade data preservation |
 | Interface | widget_test and other widget files | System/light/dark appearance, minimum-width layouts, accessibility text scaling, confirmations, null dropdown guards, sample separation, navigation scope |
+| Experimental actions | experimental_features_test, queue_widget_test | Reset acknowledgment required, cancellation remains separate by source, Cancel sends nothing, printer-side acknowledgment required before dispatch |
 
 ## Individual test cases
 
@@ -73,6 +74,10 @@ expands them for each theme/vector. Line locations refer to the current source.
 - [comparison dropdowns select reports and render actual deltas](test/diagnostics_widget_test.dart#L110)
 - [narrow layout and enlarged text keep all diagnostics accessible](test/diagnostics_widget_test.dart#L129)
 - [diagnostic pages ${mode.name} visual check](test/diagnostics_widget_test.dart#L145)
+
+### experimental_features_test.dart
+
+- [experimental reset requires explicit opt-in; confirm=$accept](test/experimental_features_test.dart#L8)
 
 ### ink_counter_test.dart
 
@@ -140,10 +145,11 @@ expands them for each theme/vector. Line locations refer to the current source.
 
 ### queue_widget_test.dart
 
-- [Unread queue dropdown always has a non-null sentinel](test/queue_widget_test.dart#L104)
-- [Cancel listed jobs shows the exact source and jobs before dispatch](test/queue_widget_test.dart#L121)
-- [Queue view fits 900px with larger text](test/queue_widget_test.dart#L137)
-- [$theme queues screenshot](test/queue_widget_test.dart#L151)
+- [Unread queue dropdown always has a non-null sentinel](test/queue_widget_test.dart#L118)
+- [Cancel listed jobs shows the exact source and jobs before dispatch](test/queue_widget_test.dart#L135)
+- [printer-side cancellation requires a separate experimental acknowledgment](test/queue_widget_test.dart#L160)
+- [Queue view fits 900px with larger text](test/queue_widget_test.dart#L209)
+- [$theme queues screenshot](test/queue_widget_test.dart#L223)
 
 ### release_reliability_test.dart
 
@@ -205,6 +211,11 @@ Automatic alignment completed through the native interface; its matching job and
 saved adjustments were verified separately from the alignment-value check print.
 Clean Windows machine validation and physical in-flight IPP cancellation remain
 outstanding. See [VALIDATION.md](VALIDATION.md) for the evidence and its limits.
+The clean Windows test kit is documented in [tool/CLEAN-WINDOWS-TEST.txt](tool/CLEAN-WINDOWS-TEST.txt).
+It checks fresh portable startup, restricted PATH, an unrelated working directory,
+read-only helper responses and graceful missing-helper handling. It records a
+clean-system pass separately from a development-host run. Genuine fresh Windows
+validation and manual theme/layout/save-dialog inspection remain release gates.
 Keep nonzero native waste-clear validation listed as untested; do not reset a
 healthy zero-counter printer to manufacture evidence. Standard cleaning, settings,
 refill reset and native service diagnostics have prior hardware evidence.

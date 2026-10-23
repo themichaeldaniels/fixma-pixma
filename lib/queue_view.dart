@@ -49,7 +49,20 @@ class QueueView extends StatelessWidget {
           ),
           const SizedBox(height: 18),
         ],
-        const SectionLabel('At the printer'),
+        const Wrap(
+          spacing: 12,
+          runSpacing: 8,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            SectionLabel('At the printer'),
+            BadgeLabel('Experimental cancellation', warning: true),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Queue listing is verified. Canceling a job already processing inside the printer has not been verified on hardware.',
+          style: TextStyle(color: p.warning, fontSize: 13, height: 1.5),
+        ),
         const SizedBox(height: 10),
         _snapshot(
           context,
@@ -253,49 +266,77 @@ class QueueView extends StatelessWidget {
     QueueSnapshot snapshot,
     List<QueueJob> jobs,
   ) async {
+    final experimental = !snapshot.sourceKey.startsWith('windows:');
+    var acceptedExperimental = false;
     final yes = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          jobs.length == 1
-              ? 'Cancel this job?'
-              : 'Cancel ${jobs.length} listed jobs?',
-        ),
-        content: SizedBox(
-          width: 460,
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  snapshot.label,
-                  style: const TextStyle(fontWeight: FontWeight.w600),
-                ),
-                const SizedBox(height: 12),
-                for (final j in jobs)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 6),
-                    child: Text('${j.id} · ${j.title}'),
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          title: Text(
+            jobs.length == 1
+                ? 'Cancel this job?'
+                : 'Cancel ${jobs.length} listed jobs?',
+          ),
+          content: SizedBox(
+            width: 460,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (experimental) ...[
+                    const BadgeLabel(
+                      'Experimental cancellation',
+                      warning: true,
+                    ),
+                    const SizedBox(height: 12),
+                    const Text(
+                      'Canceling a job already processing inside the printer has not been verified on hardware. Cancellation can fail or take time to take effect.',
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                  Text(
+                    snapshot.label,
+                    style: const TextStyle(fontWeight: FontWeight.w600),
                   ),
-                const SizedBox(height: 10),
-                const Text(
-                  'Only these jobs will be requested for cancellation. Pages already printed cannot be recalled.',
-                ),
-              ],
+                  const SizedBox(height: 12),
+                  for (final j in jobs)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 6),
+                      child: Text('${j.id} · ${j.title}'),
+                    ),
+                  const SizedBox(height: 10),
+                  const Text(
+                    'Only these jobs will be requested for cancellation. Pages already printed cannot be recalled.',
+                  ),
+                  if (experimental)
+                    CheckboxListTile(
+                      contentPadding: EdgeInsets.zero,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      value: acceptedExperimental,
+                      onChanged: (value) =>
+                          setState(() => acceptedExperimental = value ?? false),
+                      title: const Text(
+                        'I understand printer-side cancellation is experimental.',
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Keep jobs'),
+            ),
+            FilledButton(
+              onPressed: !experimental || acceptedExperimental
+                  ? () => Navigator.pop(context, true)
+                  : null,
+              child: const Text('Cancel jobs'),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Keep jobs'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Cancel jobs'),
-          ),
-        ],
       ),
     );
     if (yes == true) {

@@ -1,6 +1,6 @@
 PRINTER CARE - RELEASE VALIDATION
 
-Maintenance-only scope, version 0.8.1.
+Maintenance-only scope, beta candidate 0.9.0-beta.1.
 
 Completed on the G7020:
 1. Panel error cleared; printer returned to Ready after both check prints.
@@ -16,6 +16,11 @@ Remaining validation:
 1. Clean Windows machine startup without development tools. The restricted-PATH
    test and dependency audit passed; a clean Windows VM was unavailable.
 2. Physical in-flight IPP job cancellation when a suitable test job exists.
+
+The native nonzero waste-counter clear and printer-side in-flight cancellation
+are labeled Experimental, with a separate acknowledgment before dispatch.
+The clean Windows test kit automates startup and read-only helper checks in an
+actual fresh system; a development-host pass does not count as clean Windows.
 
 The alignment-value print is a check. Automatic alignment is a separate action
 that uses two sheets from the front cassette and stores its adjustment.

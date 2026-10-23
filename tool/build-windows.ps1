@@ -3,7 +3,7 @@ $ErrorActionPreference = 'Stop'
 $env:FLUTTER_SUPPRESS_ANALYTICS = 'true'
 $appRoot = Split-Path $PSScriptRoot -Parent
 $manifest = Get-Content -LiteralPath (Join-Path $appRoot 'pubspec.yaml') -Raw
-if ($manifest -notmatch '(?m)^version:\s*([0-9]+\.[0-9]+\.[0-9]+)') { throw 'Missing application version.' }
+if ($manifest -notmatch '(?m)^version:\s*([0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?)(?:\+[0-9]+)?\s*$') { throw 'Missing application version.' }
 $releaseVersion = $Matches[1]
 $flutter = Join-Path $FlutterRoot 'bin/flutter.bat'
 $dart = Join-Path $FlutterRoot 'bin/dart.bat'
@@ -45,7 +45,7 @@ try {
     if (Test-Path -LiteralPath $out) { throw "Release directory already exists. Use a new version or move the previous package: $out" }
     New-Item -ItemType Directory -Path $out | Out-Null
     Get-ChildItem -LiteralPath build/windows/x64/runner/Release | Where-Object { $_.Extension -ne '.pdb' } | Copy-Item -Destination $out -Recurse
-    Copy-Item -LiteralPath START-HERE.txt,PENDING-WORK.txt,THIRD_PARTY_NOTICES.txt,LICENSE,README.md,TESTING.md,VALIDATION.md -Destination $out
+    Copy-Item -LiteralPath START-HERE.txt,PENDING-WORK.txt,THIRD_PARTY_NOTICES.txt,LICENSE,README.md,TESTING.md,VALIDATION.md,BETA-NOTES.md -Destination $out
     $vswhere = 'C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe'
     $vs = & $vswhere -latest -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
     $redist = Join-Path $vs 'VC/Redist/MSVC'
@@ -55,6 +55,11 @@ try {
     foreach ($dll in @('msvcp140.dll','vcruntime140.dll','vcruntime140_1.dll')) { Copy-Item -LiteralPath (Join-Path $crt.FullName $dll) -Destination $out }
     $zip = "$out.zip"
     Compress-Archive -LiteralPath $out -DestinationPath $zip -Force
+    $testKit = Join-Path $outputRoot "PrinterCare-Clean-Windows-Test-Kit-$releaseVersion"
+    if (Test-Path -LiteralPath $testKit) { throw 'The clean Windows test kit directory already exists.' }
+    New-Item -ItemType Directory -Path $testKit | Out-Null
+    Copy-Item -LiteralPath tool/Invoke-CleanWindowsTest.ps1,tool/New-SandboxTest.ps1,tool/CLEAN-WINDOWS-TEST.txt -Destination $testKit
+    Compress-Archive -LiteralPath $testKit -DestinationPath "$testKit.zip" -Force
     Write-Output "Portable app: $out"
     Write-Output "Archive: $zip"
 } finally {

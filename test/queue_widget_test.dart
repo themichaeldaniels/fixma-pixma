@@ -8,6 +8,20 @@ import 'package:printer_care/core/network_status.dart';
 import 'package:printer_care/core/print_queue.dart';
 import 'package:printer_care/main.dart';
 
+class QueueCancellationRecorder extends CareController {
+  QueueCancellationRecorder({required super.directory});
+  final canceled = <int>[];
+  @override
+  Future<void> cancelJobs(
+    QueueSnapshot snapshot,
+    List<QueueJob> jobs, {
+    required bool confirmed,
+  }) async {
+    expect(confirmed, true);
+    canceled.addAll(jobs.map((job) => job.id));
+  }
+}
+
 void main() {
   late Directory dir;
   late CareController c;
@@ -128,10 +142,68 @@ void main() {
       expect(find.text('Cancel 2 listed jobs?'), findsOneWidget);
       expect(find.text('42 · Project notes.pdf'), findsOneWidget);
       expect(find.text('43 · Meeting handout.pdf'), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byType(AlertDialog),
+          matching: find.text(
+            'I understand printer-side cancellation is experimental.',
+          ),
+        ),
+        findsNothing,
+      );
       await t.tap(find.text('Keep jobs'));
       await t.pumpAndSettle();
       expect(c.busy, false);
       expect(c.history, isEmpty);
+    },
+  );
+  testWidgets(
+    'printer-side cancellation requires a separate experimental acknowledgment',
+    (t) async {
+      c.dispose();
+      final recorder = QueueCancellationRecorder(directory: dir);
+      c = recorder;
+      c.selectedPrinter = PrinterTarget.parse('192.168.1.50');
+      c.printerJobs = QueueSnapshot(
+        sourceKey: c.selectedPrinter!.key,
+        label: 'Test printer',
+        identity: 'uuid-test',
+        cancelSupported: true,
+        jobs: [
+          QueueJob(
+            sourceKey: c.selectedPrinter!.key,
+            id: 7,
+            title: 'Test page',
+            owner: 'Test user',
+            state: 'processing',
+            created: '2026-10-20T12:00:00Z',
+            uri: 'ipp://192.168.1.50/ipp/print/7',
+          ),
+        ],
+      );
+      await show(t, 'Queues');
+      await t.tap(find.text('Cancel job'));
+      await t.pumpAndSettle();
+      expect(
+        t
+            .widget<FilledButton>(
+              find.widgetWithText(FilledButton, 'Cancel jobs'),
+            )
+            .onPressed,
+        isNull,
+      );
+      await t.tap(find.text('Keep jobs'));
+      await t.pumpAndSettle();
+      expect(recorder.canceled, isEmpty);
+      await t.tap(find.text('Cancel job'));
+      await t.pumpAndSettle();
+      await t.tap(
+        find.text('I understand printer-side cancellation is experimental.'),
+      );
+      await t.pumpAndSettle();
+      await t.tap(find.text('Cancel jobs'));
+      await t.pumpAndSettle();
+      expect(recorder.canceled, [7]);
     },
   );
   testWidgets('Queue view fits 900px with larger text', (t) async {

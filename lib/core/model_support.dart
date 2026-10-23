@@ -33,11 +33,11 @@ class ModelSupport {
         ('Windows queue cancellation', 'Held Canon spool job verified'),
         (
           'Network queues',
-          'Listing verified; zero-document cancellation acknowledged',
+          'Listing verified; in-flight cancellation experimental',
         ),
         (
           'Waste-counter protocol',
-          'Physical reset verified; native USB report and guards verified',
+          'Original reset verified; native nonzero clear experimental',
         ),
         ('Full EEPROM backup', 'Command unresolved'),
       ],
