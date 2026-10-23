@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pixma_fixa/core/connection.dart';
+import 'package:fixma_pixma/core/connection.dart';
 
 class TestProcess implements Process {
   final input = StreamController<List<int>>();

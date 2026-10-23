@@ -6,7 +6,7 @@ import 'package:ffi/ffi.dart';
 // Keep the native Windows frame in the same appearance as the Flutter content.
 void setWindowsDarkFrame(bool dark) {
   if (!Platform.isWindows) return;
-  final title = 'Pixma Fixa'.toNativeUtf16(), value = calloc<Int32>();
+  final title = 'Fixma Pixma'.toNativeUtf16(), value = calloc<Int32>();
   final owner = calloc<Uint32>();
   try {
     final user = DynamicLibrary.open('user32.dll');

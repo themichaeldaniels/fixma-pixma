@@ -1,4 +1,4 @@
-# Pixma Fixa
+# Fixma Pixma
 
 A free, open-source Windows utility for maintaining Canon PIXMA printers. Built
 and hardware-tested for the PIXMA G7020, with a simple interface for diagnostics,
@@ -10,14 +10,14 @@ discovery, status and connection checks and [send a model report](SUPPORT.md).
 A G7000 family name is not proof that another regional model is compatible.
 Do not bypass the model or firmware checks to try maintenance or resets.
 
-**[Download for Windows x64](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.8/PixmaFixa-Windows-0.9.0-beta.8.zip)**
+**[Download for Windows x64](https://github.com/themichaeldaniels/fixma-pixma/releases/download/v0.9.0-beta.9/FixmaPixma-Windows-0.9.0-beta.9.zip)**
 
-[Release notes and all downloads](https://github.com/themichaeldaniels/pixma-fixa/releases/tag/v0.9.0-beta.8)
- · [Checksums](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.8/SHA256SUMS.txt)
- · [Source archive](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.8/PixmaFixa-source-0.9.0-beta.8.zip)
+[Release notes and all downloads](https://github.com/themichaeldaniels/fixma-pixma/releases/tag/v0.9.0-beta.9)
+ · [Checksums](https://github.com/themichaeldaniels/fixma-pixma/releases/download/v0.9.0-beta.9/SHA256SUMS.txt)
+ · [Source archive](https://github.com/themichaeldaniels/fixma-pixma/releases/download/v0.9.0-beta.9/FixmaPixma-source-0.9.0-beta.9.zip)
 
-Current release: **0.9.0-beta.8**, Windows x64. Extract the entire ZIP, then run
-`pixma_fixa.exe`. No installer, Python setup, account, or purchased reset key is
+Current release: **0.9.0-beta.9**, Windows x64. Extract the entire ZIP, then run
+`fixma_pixma.exe`. No installer, Python setup, account, or purchased reset key is
 needed to use the app. While this repository is private, GitHub access is required
 to download its files. macOS and Android builds are not available yet.
 
@@ -46,11 +46,11 @@ of zero does not prove the pads are dry or safe to reuse.
 I ran into this on my own printer. The only options I kept being offered were
 paying for a reset tool or taking it to a service center. I was aggravated that
 even after servicing the pads, I still needed to pay just to clear a counter.
-I wanted a free way to do that repair, so I built Pixma Fixa. It offers the
+I wanted a free way to do that repair, so I built Fixma Pixma. It offers the
 supported counter reset without charging for a key or a subscription, along with
 the maintenance and diagnostic controls listed below.
 
-Pixma Fixa makes the supported maintenance operations available without paid reset
+Fixma Pixma makes the supported maintenance operations available without paid reset
 keys, subscriptions or an account. It is released under the [zlib license](LICENSE),
 so anyone can inspect, use and improve it. It works locally and has no analytics,
 advertising or built-in upload service. Required third-party license notices are
@@ -62,7 +62,7 @@ included. This is an independent project, unaffiliated with Canon.
 before resetting the waste counter or running Ink Flush again on the printer.**
 More flushing or cleaning sends more ink into the absorber. With full or blocked
 pads, that ink can spill out of the printer. A software reset cannot fix that
-physical problem. Pixma Fixa shows this warning before a waste-counter reset and
+physical problem. Fixma Pixma shows this warning before a waste-counter reset and
 requires acknowledgment of the spill risk as well as absorber-service confirmation.
 
 **Waste-counter reset and Ink Flush are different operations.** This app does
@@ -72,7 +72,7 @@ waste-ink absorber counter.
 ## Start here
 
 1. Download the Windows ZIP above and extract it into a regular folder.
-2. Keep `pixma_fixa.exe`, both helper executables, the DLLs and `data` together.
+2. Keep `fixma_pixma.exe`, both helper executables, the DLLs and `data` together.
 3. Open the app with the printer powered on normally. Use **Find printers**, or
    **Add by address** if automatic network discovery is unavailable.
 4. Read the model, firmware, current errors and ink estimates in **Overview**.
@@ -98,7 +98,7 @@ Stop is the button marked with a triangle inside a circle.
 3. While continuing to hold Power, **press and release Stop six times**.
 4. Release Power. Wait for the mechanism to settle and the **green power LED to
    stay on steadily**. The LCD should be blank or black in this mode.
-5. In Pixma Fixa, open **Service report**, find the service printer and run
+5. In Fixma Pixma, open **Service report**, find the service printer and run
    diagnostics. Let the app confirm the USB service connection and read live
    evidence before attempting any supported repair. A steady LED alone does not
    prove that the correct service interface is available.
@@ -160,7 +160,7 @@ Document scanning, document previews, PDF generation, and scan archives are remo
 
 ## Compatibility and verification
 
-![Pixma Fixa maintenance interface in dark mode](test/goldens/maintenance-dark.png)
+![Fixma Pixma maintenance interface in dark mode](test/goldens/maintenance-dark.png)
 
 Windows x64 is the supported platform. Canon maintenance and reset commands are restricted to the G7020/G7000 profile and firmware 1.050. A family name alone does not establish compatibility with every regional model. Other IPP printers can expose read-only status and queue capabilities. G6020 is a research candidate, with no service writes enabled.
 
@@ -188,14 +188,16 @@ before and after completion when available, and never repeats an uncertain comma
 
 ## Release status
 
-Extract the complete Windows ZIP and run `pixma_fixa.exe`. Keep both helper executables, DLLs, and the data directory together. See [START-HERE.txt](START-HERE.txt).
+Extract the complete Windows ZIP and run `fixma_pixma.exe`. Keep both helper executables, DLLs, and the data directory together. See [START-HERE.txt](START-HERE.txt).
 
-The current package is a Windows beta. Version 0.9.0-beta.8 passed automated startup and interactive checks in fresh Windows Sandbox without development tools. The final review corrected privacy, parser, resource-bound, clock-rollback and helper/window lifecycle issues. Both-theme native reporting, save cancellation and valid JSON export before browser handoff passed. See REVIEW.md for the scope and remaining limits. No issue was submitted. All 168 regression tests pass; static analysis is clean. Distribution files are unsigned. Native nonzero waste-counter clear and printer-side in-flight job cancellation are marked Experimental and require acknowledgment. The waste reset also requires acknowledgment of the spill risk. See [BETA-NOTES.md](BETA-NOTES.md) and [VALIDATION.md](VALIDATION.md) for the evidence and limits.
+The project was previously named Pixma Fixa. Existing local history, preferences and reset guards stay in the same `PrinterCare` application-data folder when upgrading.
+
+The current package is a Windows beta. Version 0.9.0-beta.9 passed automated startup and interactive checks in fresh Windows Sandbox without development tools. The final review corrected privacy, parser, resource-bound, clock-rollback and helper/window lifecycle issues. Both-theme native reporting, save cancellation and valid JSON export before browser handoff passed. See REVIEW.md for the scope and remaining limits. No issue was submitted. All 168 regression tests pass; static analysis is clean. Distribution files are unsigned. Native nonzero waste-counter clear and printer-side in-flight job cancellation are marked Experimental and require acknowledgment. The waste reset also requires acknowledgment of the spill risk. See [BETA-NOTES.md](BETA-NOTES.md) and [VALIDATION.md](VALIDATION.md) for the evidence and limits.
 
 ## Build and test
 
 The final review and corrected issues are documented in [REVIEW.md](REVIEW.md).
-Use `-OutputDirectory C:/releases/PixmaFixa` with the build script to choose a
+Use `-OutputDirectory C:/releases/FixmaPixma` with the build script to choose a
 package location outside the checkout.
 
 Use Flutter 3.47.7 / Dart 3.13.5 and Visual Studio with Desktop development with C++. From the project directory:
@@ -227,7 +229,7 @@ another model. Reports can help us investigate without owning the printer;
 they cannot by themselves establish that a new write command is safe.
 
 Read the [usage guide](START-HERE.txt) first. If something goes wrong, [open an
-issue](https://github.com/themichaeldaniels/pixma-fixa/issues) with the app version,
+issue](https://github.com/themichaeldaniels/fixma-pixma/issues) with the app version,
 Windows version, printer model and firmware, the action taken, and the visible
 error. Use the redacted diagnostic summary where possible. Review any export or
 screenshot before sharing; do not post serial numbers or private network details.

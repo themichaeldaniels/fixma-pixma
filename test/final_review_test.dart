@@ -2,15 +2,15 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pixma_fixa/controller.dart';
-import 'package:pixma_fixa/core/capture_inspector.dart';
-import 'package:pixma_fixa/core/canon_maintenance.dart';
-import 'package:pixma_fixa/core/discovery.dart';
-import 'package:pixma_fixa/core/ipp_message.dart';
-import 'package:pixma_fixa/core/network_status.dart';
-import 'package:pixma_fixa/core/print_queue.dart';
-import 'package:pixma_fixa/core/report_comparison.dart';
-import 'package:pixma_fixa/core/report.dart';
+import 'package:fixma_pixma/controller.dart';
+import 'package:fixma_pixma/core/capture_inspector.dart';
+import 'package:fixma_pixma/core/canon_maintenance.dart';
+import 'package:fixma_pixma/core/discovery.dart';
+import 'package:fixma_pixma/core/ipp_message.dart';
+import 'package:fixma_pixma/core/network_status.dart';
+import 'package:fixma_pixma/core/print_queue.dart';
+import 'package:fixma_pixma/core/report_comparison.dart';
+import 'package:fixma_pixma/core/report.dart';
 
 import 'canon_maintenance_test.dart' show MaintenancePrinter;
 import 'ink_reset_workflow_test.dart' show RefillPrinter;
@@ -22,7 +22,7 @@ void main() {
   late Directory temp;
   late CareController c;
   setUp(() {
-    temp = Directory.systemTemp.createTempSync('pixma-fixa-review-');
+    temp = Directory.systemTemp.createTempSync('fixma-pixma-review-');
     c = CareController(directory: temp);
   });
   tearDown(() {

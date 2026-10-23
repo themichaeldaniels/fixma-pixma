@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:pixma_fixa/core/ink_counter.dart';
+import 'package:fixma_pixma/core/ink_counter.dart';
 
 Future<void> main(List<String> args) async {
   String? option(String name) => args

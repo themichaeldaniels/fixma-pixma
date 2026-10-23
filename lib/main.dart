@@ -36,7 +36,7 @@ Future<void> main(List<String> arguments) async {
             diagnosticsProof == null &&
             serviceProof == null
         ? null
-        : Directory.systemTemp.createTempSync('pixma-fixa-launch-'),
+        : Directory.systemTemp.createTempSync('fixma-pixma-launch-'),
   );
   var initialized = true;
   try {
@@ -47,7 +47,7 @@ Future<void> main(List<String> arguments) async {
         'Could not open local application data. ${CareController.cleanError(e)}';
   }
   runApp(
-    PixmaFixa(
+    FixmaPixma(
       controller: controller,
       initialPage: serviceProof != null
           ? 3
@@ -76,7 +76,7 @@ Future<void> main(List<String> arguments) async {
         .writeAsString(controller.exportText(), flush: true);
     await File(output).writeAsString(
       const JsonEncoder.withIndent('  ').convert({
-        'version': '0.9.0-beta.8',
+        'version': '0.9.0-beta.9',
         'nativeLaunch': true,
         'report': r?.toJson(),
         'diagnosticCompleted': r != null && controller.liveValid && !r.sample,
@@ -101,7 +101,7 @@ Future<void> main(List<String> arguments) async {
     final output = diagnosticsProof.substring('--diagnostics-proof='.length);
     await File(output).writeAsString(
       const JsonEncoder.withIndent('  ').convert({
-        'version': '0.9.0-beta.8',
+        'version': '0.9.0-beta.9',
         'nativeLaunch': true,
         'error': controller.lastError,
         'checks': controller.connectionChecks.map((v) => v.toJson()).toList(),
@@ -176,7 +176,7 @@ Future<void> main(List<String> arguments) async {
     await File(smoke.substring('--smoke-output='.length)).writeAsString(
       jsonEncode({
         'launched': true,
-        'version': '0.9.0-beta.8',
+        'version': '0.9.0-beta.9',
         'theme': controller.themeMode.name,
         'usbInterfaces': controller.devices.length,
         'serviceInterfaces': controller.devices
@@ -198,21 +198,21 @@ Future<void> main(List<String> arguments) async {
   }
 }
 
-class PixmaFixa extends StatefulWidget {
+class FixmaPixma extends StatefulWidget {
   final CareController controller;
   final bool nativeFrame;
   final int initialPage;
-  const PixmaFixa({
+  const FixmaPixma({
     super.key,
     required this.controller,
     this.nativeFrame = true,
     this.initialPage = 0,
   });
   @override
-  State<PixmaFixa> createState() => _PixmaFixaState();
+  State<FixmaPixma> createState() => _FixmaPixmaState();
 }
 
-class _PixmaFixaState extends State<PixmaFixa> with WidgetsBindingObserver {
+class _FixmaPixmaState extends State<FixmaPixma> with WidgetsBindingObserver {
   int page = 0;
   int diagnosticTab = 0;
   late final TextEditingController ipInput;
@@ -259,7 +259,7 @@ class _PixmaFixaState extends State<PixmaFixa> with WidgetsBindingObserver {
       });
     }
     return MaterialApp(
-      title: 'Pixma Fixa',
+      title: 'Fixma Pixma',
       debugShowCheckedModeBanner: false,
       theme: careTheme(Brightness.light),
       darkTheme: careTheme(Brightness.dark),
@@ -334,7 +334,7 @@ class _PixmaFixaState extends State<PixmaFixa> with WidgetsBindingObserver {
                         ),
                         const Spacer(),
                         Text(
-                          'Local device access     |     Version 0.9.0-beta.8',
+                          'Local device access     |     Version 0.9.0-beta.9',
                           style: TextStyle(
                             fontSize: 12,
                             color: colors(context).muted,
@@ -431,7 +431,7 @@ class _PixmaFixaState extends State<PixmaFixa> with WidgetsBindingObserver {
           Icon(Icons.print_outlined, size: 22, color: p.accent),
           const SizedBox(width: 10),
           const Text(
-            'Pixma Fixa',
+            'Fixma Pixma',
             style: TextStyle(fontSize: 19, fontWeight: FontWeight.w600),
           ),
           const SizedBox(width: 18),

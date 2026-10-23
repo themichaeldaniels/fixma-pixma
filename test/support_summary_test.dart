@@ -2,15 +2,15 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pixma_fixa/controller.dart';
-import 'package:pixma_fixa/core/capture_inspector.dart';
-import 'package:pixma_fixa/core/network_status.dart';
+import 'package:fixma_pixma/controller.dart';
+import 'package:fixma_pixma/core/capture_inspector.dart';
+import 'package:fixma_pixma/core/network_status.dart';
 
 void main() {
   late Directory temp;
   late CareController c;
   setUp(() {
-    temp = Directory.systemTemp.createTempSync('pixma-fixa-support-');
+    temp = Directory.systemTemp.createTempSync('fixma-pixma-support-');
     c = CareController(directory: temp);
   });
   tearDown(() {

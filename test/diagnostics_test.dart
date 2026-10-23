@@ -2,14 +2,14 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pixma_fixa/controller.dart';
-import 'package:pixma_fixa/core/model_support.dart';
-import 'package:pixma_fixa/core/repair_record.dart';
-import 'package:pixma_fixa/core/report.dart';
-import 'package:pixma_fixa/core/report_comparison.dart';
-import 'package:pixma_fixa/core/capture_inspector.dart';
-import 'package:pixma_fixa/core/protocol.dart';
-import 'package:pixma_fixa/core/canon_usage.dart';
+import 'package:fixma_pixma/controller.dart';
+import 'package:fixma_pixma/core/model_support.dart';
+import 'package:fixma_pixma/core/repair_record.dart';
+import 'package:fixma_pixma/core/report.dart';
+import 'package:fixma_pixma/core/report_comparison.dart';
+import 'package:fixma_pixma/core/capture_inspector.dart';
+import 'package:fixma_pixma/core/protocol.dart';
+import 'package:fixma_pixma/core/canon_usage.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -237,7 +237,7 @@ void main() {
   test('shared diagnostic summary removes known identity, addresses and local paths', () {
     final result = redactedDiagnosticText(
       {
-        'error': r'C:\Users\Owner\PixmaFixa helper 192.168.1.20',
+        'error': r'C:\Users\Owner\FixmaPixma helper 192.168.1.20',
         'detail': 'TEST12345 printer.local 34:9f:7b:00:00:00',
       },
       identifiers: ['TEST12345', 'printer.local'],

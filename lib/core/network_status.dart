@@ -273,5 +273,5 @@ class NetworkStatus {
     'attributes': attributes,
   };
   String exportText() =>
-      'PIXMA FIXA - NETWORK STATUS\nCaptured: ${capturedAt.toIso8601String()}\nPrinter: $name\nModel: $model\nFirmware: $firmware\nAddress: ${target.uri.host}\nStatus: $stateLabel\n\nEstimated supplies\nPrinter-reported estimates, not measured tank levels. Refilling may not update these counts.\n${supplies.map((s) => '${s.name}: ${s.levelText}').join('\n')}\n\nCurrent issues\n${issues.isEmpty ? 'No current errors reported.' : issues.map((i) => '${i.title}: ${i.detail}').join('\n')}\n\n${const JsonEncoder.withIndent('  ').convert(toJson())}';
+      'FIXMA PIXMA - NETWORK STATUS\nCaptured: ${capturedAt.toIso8601String()}\nPrinter: $name\nModel: $model\nFirmware: $firmware\nAddress: ${target.uri.host}\nStatus: $stateLabel\n\nEstimated supplies\nPrinter-reported estimates, not measured tank levels. Refilling may not update these counts.\n${supplies.map((s) => '${s.name}: ${s.levelText}').join('\n')}\n\nCurrent issues\n${issues.isEmpty ? 'No current errors reported.' : issues.map((i) => '${i.title}: ${i.detail}').join('\n')}\n\n${const JsonEncoder.withIndent('  ').convert(toJson())}';
 }

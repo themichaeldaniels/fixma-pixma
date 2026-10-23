@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pixma_fixa/core/ink_counter.dart';
+import 'package:fixma_pixma/core/ink_counter.dart';
 import 'package:xml/xml.dart';
 
 String fixture(String name) =>

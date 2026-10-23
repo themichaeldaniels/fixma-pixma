@@ -2,8 +2,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:pixma_fixa/core/protocol.dart';
-import 'package:pixma_fixa/platform/windows_usb.dart';
+import 'package:fixma_pixma/core/protocol.dart';
+import 'package:fixma_pixma/platform/windows_usb.dart';
 
 Future<void> main() async {
   if (!Platform.isWindows) {

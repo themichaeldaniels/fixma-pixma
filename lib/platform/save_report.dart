@@ -62,7 +62,7 @@ String? saveDocumentPath({
       extension = extensionText.toNativeUtf16();
   try {
     final name =
-        'PixmaFixa-${DateTime.now().toIso8601String().substring(0, 10)}.$extensionText';
+        'FixmaPixma-${DateTime.now().toIso8601String().substring(0, 10)}.$extensionText';
     path.asTypedList(name.length).setAll(0, name.codeUnits);
     dialog.ref.size = sizeOf<_OpenFile>();
     dialog.ref.filter = filter;

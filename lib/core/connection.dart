@@ -60,7 +60,7 @@ class WorkerPeer implements PrinterPeer {
     final folder = File(Platform.resolvedExecutable).parent.path;
     final path =
         Platform.environment['PRINTERCARE_WORKER'] ??
-        '$folder${Platform.pathSeparator}pixma_fixa_worker.exe';
+        '$folder${Platform.pathSeparator}fixma_pixma_worker.exe';
     if (!File(path).existsSync()) {
       throw StateError(
         'The Windows connection helper is missing. Extract the entire application folder.',

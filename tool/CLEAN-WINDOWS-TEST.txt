@@ -1,4 +1,4 @@
-PIXMA FIXA - CLEAN WINDOWS TEST KIT
+FIXMA PIXMA - CLEAN WINDOWS TEST KIT
 
 Use a fresh Windows 11 x64 virtual machine, Windows Sandbox, or a separate clean
 Windows PC. No Flutter, Dart, Python, development tools or printer drivers should
@@ -14,8 +14,8 @@ Installing it can require administrator access and a restart. This kit does not
 enable features, change firmware settings or restart the host.
 
 From PowerShell, prepare a private configuration with these scripts:
-  ./New-SandboxTest.ps1 -PackageZip ./PixmaFixa-Windows-VERSION.zip -OutputDirectory ./PrivateSandboxTest
-Open PrivateSandboxTest/PixmaFixa-test.wsb. The test runs automatically offline
+  ./New-SandboxTest.ps1 -PackageZip ./FixmaPixma-Windows-VERSION.zip -OutputDirectory ./PrivateSandboxTest
+Open PrivateSandboxTest/FixmaPixma-test.wsb. The test runs automatically offline
 with printer, camera, audio and clipboard redirection disabled. Only the test input
 and a dedicated results folder are mapped; the input is read-only.
 The PowerShell execution-policy flag applies only to the test process inside the
@@ -26,7 +26,7 @@ Generated .wsb files contain local paths and should not be published.
 
 SEPARATE CLEAN PC OR VM
 Copy the Windows ZIP and these scripts to the clean system. In PowerShell run:
-  ./Invoke-CleanWindowsTest.ps1 -PackageZip ./PixmaFixa-Windows-VERSION.zip -OutputPath ./result.json -ConfirmCleanMachine
+  ./Invoke-CleanWindowsTest.ps1 -PackageZip ./FixmaPixma-Windows-VERSION.zip -OutputPath ./result.json -ConfirmCleanMachine
 Add -ShowApplication to inspect the app after the automatic checks.
 Use -ConfirmCleanMachine only on a fresh test system. If a downloaded script is
 blocked, review its source and your local script policy rather than disabling

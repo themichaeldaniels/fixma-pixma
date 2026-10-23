@@ -30,6 +30,8 @@ Private captures and photographs are excluded from public source and packages.
 
 | 0.9.0-beta.8 final review | 168 tests, static analysis, fresh normal-user Sandbox startup and read-only helpers passed. Native report save/cancel, both themes and JSON/browser handoff passed independent checks. A read-only G7020 check returned Ready, firmware 1.050 and four full ink estimates. All 26 locked hosted packages returned no registry advisories. | No physical printing, cleaning or reset. Parser and helper failure cases use simulated data/processes; platform and hardware limits remain in REVIEW.md. |
 
+| 0.9.0-beta.9 rename | Renamed Windows product, executables, reports, support links, screenshots and download packages. All 168 tests and static analysis pass. Fresh normal-user offline Sandbox startup, helpers, missing-helper recovery, both themes, native save/cancel and JSON/browser handoff to the new repository passed. | Existing PrinterCare data location and guards retained. No issue submitted or printer commands sent. Hardware and Experimental limits unchanged. |
+
 The nozzle assessment follows Canon's [G7000 nozzle check guidance](https://ij.manual.canon/ij/webmanual/Manual/All/G7000%20series/EN/UG/ug-134.html).
 Canon distinguishes [printing alignment values from adjusting alignment](https://ij.manual.canon/ij/webmanual/PrinterDriver/W/G7000%20series/1.0/EN/PPG/Dg-printer_assistant.html).
 No cleaning, refill reset, waste reset, scanning or service-mode transition was

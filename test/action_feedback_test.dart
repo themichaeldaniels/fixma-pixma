@@ -3,11 +3,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pixma_fixa/action_feedback.dart';
-import 'package:pixma_fixa/controller.dart';
-import 'package:pixma_fixa/core/network_status.dart';
-import 'package:pixma_fixa/main.dart';
-import 'package:pixma_fixa/theme.dart';
+import 'package:fixma_pixma/action_feedback.dart';
+import 'package:fixma_pixma/controller.dart';
+import 'package:fixma_pixma/core/network_status.dart';
+import 'package:fixma_pixma/main.dart';
+import 'package:fixma_pixma/theme.dart';
 
 class DisconnectedPrinter extends CareController {
   DisconnectedPrinter({required super.directory});
@@ -38,7 +38,7 @@ void main() {
   late Directory temp;
   late DisconnectedPrinter controller;
   setUp(() {
-    temp = Directory.systemTemp.createTempSync('pixma-fixa-feedback-');
+    temp = Directory.systemTemp.createTempSync('fixma-pixma-feedback-');
     controller = DisconnectedPrinter(directory: temp);
   });
   tearDown(() {
@@ -51,7 +51,7 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
     await tester.pumpWidget(
-      PixmaFixa(controller: controller, nativeFrame: false, initialPage: page),
+      FixmaPixma(controller: controller, nativeFrame: false, initialPage: page),
     );
   }
 

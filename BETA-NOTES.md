@@ -1,7 +1,12 @@
-# Pixma Fixa 0.9.0-beta.8
+# Fixma Pixma 0.9.0-beta.9
+
+The application and repository are now named Fixma Pixma (`fixma-pixma`).
+The executables, download names, support links and diagnostic exports use
+the new name. Existing local history, preferences and reset guards remain
+in the same PrinterCare application-data folder.
 
 Windows x64 beta, verified on Canon PIXMA G7020 firmware 1.050.
-Extract the complete portable ZIP and run `pixma_fixa.exe`.
+Extract the complete portable ZIP and run `fixma_pixma.exe`.
 
 This beta includes the final code review fixes for diagnostic privacy, malformed
 discovery/IPP replies, bounded history/imports, clock-rollback confirmations,
@@ -139,3 +144,19 @@ All 168 tests pass, including 18 review regressions; static analysis is clean.
 All 26 locked hosted packages returned no registry advisories on 2026-10-23.
 A separate read-only G7020 check returned firmware 1.050, Ready and four full
 ink estimates. No physical printing, cleaning or reset commands were sent.
+
+## Fixma Pixma rename verification
+
+Version 0.9.0-beta.9 uses Fixma Pixma throughout the application, Windows product
+metadata, executables, diagnostic exports, support links and download packages.
+The GitHub repository is now fixma-pixma and remains private. The existing
+PrinterCare data folder and legacy helper environment overrides are retained,
+preserving settings, history and durable transaction guards when upgrading.
+
+All 168 tests pass with updated light/dark screenshots; static analysis is clean.
+The renamed Windows package passed fresh offline normal-user Sandbox startup,
+restricted PATH, different working directory, native USB/queue helper checks and
+missing-helper recovery. Both themes, native save cancellation and report saving
+were inspected. Independent checks confirmed the new report identity and exact
+new issue-form URL after saving, with no data in the URL. No issue was submitted
+and no printer commands were sent. Hardware limits and Experimental labels remain.

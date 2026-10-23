@@ -4,11 +4,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pixma_fixa/controller.dart';
-import 'package:pixma_fixa/platform/open_support.dart';
-import 'package:pixma_fixa/platform/save_diagnostic.dart';
-import 'package:pixma_fixa/problem_report.dart';
-import 'package:pixma_fixa/theme.dart';
+import 'package:fixma_pixma/controller.dart';
+import 'package:fixma_pixma/platform/open_support.dart';
+import 'package:fixma_pixma/platform/save_diagnostic.dart';
+import 'package:fixma_pixma/problem_report.dart';
+import 'package:fixma_pixma/theme.dart';
 
 void main() {
   const savedFile = 'C:/Reports/diagnostic.json';
@@ -92,7 +92,7 @@ void main() {
     final uri = Uri.parse(supportIssueUrl);
     expect(uri.scheme, 'https');
     expect(uri.host, 'github.com');
-    expect(uri.path.endsWith('/pixma-fixa/issues/new'), true);
+    expect(uri.path.endsWith('/fixma-pixma/issues/new'), true);
     expect(uri.queryParameters, {'template': 'model-support.yml'});
   });
 

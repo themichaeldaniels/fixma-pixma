@@ -1,6 +1,6 @@
 # Testing another printer or reporting a problem
 
-Pixma Fixa has been hardware-tested only on a **Canon PIXMA G7020 running
+Fixma Pixma has been hardware-tested only on a **Canon PIXMA G7020 running
 firmware 1.050**. Other models and firmware versions have not been validated.
 Some standard network status features may work; maintenance and reset behavior
 may differ even when two printers report the same family name.
@@ -19,7 +19,7 @@ model/firmware check. Do not reset a healthy waste counter just to create a test
    result, actual result and panel error. Include the exact physical model from
    the printer label, without its serial. A reported family such as G7000 series
    may not identify the regional model.
-3. In the [issue form](https://github.com/themichaeldaniels/pixma-fixa/issues/new?template=model-support.yml), drag the reviewed `.json` into the **Reviewed
+3. In the [issue form](https://github.com/themichaeldaniels/fixma-pixma/issues/new?template=model-support.yml), drag the reviewed `.json` into the **Reviewed
    diagnostic summary** field, or use that field's attachment control. GitHub
    sign-in is required to submit; repository access is required while private.
 

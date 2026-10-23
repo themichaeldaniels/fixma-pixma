@@ -3,10 +3,10 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pixma_fixa/core/discovery.dart';
-import 'package:pixma_fixa/core/ipp.dart';
-import 'package:pixma_fixa/core/network_status.dart';
-import 'package:pixma_fixa/core/printer_network.dart';
+import 'package:fixma_pixma/core/discovery.dart';
+import 'package:fixma_pixma/core/ipp.dart';
+import 'package:fixma_pixma/core/network_status.dart';
+import 'package:fixma_pixma/core/printer_network.dart';
 
 Map<String, List<Object?>> fixture() =>
     (jsonDecode(File('test/fixtures/g7000-ipp.json').readAsStringSync()) as Map)

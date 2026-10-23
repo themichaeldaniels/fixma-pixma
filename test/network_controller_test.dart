@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pixma_fixa/controller.dart';
-import 'package:pixma_fixa/core/network_status.dart';
-import 'package:pixma_fixa/core/printer_network.dart';
+import 'package:fixma_pixma/controller.dart';
+import 'package:fixma_pixma/core/network_status.dart';
+import 'package:fixma_pixma/core/printer_network.dart';
 
 class TestNetwork implements PrinterNetwork {
   int calls = 0;

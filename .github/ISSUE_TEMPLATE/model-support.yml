@@ -27,7 +27,7 @@ body:
   - type: input
     id: versions
     attributes:
-      label: Pixma Fixa version and Windows version
+      label: Fixma Pixma version and Windows version
     validations:
       required: true
   - type: dropdown

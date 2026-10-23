@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:pixma_fixa/core/canon_command.dart';
-import 'package:pixma_fixa/core/canon_maintenance.dart';
+import 'package:fixma_pixma/core/canon_command.dart';
+import 'package:fixma_pixma/core/canon_maintenance.dart';
 
 Future<void> main(List<String> args) async {
   String? option(String key) => args

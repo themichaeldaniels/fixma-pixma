@@ -1050,7 +1050,7 @@ class CareController extends ChangeNotifier {
         operationLock.lockSync(FileLock.exclusive);
       } on FileSystemException {
         throw StateError(
-          'Another Pixma Fixa instance is working. Wait for it to finish.',
+          'Another Fixma Pixma instance is working. Wait for it to finish.',
         );
       }
       final folder = Directory('${directory.path}/history')
@@ -1300,7 +1300,7 @@ class CareController extends ChangeNotifier {
   String exportText() {
     final r = report;
     final live = networkStatus;
-    return '${live == null ? '' : '${live.exportText()}\nConnection: ${networkOnline ? 'Online at export' : 'Offline - last known reading'}\n\n'}${r == null ? '' : 'PIXMA FIXA - ${r.sample ? 'SAMPLE REPORT' : 'SERVICE REPORT'}\nCaptured: ${r.capturedAt.toIso8601String()}\n\n${r.raw}\n\n'}Local history\n${const JsonEncoder.withIndent('  ').convert(history)}';
+    return '${live == null ? '' : '${live.exportText()}\nConnection: ${networkOnline ? 'Online at export' : 'Offline - last known reading'}\n\n'}${r == null ? '' : 'FIXMA PIXMA - ${r.sample ? 'SAMPLE REPORT' : 'SERVICE REPORT'}\nCaptured: ${r.capturedAt.toIso8601String()}\n\n${r.raw}\n\n'}Local history\n${const JsonEncoder.withIndent('  ').convert(history)}';
   }
 
   static String cleanError(Object e) => e.toString().replaceFirst(
