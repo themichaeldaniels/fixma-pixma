@@ -4,13 +4,13 @@ A free, open-source Windows utility for maintaining Canon PIXMA printers. Built
 and hardware-tested for the PIXMA G7020, with a simple interface for diagnostics,
 ink counts, printhead care and guarded waste-counter repair.
 
-**[Download for Windows x64](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.3/PixmaFixa-Windows-0.9.0-beta.3.zip)**
+**[Download for Windows x64](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.4/PixmaFixa-Windows-0.9.0-beta.4.zip)**
 
-[Release notes and all downloads](https://github.com/themichaeldaniels/pixma-fixa/releases/tag/v0.9.0-beta.3)
- · [Checksums](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.3/SHA256SUMS.txt)
- · [Source archive](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.3/PixmaFixa-source-0.9.0-beta.3.zip)
+[Release notes and all downloads](https://github.com/themichaeldaniels/pixma-fixa/releases/tag/v0.9.0-beta.4)
+ · [Checksums](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.4/SHA256SUMS.txt)
+ · [Source archive](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.4/PixmaFixa-source-0.9.0-beta.4.zip)
 
-Current release: **0.9.0-beta.3**, Windows x64. Extract the entire ZIP, then run
+Current release: **0.9.0-beta.4**, Windows x64. Extract the entire ZIP, then run
 `pixma_fixa.exe`. No installer, Python setup, account, or purchased reset key is
 needed to use the app. While this repository is private, GitHub access is required
 to download its files. macOS and Android builds are not available yet.
@@ -73,10 +73,35 @@ waste-ink absorber counter.
 5. Open **Maintenance** for the controls supported by the selected printer. Each
    operation explains its preparation and asks for confirmation before it runs.
 
-Most maintenance uses the local network. **USB service diagnostics and waste-counter
-repair require manually entering service mode**; the app includes a model-specific
-guide. A waste-counter reset is only appropriate after the absorber has been
-serviced. It does not remove ink from the pads.
+**The 5B00 waste-ink counter reset requires a USB data cable and manual service
+mode. It cannot be done over Wi-Fi with this app.** Connecting the printer to
+Wi-Fi, or resetting its remaining-ink counts, does not clear the waste counter.
+The app includes the verified G7020 service-mode procedure. Service the absorber
+before resetting its counter; the reset does not remove ink from the pads.
+
+### Which connection does each feature use?
+
+| Feature | Connection | Printer mode |
+| --- | --- | --- |
+| Model, firmware, ink estimates, errors and network usage | Wi-Fi or Ethernet on the same local network | Normal |
+| Remaining-ink counts after refilling the tanks | Wi-Fi or Ethernet; no USB needed | Normal |
+| Standard cleaning, nozzle check, alignment check, automatic alignment and supported settings | Wi-Fi or Ethernet; no USB needed | Normal |
+| Jobs received by the printer | Wi-Fi or Ethernet | Normal |
+| Jobs in a Windows print queue | Windows spooler on this PC; its installed queue may use USB or the network | Independent of service mode |
+| USB service report and waste-ink counter reading | USB data cable; Wi-Fi unsupported | Manual service mode |
+| Waste-ink absorber counter reset for 5B00 | USB data cable; Wi-Fi unsupported | Manual service mode |
+
+These are the current app capabilities for the verified G7020 profile. USB-only
+normal-mode cleaning or remaining-ink reset is not implemented. The app cannot
+enter or exit service mode remotely. The native nonzero waste reset remains
+Experimental, as described below.
+
+If a requested action fails, the app shows the returned error and the connection
+steps for that action. A service-printer search explains when USB is missing or
+the printer is still in normal mode. Network actions explain how to reconnect or
+add the address. Automatic refresh failures stay inline. Dismissing an error
+does not retry the command; check the history before repeating an uncertain reset
+or maintenance operation.
 
 See the [complete usage guide](START-HERE.txt), [beta notes](BETA-NOTES.md) and
 [hardware validation](VALIDATION.md). The Windows package is currently unsigned.
@@ -127,7 +152,7 @@ before and after completion when available, and never repeats an uncertain comma
 
 Extract the complete Windows ZIP and run `pixma_fixa.exe`. Keep both helper executables, DLLs, and the data directory together. See [START-HERE.txt](START-HERE.txt).
 
-The current package is a Windows beta. Version 0.9.0-beta.3 passed automated startup and interactive checks in fresh Windows Sandbox without development tools. Both themes, device-theme following, offline controls, absorber warnings and native sample-report export were checked. All 130 regression tests pass; static analysis is clean. Distribution files are unsigned. Native nonzero waste-counter clear and printer-side in-flight job cancellation are marked Experimental and require acknowledgment. The waste reset also requires acknowledgment of the spill risk. See [BETA-NOTES.md](BETA-NOTES.md) and [VALIDATION.md](VALIDATION.md) for the evidence and limits.
+The current package is a Windows beta. Version 0.9.0-beta.4 passed automated startup and interactive checks in fresh Windows Sandbox without development tools. Both themes, device-theme following, offline controls, absorber warnings and native sample-report export were checked. All 136 regression tests pass; static analysis is clean. Distribution files are unsigned. Native nonzero waste-counter clear and printer-side in-flight job cancellation are marked Experimental and require acknowledgment. The waste reset also requires acknowledgment of the spill risk. See [BETA-NOTES.md](BETA-NOTES.md) and [VALIDATION.md](VALIDATION.md) for the evidence and limits.
 
 ## Build and test
 

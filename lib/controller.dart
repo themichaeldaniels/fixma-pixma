@@ -569,6 +569,7 @@ class CareController extends ChangeNotifier {
     progress = 'Checking ink-reset support';
     notifyListeners();
     InkCounterPeer? peer;
+    InkResetCheck? result;
     try {
       peer = await inkFactory(target.uri.host);
       final identity = await peer.identity();
@@ -583,16 +584,23 @@ class CareController extends ChangeNotifier {
           'Wait until the printer is idle and clear its current error before resetting ink counts.',
         );
       }
-      return InkResetCheck(target, identity, counters);
+      result = InkResetCheck(target, identity, counters);
     } catch (e) {
       lastError = cleanError(e);
-      return null;
     } finally {
-      await peer?.close();
-      busy = false;
-      progress = '';
-      notifyListeners();
+      try {
+        await peer?.close();
+      } catch (e) {
+        if (lastError.isEmpty) {
+          lastError = 'Connection cleanup failed. ${cleanError(e)}';
+        }
+      } finally {
+        busy = false;
+        progress = '';
+        notifyListeners();
+      }
     }
+    return lastError.isEmpty ? result : null;
   }
 
   File _inkGuard(String serial) => File(

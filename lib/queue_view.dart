@@ -4,6 +4,7 @@ import 'components.dart';
 import 'controller.dart';
 import 'core/print_queue.dart';
 import 'theme.dart';
+import 'action_feedback.dart';
 
 class QueueView extends StatelessWidget {
   final CareController controller;
@@ -23,7 +24,19 @@ class QueueView extends StatelessWidget {
               ),
             ),
             OutlinedButton.icon(
-              onPressed: c.busy || c.networkRefreshing ? null : c.refreshQueues,
+              onPressed: c.busy || c.networkRefreshing
+                  ? null
+                  : () => printerAction(
+                      context,
+                      title: 'Could not read print queues',
+                      action: c.refreshQueues,
+                      error: () => [
+                        c.lastError,
+                        if (c.selectedPrinter != null) c.printerQueueError,
+                        c.windowsQueueError,
+                      ].where((text) => text.isNotEmpty).join('\n\n'),
+                      help: 'Printer-side jobs require a selected network printer in normal mode. Windows queues are read from this PC; check the installed queue and Windows Print Spooler if that source failed.',
+                    ),
               icon: const Icon(Icons.refresh, size: 17),
               label: const Text('Refresh queues'),
             ),
@@ -99,10 +112,16 @@ class QueueView extends StatelessWidget {
                 ],
                 onChanged: c.busy || c.networkRefreshing
                     ? null
-                    : (value) => c.chooseQueue(
-                        c.localQueues
-                            .where((q) => q.identity == value)
-                            .firstOrNull,
+                    : (value) => printerAction(
+                        context,
+                        title: 'Could not read the Windows queue',
+                        action: () => c.chooseQueue(
+                          c.localQueues
+                              .where((q) => q.identity == value)
+                              .firstOrNull,
+                        ),
+                        error: () => c.windowsQueueError,
+                        help: 'Check that this queue is installed on this PC and that Windows Print Spooler is running. Queues on other PCs or phones are not visible here.',
                       ),
               ),
               const SizedBox(height: 10),
@@ -339,8 +358,15 @@ class QueueView extends StatelessWidget {
         ),
       ),
     );
-    if (yes == true) {
-      await controller.cancelJobs(snapshot, jobs, confirmed: true);
+    if (yes == true && context.mounted) {
+      await printerAction(
+        context,
+        title: 'Queue cancellation did not complete',
+        action: () => controller.cancelJobs(snapshot, jobs, confirmed: true),
+        error: () => controller.lastError,
+        help: 'Refresh the same queue and check which jobs are still listed. Check its network connection or Windows spooler before making another selection.',
+        mayHaveSentCommand: true,
+      );
     }
   }
 }

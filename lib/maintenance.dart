@@ -4,6 +4,7 @@ import 'components.dart';
 import 'controller.dart';
 import 'core/canon_maintenance.dart';
 import 'theme.dart';
+import 'action_feedback.dart';
 
 class CanonMaintenancePanel extends StatelessWidget {
   final CareController controller;
@@ -35,7 +36,7 @@ class CanonMaintenancePanel extends StatelessWidget {
                     Text(
                       valid
                           ? 'Firmware ${check.identity.firmware} · ${check.identity.serial}'
-                          : 'Use your printer normally on the local network. Read its controls to begin.',
+                          : 'Wi-Fi or Ethernet · Normal mode · No USB required. Read printer controls to begin.',
                       style: TextStyle(
                         color: p.muted,
                         fontSize: 13,
@@ -56,7 +57,15 @@ class CanonMaintenancePanel extends StatelessWidget {
               ),
               const SizedBox(width: 18),
               OutlinedButton.icon(
-                onPressed: c.canReadCanonControls ? c.loadCanonControls : null,
+                onPressed: c.canReadCanonControls
+                    ? () => printerAction(
+                        context,
+                        title: 'Could not read printer controls',
+                        action: c.loadCanonControls,
+                        error: () => c.lastError,
+                        help: networkRequirement,
+                      )
+                    : null,
                 icon: const Icon(Icons.refresh, size: 17),
                 label: Text(
                   valid ? 'Reload controls' : 'Read printer controls',
@@ -200,8 +209,16 @@ class CanonMaintenancePanel extends StatelessWidget {
       context: context,
       builder: (_) => _TaskDialog(task: task),
     );
-    if (result != null) {
-      await controller.runCanonTask(task, prepared: true, paper: result);
+    if (result != null && context.mounted) {
+      await printerAction(
+        context,
+        title: '${task.label} did not complete',
+        action: () =>
+            controller.runCanonTask(task, prepared: true, paper: result),
+        error: () => controller.lastError,
+        help: networkRequirement,
+        mayHaveSentCommand: true,
+      );
     }
   }
 }
@@ -368,7 +385,15 @@ class _CanonSettingRowState extends State<_CanonSettingRow> {
               widget.enabled &&
                   allowed.contains(selected) &&
                   selected != widget.value
-              ? () => widget.controller.saveCanonSetting(key, selected!)
+              ? () => printerAction(
+                  context,
+                  title: 'Could not save printer setting',
+                  action: () =>
+                      widget.controller.saveCanonSetting(key, selected!),
+                  error: () => widget.controller.lastError,
+                  help: networkRequirement,
+                  mayHaveSentCommand: true,
+                )
               : null,
           child: const Text('Apply'),
         ),

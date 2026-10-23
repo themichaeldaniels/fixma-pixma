@@ -12,6 +12,7 @@ class RefillPrinter implements InkCounterPeer {
   Map<String, int?> levels = {'BK': 20, 'C': 30, 'M': 30, 'Y': 30};
   String serial = 'TEST12345', state = 'idle';
   bool failWrite = false, alterOtherColor = false;
+  bool failClose = false;
   final sent = <String>[];
   RefillPrinter(this.folder);
   @override
@@ -36,7 +37,9 @@ class RefillPrinter implements InkCounterPeer {
   }
 
   @override
-  Future<void> close() async {}
+  Future<void> close() async {
+    if (failClose) throw StateError('Connection close failed');
+  }
 }
 
 void main() {
@@ -137,6 +140,20 @@ void main() {
       await c.resetInkCounts(check, {'BK'}, filledToUpperLine: true);
       expect(printer.sent, isEmpty);
       expect(c.history.first['verified'], true);
+    },
+  );
+  test(
+    'failed ink-check cleanup releases busy state and blocks reset preparation',
+    () async {
+      printer.failClose = true;
+      expect(await c.prepareInkReset(), isNull);
+      expect(c.busy, isFalse);
+      expect(c.progress, isEmpty);
+      expect(c.lastError, contains('Connection cleanup failed'));
+      expect(printer.sent, isEmpty);
+      printer.failClose = false;
+      expect(await c.prepareInkReset(), isNotNull);
+      expect(c.lastError, isEmpty);
     },
   );
 }

@@ -27,8 +27,17 @@ screenshots only after intentional UI changes and visual review.
 | Reliability | release_reliability_test | Corrupt history, unwritable/failing storage, cleanup errors, cross-instance locking, preference preservation, invalid reset evidence, upgrade data preservation |
 | Interface | widget_test and other widget files | System/light/dark appearance, minimum-width layouts, accessibility text scaling, confirmations, null dropdown guards, sample separation, navigation scope |
 | Experimental actions | experimental_features_test, queue_widget_test | Separate spill-risk and experimental acknowledgments required; either alone or unchecking the spill acknowledgment blocks reset. Cancel sends nothing. Printer-side cancellation acknowledgment remains separate. |
+| Action errors | action_feedback_test | USB/service-mode help, normal-mode mismatch, network errors after explicit refresh, quiet background failures, uncertain-delivery warning, no retry on dismiss, safe completion after screen removal |
 
 ## Individual test cases
+
+### action_feedback_test.dart
+
+- [USB diagnostic failure explains the cable and service-mode requirement once](test/action_feedback_test.dart#L58)
+- [normal USB mode is explained after an explicit service-printer search](test/action_feedback_test.dart#L74)
+- [background network errors stay inline; manual refresh shows the returned failure](test/action_feedback_test.dart#L95)
+- [mutation failure warns about uncertain delivery and never retries](test/action_feedback_test.dart#L119)
+- [an action that finishes after its screen is removed does not open a dialog](test/action_feedback_test.dart#L159)
 
 Names containing interpolation describe parameterized cases; the test runner
 expands them for each theme/vector. Line locations refer to the current source.
@@ -93,12 +102,13 @@ expands them for each theme/vector. Line locations refer to the current source.
 
 ### ink_reset_workflow_test.dart
 
-- [selected colors reset once with durable records and real readback](test/ink_reset_workflow_test.dart#L65)
-- [confirmation and a nonempty valid selection are required](test/ink_reset_workflow_test.dart#L79)
-- [lost reply is never retried and survives controller restart](test/ink_reset_workflow_test.dart#L87)
-- [changed identity, busy state and unknown counters block dispatch](test/ink_reset_workflow_test.dart#L107)
-- [unselected changes stop the batch before another write](test/ink_reset_workflow_test.dart#L124)
-- [already full counts are read without dispatching another reset](test/ink_reset_workflow_test.dart#L132)
+- [selected colors reset once with durable records and real readback](test/ink_reset_workflow_test.dart#L68)
+- [confirmation and a nonempty valid selection are required](test/ink_reset_workflow_test.dart#L82)
+- [lost reply is never retried and survives controller restart](test/ink_reset_workflow_test.dart#L90)
+- [changed identity, busy state and unknown counters block dispatch](test/ink_reset_workflow_test.dart#L110)
+- [unselected changes stop the batch before another write](test/ink_reset_workflow_test.dart#L127)
+- [already full counts are read without dispatching another reset](test/ink_reset_workflow_test.dart#L135)
+- [failed ink-check cleanup releases busy state and blocks reset preparation](test/ink_reset_workflow_test.dart#L145)
 
 ### network_controller_test.dart
 

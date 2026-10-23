@@ -5,6 +5,7 @@ import 'controller.dart';
 import 'core/network_status.dart';
 import 'core/ink_counter.dart';
 import 'theme.dart';
+import 'action_feedback.dart';
 
 class PrinterOverview extends StatelessWidget {
   final CareController controller;
@@ -66,7 +67,12 @@ class PrinterOverview extends StatelessWidget {
               if (c.networkPrinters.length > 1)
                 PopupMenuButton<PrinterTarget>(
                   tooltip: 'Choose printer',
-                  onSelected: locked ? null : c.selectPrinter,
+                  onSelected: locked
+                      ? null
+                      : (target) => networkAction(
+                          context,
+                          () => c.selectPrinter(target),
+                        ),
                   itemBuilder: (_) => [
                     for (final printer in c.networkPrinters)
                       PopupMenuItem(
@@ -82,7 +88,7 @@ class PrinterOverview extends StatelessWidget {
                   ),
                 ),
               OutlinedButton.icon(
-                onPressed: locked ? null : c.discover,
+                onPressed: locked ? null : () => findNetworkPrinter(context),
                 icon: const Icon(Icons.search, size: 17),
                 label: const Text('Find printers'),
               ),
@@ -90,7 +96,7 @@ class PrinterOverview extends StatelessWidget {
               FilledButton.icon(
                 onPressed: locked || c.selectedPrinter == null
                     ? null
-                    : c.refreshNetwork,
+                    : () => networkAction(context, c.refreshNetwork),
                 icon: const Icon(Icons.refresh, size: 17),
                 label: Text(
                   c.networkRefreshing ? 'Refreshing…' : 'Refresh now',
@@ -149,7 +155,7 @@ class PrinterOverview extends StatelessWidget {
                         Text(
                           c.devices.any((d) => d['service'] == true)
                               ? 'A Canon service-mode USB interface is connected.'
-                              : 'Waste-counter readings and resets are available separately for the verified G7020 service profile.',
+                              : 'Waste-counter readings and resets require USB + manual service mode on the verified G7020. They are not available over Wi-Fi.',
                           style: TextStyle(
                             color: p.muted,
                             fontSize: 13,
@@ -437,14 +443,59 @@ class PrinterOverview extends StatelessWidget {
   }
 
   Future<void> resetRefilledInk(BuildContext context) async {
-    final check = await c.prepareInkReset();
-    if (check == null || !context.mounted) return;
+    InkResetCheck? check;
+    final ready = await printerAction(
+      context,
+      title: 'Could not check remaining-ink counts',
+      action: () async {
+        check = await c.prepareInkReset();
+      },
+      error: () => c.lastError,
+      help: networkRequirement,
+    );
+    if (!ready) return;
+    final fresh = check;
+    if (fresh == null || !context.mounted) return;
     final selected = await showDialog<Set<String>>(
       context: context,
-      builder: (_) => _InkRefillDialog(check: check),
+      builder: (_) => _InkRefillDialog(check: fresh),
     );
     if (selected == null || !context.mounted) return;
-    await c.resetInkCounts(check, selected, filledToUpperLine: true);
+    await printerAction(
+      context,
+      title: 'Remaining-ink reset did not complete',
+      action: () => c.resetInkCounts(fresh, selected, filledToUpperLine: true),
+      error: () => c.lastError,
+      help: networkRequirement,
+      mayHaveSentCommand: true,
+    );
+  }
+
+  Future<void> networkAction(
+    BuildContext context,
+    Future<void> Function() action,
+  ) async {
+    await printerAction(
+      context,
+      title: 'Could not connect to the network printer',
+      action: action,
+      error: () => c.networkError,
+      help: networkRequirement,
+    );
+  }
+
+  Future<void> findNetworkPrinter(BuildContext context) async {
+    await printerAction(
+      context,
+      title: 'No reachable network printer found',
+      action: c.discover,
+      error: () => c.networkError.isNotEmpty
+          ? c.networkError
+          : c.networkOnline
+          ? ''
+          : 'No reachable network printer was found. Try Add by address if automatic discovery is unavailable.',
+      help: networkRequirement,
+    );
   }
 
   Future<void> refillHelp(BuildContext context, NetworkStatus s) =>
@@ -658,8 +709,8 @@ class PrinterOverview extends StatelessWidget {
     // The route finishes its exit animation before the editing controller is disposed.
     await Future<void>.delayed(const Duration(milliseconds: 250));
     input.dispose();
-    if (address != null && address.trim().isNotEmpty) {
-      await c.connectAddress(address);
+    if (address != null && address.trim().isNotEmpty && context.mounted) {
+      await networkAction(context, () => c.connectAddress(address));
     }
   }
 }
@@ -697,7 +748,7 @@ class _InkRefillDialogState extends State<_InkRefillDialog> {
               ),
               const SizedBox(height: 16),
               const Text(
-                'Choose the tanks you refilled to the upper line. Their remaining-ink counts will be reset to full.',
+                'Uses Wi-Fi or Ethernet in normal mode; USB and service mode are not needed. Choose the tanks you refilled to the upper line. Their remaining-ink counts will be reset to full.',
               ),
               const SizedBox(height: 8),
               if (available.isNotEmpty)

@@ -9,6 +9,7 @@ import 'theme.dart';
 import 'overview.dart';
 import 'maintenance.dart';
 import 'experimental_reset_dialog.dart';
+import 'action_feedback.dart';
 import 'queue_view.dart';
 import 'diagnostics_view.dart';
 import 'platform/appearance.dart';
@@ -75,7 +76,7 @@ Future<void> main(List<String> arguments) async {
         .writeAsString(controller.exportText(), flush: true);
     await File(output).writeAsString(
       const JsonEncoder.withIndent('  ').convert({
-        'version': '0.9.0-beta.3',
+        'version': '0.9.0-beta.4',
         'nativeLaunch': true,
         'report': r?.toJson(),
         'diagnosticCompleted': r != null && controller.liveValid && !r.sample,
@@ -100,7 +101,7 @@ Future<void> main(List<String> arguments) async {
     final output = diagnosticsProof.substring('--diagnostics-proof='.length);
     await File(output).writeAsString(
       const JsonEncoder.withIndent('  ').convert({
-        'version': '0.9.0-beta.3',
+        'version': '0.9.0-beta.4',
         'nativeLaunch': true,
         'error': controller.lastError,
         'checks': controller.connectionChecks.map((v) => v.toJson()).toList(),
@@ -175,7 +176,7 @@ Future<void> main(List<String> arguments) async {
     await File(smoke.substring('--smoke-output='.length)).writeAsString(
       jsonEncode({
         'launched': true,
-        'version': '0.9.0-beta.3',
+        'version': '0.9.0-beta.4',
         'theme': controller.themeMode.name,
         'usbInterfaces': controller.devices.length,
         'serviceInterfaces': controller.devices
@@ -333,7 +334,7 @@ class _PixmaFixaState extends State<PixmaFixa> with WidgetsBindingObserver {
                         ),
                         const Spacer(),
                         Text(
-                          'Local device access     |     Version 0.9.0-beta.3',
+                          'Local device access     |     Version 0.9.0-beta.4',
                           style: TextStyle(
                             fontSize: 12,
                             color: colors(context).muted,
@@ -835,13 +836,13 @@ class _PixmaFixaState extends State<PixmaFixa> with WidgetsBindingObserver {
                 ),
               ),
               OutlinedButton.icon(
-                onPressed: c.busy ? null : c.discover,
+                onPressed: c.busy ? null : () => findServicePrinter(context),
                 icon: const Icon(Icons.refresh, size: 17),
                 label: const Text('Find printer'),
               ),
               const SizedBox(width: 10),
               FilledButton.icon(
-                onPressed: c.busy ? null : c.diagnose,
+                onPressed: c.busy ? null : () => diagnosePrinter(context),
                 icon: const Icon(Icons.manage_search, size: 18),
                 label: const Text('Run diagnostics'),
               ),
@@ -954,7 +955,7 @@ class _PixmaFixaState extends State<PixmaFixa> with WidgetsBindingObserver {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
               subtitle: const Text(
-                'Experimental reset · USB service mode',
+                'Experimental reset · USB + service mode required · No Wi-Fi reset',
                 style: TextStyle(fontSize: 13),
               ),
               childrenPadding: const EdgeInsets.all(20),
@@ -974,7 +975,7 @@ class _PixmaFixaState extends State<PixmaFixa> with WidgetsBindingObserver {
         pageTitle(
           context,
           'Waste-counter reset',
-          'Read a current report, confirm absorber servicing, then reset the counter.',
+          'USB + manual service mode required. Waste-counter reset over Wi-Fi is not supported.',
         ),
         Panel(
           child: Column(
@@ -1015,7 +1016,9 @@ class _PixmaFixaState extends State<PixmaFixa> with WidgetsBindingObserver {
                       runSpacing: 8,
                       children: [
                         OutlinedButton.icon(
-                          onPressed: c.busy ? null : c.diagnose,
+                          onPressed: c.busy
+                              ? null
+                              : () => diagnosePrinter(context),
                           icon: const Icon(Icons.manage_search, size: 18),
                           label: const Text('Run diagnostics'),
                         ),
@@ -1129,7 +1132,13 @@ class _PixmaFixaState extends State<PixmaFixa> with WidgetsBindingObserver {
                         OutlinedButton(
                           onPressed: c.busy
                               ? null
-                              : () => c.verify(ipInput.text),
+                              : () => printerAction(
+                                  context,
+                                  title: 'Could not check printer status',
+                                  action: () => c.verify(ipInput.text),
+                                  error: () => c.lastError,
+                                  help: networkRequirement,
+                                ),
                           child: const Text('Check status'),
                         ),
                       ],
@@ -1304,7 +1313,42 @@ class _PixmaFixaState extends State<PixmaFixa> with WidgetsBindingObserver {
         counter: c.report!.waste!,
       ),
     );
-    if (confirmed == true) await c.reset();
+    if (confirmed == true && context.mounted) {
+      await printerAction(
+        context,
+        title: 'Waste-counter reset did not complete',
+        action: c.reset,
+        error: () => c.lastError,
+        help: usbServiceRequirement,
+        mayHaveSentCommand: true,
+      );
+    }
+  }
+
+  Future<void> diagnosePrinter(BuildContext context) async {
+    await printerAction(
+      context,
+      title: 'USB service diagnostics failed',
+      action: c.diagnose,
+      error: () => c.lastError,
+      help: usbServiceRequirement,
+    );
+  }
+
+  Future<void> findServicePrinter(BuildContext context) async {
+    await printerAction(
+      context,
+      title: 'USB service printer not available',
+      action: c.discover,
+      error: () => c.usbError.isNotEmpty
+          ? c.usbError
+          : c.devices.any((device) => device['service'] == true)
+          ? ''
+          : c.devices.isEmpty
+          ? 'No USB printer was found.'
+          : 'A USB printer was found, but its service-mode interface is not available.',
+      help: usbServiceRequirement,
+    );
   }
 
   Future<void> instructions(BuildContext context) => showDialog<void>(

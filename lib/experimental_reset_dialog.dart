@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'components.dart';
 import 'theme.dart';
+import 'action_feedback.dart';
 
 const experimentalWasteResetNotice =
     'A nonzero waste-counter clear through this app has not been verified on hardware. The original protocol reset succeeded; app diagnostics and reset safeguards were tested.';
@@ -37,6 +38,8 @@ class _ExperimentalResetDialogState extends State<ExperimentalResetDialog> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
+            const Text(usbServiceRequirement, style: TextStyle(height: 1.5)),
+            const SizedBox(height: 16),
             Text(
               'Ink spill warning',
               style: TextStyle(

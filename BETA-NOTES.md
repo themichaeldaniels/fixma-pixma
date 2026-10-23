@@ -1,7 +1,14 @@
-# Pixma Fixa 0.9.0-beta.3
+# Pixma Fixa 0.9.0-beta.4
 
 Windows x64 beta, verified on Canon PIXMA G7020 firmware 1.050.
 Extract the complete portable ZIP and run `pixma_fixa.exe`.
+
+Connection requirements are explicit in the interface and README. The 5B00 waste
+counter and service report require USB plus manual service mode; Wi-Fi is not
+supported for those operations. Remaining-ink resets and supported normal-mode
+maintenance use Wi-Fi/Ethernet. Failed user actions show the returned error and
+connection steps. Automatic refresh failures remain inline, without repeated
+popups. An uncertain operation is never retried by the error dialog.
 
 The waste-counter panel and reset popup now warn about ink spilling from full or
 blocked pads. Replace saturated or blocked pads before resetting the counter or
@@ -53,6 +60,13 @@ This validates the portable package on the tested Windows guest. It does not
 certify every Windows version, display scaling, driver or hardware configuration.
 Physical printer behavior is covered separately by the hardware evidence above.
 The separate clean Windows test kit supports repeating these startup checks.
+
+Version 0.9.0-beta.4 also passed clean normal-user Sandbox startup and interactive
+checks. Actual offline network discovery and USB diagnostic failures displayed
+the new connection-specific dialogs. Both themes, device-theme following and
+nonempty native sample export after error recovery passed. All 136 tests pass;
+static analysis is clean. No physical printer writes were sent. A cleanup error
+during an ink-count check now releases the busy state and blocks preparation.
 
 ## Reporting a beta issue
 

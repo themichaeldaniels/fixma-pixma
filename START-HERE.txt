@@ -1,8 +1,18 @@
-PIXMA FIXA - WINDOWS PUBLIC BETA 0.9.0-beta.3
+PIXMA FIXA - WINDOWS PUBLIC BETA 0.9.0-beta.4
 
 Extract the complete folder, then run pixma_fixa.exe. Keep the DLLs, data
 directory, pixma_fixa_worker.exe and pixma_fixa_queue.exe beside it.
 No Python installation, account, reset key, or Canon utility is required.
+
+CONNECTIONS: The 5B00 waste-ink counter reset and USB service report require a
+USB data cable and manual service mode. Wi-Fi cannot perform that reset in this
+app. Remaining-ink counts after refilling use Wi-Fi/Ethernet in normal mode,
+as do status, cleaning, nozzle checks, alignment and supported printer settings.
+USB-only normal-mode maintenance is not implemented. Windows queue management
+reads the installed queues on this PC. Service mode cannot be toggled remotely.
+
+When a requested action fails, the app shows the returned error and the relevant
+USB/service-mode or network steps. Automatic status-refresh failures stay inline.
 
 Overview discovers network printers and reads firmware, ink estimates and current
 errors. Add by address works when discovery is unavailable. Automatic status
