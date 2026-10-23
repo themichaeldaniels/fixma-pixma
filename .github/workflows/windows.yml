@@ -1,0 +1,57 @@
+name: Windows checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: windows-checks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  windows:
+    name: Analysis, tests and Windows build
+    runs-on: windows-2025
+    timeout-minutes: 30
+    env:
+      FLUTTER_SUPPRESS_ANALYTICS: 'true'
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: Check out source
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
+        with:
+          channel: stable
+          flutter-version: '3.47.7'
+          architecture: x64
+          cache: 'false'
+
+      - name: Resolve locked dependencies
+        run: flutter pub get --enforce-lockfile
+
+      - name: Static analysis
+        run: flutter analyze --no-pub
+
+      - name: Regression tests
+        run: flutter test --no-pub --coverage
+
+      - name: Compile USB helper
+        run: dart compile exe bin/printer_worker.dart -o "$env:RUNNER_TEMP/fixma_pixma_worker.exe"
+
+      - name: Compile queue helper
+        run: dart compile exe bin/queue_worker.dart -o "$env:RUNNER_TEMP/fixma_pixma_queue.exe"
+
+      - name: Compile Windows application
+        run: flutter build windows --release --no-pub

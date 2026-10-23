@@ -18,8 +18,7 @@ Do not bypass the model or firmware checks to try maintenance or resets.
 
 Current release: **0.9.0-beta.9**, Windows x64. Extract the entire ZIP, then run
 `fixma_pixma.exe`. No installer, Python setup, account, or purchased reset key is
-needed to use the app. While this repository is private, GitHub access is required
-to download its files. macOS and Android builds are not available yet.
+needed to use the app. macOS and Android builds are not available yet.
 
 ## Why it exists, and why it is free
 
@@ -197,6 +196,11 @@ The current package is a Windows beta. Version 0.9.0-beta.9 passed automated sta
 ## Build and test
 
 The final review and corrected issues are documented in [REVIEW.md](REVIEW.md).
+
+GitHub runs static analysis, the full regression suite and Windows application/helper
+build checks on pushes to `main` and pull requests. These checks use simulated
+printers; physical maintenance and reset operations still require hardware validation.
+
 Use `-OutputDirectory C:/releases/FixmaPixma` with the build script to choose a
 package location outside the checkout.
 
