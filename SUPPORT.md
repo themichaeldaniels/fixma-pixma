@@ -11,24 +11,30 @@ model/firmware check. Do not reset a healthy waste counter just to create a test
 
 ## Make a useful report
 
-Choose **Report a problem** at the top right of Diagnostics for these steps in
-the app and a button that opens the GitHub issue form in your default browser.
-Nothing is attached or submitted automatically. If the browser cannot open, the
-dialog provides a link to copy instead.
+1. Choose **Diagnostics > Report a problem**, then **Save report and open issue
+   form**. Pick a location for the diagnostic `.json`. The app saves it before
+   opening the GitHub form and keeps the saved path visible. Canceling the save
+   or failing to write the file does not open the browser.
+2. Open the saved file in Notepad and review it. Describe the action, expected
+   result, actual result and panel error. Include the exact physical model from
+   the printer label, without its serial. A reported family such as G7000 series
+   may not identify the regional model.
+3. In the [issue form](https://github.com/themichaeldaniels/pixma-fixa/issues/new?template=model-support.yml), drag the reviewed `.json` into the **Reviewed
+   diagnostic summary** field, or use that field's attachment control. GitHub
+   sign-in is required to submit; repository access is required while private.
 
-1. Leave the printer in normal mode. Connect it and the PC to the same local
-   network, then use **Overview > Find printers** or **Add by address**.
-2. Note the exact model printed on the printer's label. A reported family such
-   as G7000 series may not identify the regional model. Do not include its serial.
-3. Open **Diagnostics > Connection > Run connection checks**. These checks read
-   interfaces, status and visible queues; they do not print, clean or reset.
-4. Choose **Export diagnostic summary**. Open the JSON and review it before
-   sharing. Describe the action, expected result, actual result and panel error.
-5. [Open the issue form](https://github.com/themichaeldaniels/pixma-fixa/issues/new?template=model-support.yml), or add
-   the report to an existing issue for that model. Repository access is required
-   while the project is private. The app does not upload anything automatically.
-   Drag the reviewed `.json` file into the **Reviewed diagnostic summary** field,
-   or use that field's attachment control. GitHub sign-in is required to submit.
+Nothing is attached or submitted automatically. If the browser cannot open, the
+saved report remains available with a copyable issue link. Retrying the browser
+does not save a second report.
+
+The report uses readings and errors already captured by the app. It does not
+send printer commands or clear the error being reported. You can report an
+offline printer or a failure during an operation without repeating it.
+For a first report from another model, gather read-only status and connection
+checks first if possible: use normal mode on the same network, Find printers or
+Add by address, then Diagnostics > Connection > Run connection checks. Missing
+readings stay missing; the report does not imply that fresh checks succeeded.
+Export diagnostic summary remains available as a separate option.
 
 The summary includes the app/Windows version, reported model and firmware,
 selected advertised capabilities, current connection errors, connection-check

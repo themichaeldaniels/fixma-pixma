@@ -90,6 +90,22 @@ void main() {
     }
   }
 
+  testWidgets('service guide fits a small window with larger text', (t) async {
+    await show(t, width: 900, scale: 1.4);
+    await t.tap(find.text('G7020 service mode guide'));
+    await t.pumpAndSettle();
+    expect(t.widget<AlertDialog>(find.byType(AlertDialog)).scrollable, true);
+    expect(
+      find.textContaining('press and release Stop six times'),
+      findsOneWidget,
+    );
+    expect(find.textContaining('green power LED'), findsOneWidget);
+    await t.tap(find.text('Done'));
+    await t.pumpAndSettle();
+    expect(find.byType(AlertDialog), findsNothing);
+    expect(t.takeException(), null);
+  });
+
   testWidgets(
     'repair confirmation is explicit and persists while status remains pending',
     (t) async {

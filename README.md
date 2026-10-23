@@ -10,13 +10,13 @@ discovery, status and connection checks and [send a model report](SUPPORT.md).
 A G7000 family name is not proof that another regional model is compatible.
 Do not bypass the model or firmware checks to try maintenance or resets.
 
-**[Download for Windows x64](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.6/PixmaFixa-Windows-0.9.0-beta.6.zip)**
+**[Download for Windows x64](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.7/PixmaFixa-Windows-0.9.0-beta.7.zip)**
 
-[Release notes and all downloads](https://github.com/themichaeldaniels/pixma-fixa/releases/tag/v0.9.0-beta.6)
- · [Checksums](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.6/SHA256SUMS.txt)
- · [Source archive](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.6/PixmaFixa-source-0.9.0-beta.6.zip)
+[Release notes and all downloads](https://github.com/themichaeldaniels/pixma-fixa/releases/tag/v0.9.0-beta.7)
+ · [Checksums](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.7/SHA256SUMS.txt)
+ · [Source archive](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.7/PixmaFixa-source-0.9.0-beta.7.zip)
 
-Current release: **0.9.0-beta.6**, Windows x64. Extract the entire ZIP, then run
+Current release: **0.9.0-beta.7**, Windows x64. Extract the entire ZIP, then run
 `pixma_fixa.exe`. No installer, Python setup, account, or purchased reset key is
 needed to use the app. While this repository is private, GitHub access is required
 to download its files. macOS and Android builds are not available yet.
@@ -84,6 +84,38 @@ mode. It cannot be done over Wi-Fi with this app.** Connecting the printer to
 Wi-Fi, or resetting its remaining-ink counts, does not clear the waste counter.
 The app includes the verified G7020 service-mode procedure. Service the absorber
 before resetting its counter; the reset does not remove ink from the pads.
+
+### Enter service mode on the PIXMA G7020
+
+This is the sequence used on the tested **G7020, firmware 1.050**. It is not a
+general procedure for every PIXMA model. Power is the **ON** button on the panel;
+Stop is the button marked with a triangle inside a circle.
+
+1. Connect the printer to the PC with a **USB data cable**. Turn the printer off
+   with its Power button and wait for shutdown to finish and the power light to
+   go out. Leave the power cord connected.
+2. Press and **hold Power**.
+3. While continuing to hold Power, **press and release Stop six times**.
+4. Release Power. Wait for the mechanism to settle and the **green power LED to
+   stay on steadily**. The LCD should be blank or black in this mode.
+5. In Pixma Fixa, open **Service report**, find the service printer and run
+   diagnostics. Let the app confirm the USB service connection and read live
+   evidence before attempting any supported repair. A steady LED alone does not
+   prove that the correct service interface is available.
+6. When the operation has finished, turn the printer off with Power, wait for it
+   to shut down, then power it on normally to leave service mode. The app cannot
+   do this remotely.
+
+If the normal error screen returns, the alarm keeps flashing, or the app cannot
+find a USB service printer, stop and check the connection and sequence. Do not
+send a reset or try arbitrary extra button presses. USB report reads and the
+waste-counter reset do not require paper; printed maintenance checks are separate.
+
+These steps reflect the G7020 hardware test, rather than a Canon-published
+service-mode procedure. Canon's [operation panel guide](https://ij.manual.canon/ij/webmanual/Manual/All/G7000%20series/EN/UG/ug-160.html)
+identifies the ON and Stop buttons. Other models can use different sequences;
+no verified service-mode instructions for other models are included yet. Do not
+assume the six-press sequence applies to another printer.
 
 ### Which connection does each feature use?
 
@@ -158,7 +190,7 @@ before and after completion when available, and never repeats an uncertain comma
 
 Extract the complete Windows ZIP and run `pixma_fixa.exe`. Keep both helper executables, DLLs, and the data directory together. See [START-HERE.txt](START-HERE.txt).
 
-The current package is a Windows beta. Version 0.9.0-beta.6 passed automated startup and interactive checks in fresh Windows Sandbox without development tools. The reporting dialog was inspected in both themes, and its native default-browser handoff was verified with the exact issue-form URL. No issue was submitted. All 143 regression tests pass; static analysis is clean. Distribution files are unsigned. Native nonzero waste-counter clear and printer-side in-flight job cancellation are marked Experimental and require acknowledgment. The waste reset also requires acknowledgment of the spill risk. See [BETA-NOTES.md](BETA-NOTES.md) and [VALIDATION.md](VALIDATION.md) for the evidence and limits.
+The current package is a Windows beta. Version 0.9.0-beta.7 passed automated startup and interactive checks in fresh Windows Sandbox without development tools. The integrated report flow was inspected in both themes. Native save cancellation produced no file or browser launch; saving generated valid JSON before the browser received the exact issue-form URL. No issue was submitted. All 150 regression tests pass; static analysis is clean. Distribution files are unsigned. Native nonzero waste-counter clear and printer-side in-flight job cancellation are marked Experimental and require acknowledgment. The waste reset also requires acknowledgment of the spill risk. See [BETA-NOTES.md](BETA-NOTES.md) and [VALIDATION.md](VALIDATION.md) for the evidence and limits.
 
 ## Build and test
 
@@ -180,9 +212,11 @@ Only service selector `10077c`, report query `15`, and waste clear `0d0000` are 
 
 ## Getting help
 
-Use **Diagnostics > Report a problem** for export and attachment instructions,
-then open the GitHub issue form in your browser. Review the diagnostic `.json`
-before attaching it. The app does not attach files or submit an issue for you.
+Use **Diagnostics > Report a problem > Save report and open issue form**. Choose
+where to save the diagnostic `.json`; the app saves it and opens the GitHub form.
+The saved path stays visible. Review the file before attaching it. The report
+uses the readings and errors already captured, without sending printer commands
+or clearing the failure. The app does not attach files or submit an issue for you.
 
 See [SUPPORT.md](SUPPORT.md) for the exact steps to export diagnostics or request
 another model. Reports can help us investigate without owning the printer;

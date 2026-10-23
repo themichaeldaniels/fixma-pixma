@@ -1,13 +1,18 @@
-# Pixma Fixa 0.9.0-beta.6
+# Pixma Fixa 0.9.0-beta.7
 
 Windows x64 beta, verified on Canon PIXMA G7020 firmware 1.050.
 Extract the complete portable ZIP and run `pixma_fixa.exe`.
 
-Diagnostics now has a Report a problem button. It explains how to export and
-review the diagnostic JSON, then attach it to the GitHub issue form. The form
-opens in the default browser only after choosing Open GitHub issue form. Nothing
-is attached or submitted automatically. A failed browser launch leaves a
-copyable link and the instructions available.
+Report a problem now saves the diagnostic JSON before opening GitHub. Choose
+Save report and open issue form, select a file location, then review and attach
+the saved JSON. The file path stays visible. Canceling or failing to save does
+not open a browser. Browser failures keep the saved file and a copyable issue
+link; retrying does not save another report. Nothing is uploaded automatically.
+The report uses existing readings and errors without new printer commands.
+
+The README now includes the tested G7020 six-press service-mode sequence, waiting
+for a steady green power LED, USB verification and return to normal mode. The
+in-app guide matches. Other models do not inherit this procedure.
 
 Hardware testing covers only the G7020, firmware 1.050. Other models may not work.
 Read-only discovery and connection reports from other models are welcome; do not
@@ -107,3 +112,15 @@ issue-form URL with no diagnostic query data. All 143 tests pass; static
 analysis is clean. Networking and printer access were disabled. No issue was
 submitted and no printer writes were sent. Browser failure, duplicate launch
 and closing during launch are covered by simulated widget tests.
+
+Version 0.9.0-beta.7 passed fresh normal-user Windows Sandbox startup and
+read-only helper checks. Integrated reporting was inspected in both themes.
+Canceling the native save dialog wrote no file and opened no issue form.
+Saving generated valid diagnostic JSON, then opened the browser with the
+exact issue-form URL. Independent checks verified schema/version, Windows
+information, omitted raw payloads and unknown offline identity. The saved
+path remained visible in the app. The G7020 service guide was inspected.
+All 150 tests pass; static analysis is clean. No issue was submitted and no
+printer writes were sent. Save failures, browser retry without another save,
+duplicate dispatch, closing during save and original error preservation are
+covered by regression tests. Networking and printer access were disabled.

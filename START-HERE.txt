@@ -1,4 +1,4 @@
-PIXMA FIXA - WINDOWS PUBLIC BETA 0.9.0-beta.6
+PIXMA FIXA - WINDOWS PUBLIC BETA 0.9.0-beta.7
 
 Extract the complete folder, then run pixma_fixa.exe. Keep the DLLs, data
 directory, pixma_fixa_worker.exe and pixma_fixa_queue.exe beside it.
@@ -7,6 +7,12 @@ No Python installation, account, reset key, or Canon utility is required.
 Hardware-tested only on a Canon PIXMA G7020, firmware 1.050. Other models may
 not work. Read-only model reports are welcome. See SUPPORT.md for exporting a
 redacted diagnostic summary and reporting results. Review before sharing.
+
+To report a problem, choose Diagnostics > Report a problem > Save report and
+open issue form. Choose a file location; the app saves the JSON before opening
+GitHub. Its path stays visible. Review the file and attach it yourself. Nothing
+uploads automatically. Saving uses existing readings and errors, without sending
+printer commands. Canceling or failing to save does not open the browser.
 
 CONNECTIONS: The 5B00 waste-ink counter reset and USB service report require a
 USB data cable and manual service mode. Wi-Fi cannot perform that reset in this

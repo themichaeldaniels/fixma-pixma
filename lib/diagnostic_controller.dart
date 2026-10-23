@@ -379,7 +379,7 @@ extension CareDiagnostics on CareController {
     return redactedDiagnosticText(
       {
         'schemaVersion': 2,
-        'application': 'Pixma Fixa 0.9.0-beta.6',
+        'application': 'Pixma Fixa 0.9.0-beta.7',
         'platform': {
           'system': Platform.operatingSystem,
           'version': Platform.operatingSystemVersion,

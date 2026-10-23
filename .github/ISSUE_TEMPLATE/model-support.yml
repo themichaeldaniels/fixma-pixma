@@ -51,7 +51,7 @@ body:
     id: summary
     attributes:
       label: Reviewed diagnostic summary
-      description: Attach the JSON from Diagnostics > Connection > Export diagnostic summary, if available. Review it first. Do not attach raw captures or the full history folder here.
+      description: Attach the reviewed JSON saved by Diagnostics > Report a problem, if available. Export diagnostic summary also works. Do not attach raw captures or the full history folder here.
   - type: checkboxes
     id: privacy
     attributes:

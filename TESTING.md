@@ -32,12 +32,21 @@ screenshots only after intentional UI changes and visual review.
 
 ## Individual test cases
 
+The service-guide widget test also verifies the complete G7020 instructions fit
+the minimum window width with larger text, scroll when needed and can be closed.
+
 ### problem_report_test.dart
 
-- Opening the instructions or closing them never opens a browser.
-- An explicit launch opens the fixed issue-form URL, with no diagnostic query data; duplicate clicks are blocked while pending.
-- Browser failure retains instructions and a selectable fallback URL, without automatic retry.
-- Closing during launch safely ignores a late failure without updating a disposed dialog.
+- Closing the instructions does not save or open anything.
+- Saving completes before browser launch; the saved path and attachment instructions stay visible.
+- Canceling file selection does not open the browser and permits another attempt.
+- Save failures display the returned error and block browser launch.
+- Browser failures retain the file and fallback link; retrying does not save again.
+- Pending saves reject duplicate dispatch and do not open the browser early.
+- Closing during save prevents the subsequent browser launch.
+- Closing during browser launch safely ignores a late failure.
+- Production file export preserves the original error snapshot, applies redaction and sends no printer commands, even while an operation is busy.
+- Canceling native path selection writes no file.
 
 ### support_summary_test.dart
 
@@ -270,3 +279,15 @@ issue-form URL with no diagnostic query data. All 143 tests pass; static
 analysis is clean. Networking and printer access were disabled. No issue was
 submitted and no printer writes were sent. Browser failure, duplicate launch
 and closing during launch are covered by simulated widget tests.
+
+Version 0.9.0-beta.7 passed fresh normal-user Windows Sandbox startup and
+read-only helper checks. Integrated reporting was inspected in both themes.
+Canceling the native save dialog wrote no file and opened no issue form.
+Saving generated valid diagnostic JSON, then opened the browser with the
+exact issue-form URL. Independent checks verified schema/version, Windows
+information, omitted raw payloads and unknown offline identity. The saved
+path remained visible in the app. The G7020 service guide was inspected.
+All 150 tests pass; static analysis is clean. No issue was submitted and no
+printer writes were sent. Save failures, browser retry without another save,
+duplicate dispatch, closing during save and original error preservation are
+covered by regression tests. Networking and printer access were disabled.

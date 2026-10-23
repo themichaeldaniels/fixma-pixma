@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 
@@ -10,7 +9,7 @@ import 'core/report.dart';
 import 'core/report_comparison.dart';
 import 'core/repair_record.dart';
 import 'core/capture_inspector.dart';
-import 'platform/save_report.dart';
+import 'platform/save_diagnostic.dart';
 import 'problem_report.dart';
 import 'theme.dart';
 
@@ -48,16 +47,16 @@ class _DiagnosticsViewState extends State<DiagnosticsView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Row(
+        Row(
           children: [
-            Expanded(
+            const Expanded(
               child: Text(
                 'Diagnostics',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
               ),
             ),
-            SizedBox(width: 16),
-            ReportProblemButton(),
+            const SizedBox(width: 16),
+            ReportProblemButton(saveReport: () => saveDiagnosticSummary(c)),
           ],
         ),
         const SizedBox(height: 5),
@@ -678,15 +677,9 @@ class _DiagnosticsViewState extends State<DiagnosticsView> {
   );
 
   Future<void> exportSummary(BuildContext context) async {
-    final text = c.diagnosticSummary();
-    final path = saveDocumentPath(
-      titleText: 'Save diagnostic summary',
-      extensionText: 'json',
-      description: 'Diagnostic summary',
-    );
-    if (path == null) return;
     try {
-      await File(path).writeAsString(text, flush: true);
+      final path = await saveDiagnosticSummary(c);
+      if (path == null) return;
       c.message = 'Diagnostic summary saved. Review it before sharing.';
       c.notifyListeners();
     } catch (e) {

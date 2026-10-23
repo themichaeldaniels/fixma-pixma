@@ -76,7 +76,7 @@ Future<void> main(List<String> arguments) async {
         .writeAsString(controller.exportText(), flush: true);
     await File(output).writeAsString(
       const JsonEncoder.withIndent('  ').convert({
-        'version': '0.9.0-beta.6',
+        'version': '0.9.0-beta.7',
         'nativeLaunch': true,
         'report': r?.toJson(),
         'diagnosticCompleted': r != null && controller.liveValid && !r.sample,
@@ -101,7 +101,7 @@ Future<void> main(List<String> arguments) async {
     final output = diagnosticsProof.substring('--diagnostics-proof='.length);
     await File(output).writeAsString(
       const JsonEncoder.withIndent('  ').convert({
-        'version': '0.9.0-beta.6',
+        'version': '0.9.0-beta.7',
         'nativeLaunch': true,
         'error': controller.lastError,
         'checks': controller.connectionChecks.map((v) => v.toJson()).toList(),
@@ -176,7 +176,7 @@ Future<void> main(List<String> arguments) async {
     await File(smoke.substring('--smoke-output='.length)).writeAsString(
       jsonEncode({
         'launched': true,
-        'version': '0.9.0-beta.6',
+        'version': '0.9.0-beta.7',
         'theme': controller.themeMode.name,
         'usbInterfaces': controller.devices.length,
         'serviceInterfaces': controller.devices
@@ -334,7 +334,7 @@ class _PixmaFixaState extends State<PixmaFixa> with WidgetsBindingObserver {
                         ),
                         const Spacer(),
                         Text(
-                          'Local device access     |     Version 0.9.0-beta.6',
+                          'Local device access     |     Version 0.9.0-beta.7',
                           style: TextStyle(
                             fontSize: 12,
                             color: colors(context).muted,
@@ -1355,10 +1355,11 @@ class _PixmaFixaState extends State<PixmaFixa> with WidgetsBindingObserver {
     context: context,
     builder: (ctx) => AlertDialog(
       title: const Text('Enter service mode'),
+      scrollable: true,
       content: const SizedBox(
         width: 440,
         child: Text(
-          'For the verified PIXMA G7020 procedure:\n\n1. Connect USB and turn the printer off.\n2. Hold Power.\n3. While holding Power, press Stop six times.\n4. Release Power and let the mechanism settle.\n\nThe LCD should be black. Run diagnostics when it is ready. The diagnostic reads a report over USB; it does not request a printed page.',
+          'For the verified PIXMA G7020 procedure:\n\n1. Connect a USB data cable. Turn the printer off with Power and wait until shutdown finishes and the power light goes out. Leave the power cord connected.\n2. Press and hold Power.\n3. While holding Power, press and release Stop six times.\n4. Release Power. Wait for the mechanism to settle and the green power LED to stay on steadily. The LCD should be blank or black.\n5. Find the service printer and run diagnostics to confirm the USB service connection. A steady LED alone does not prove service mode.\n\nThese steps were tested on the G7020, firmware 1.050. Do not assume they apply to other models. After the operation finishes, turn off with Power, wait for shutdown, then turn on normally. The diagnostic reads a report over USB; it does not request a printed page.',
           style: TextStyle(height: 1.8),
         ),
       ),
