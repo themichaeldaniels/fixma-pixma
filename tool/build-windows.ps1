@@ -22,11 +22,14 @@ try {
     if ($LASTEXITCODE) { throw 'Tests failed.' }
     New-Item -ItemType Directory -Path build/native -Force | Out-Null
     New-Item -ItemType Directory -Path build/symbols -Force | Out-Null
-    # Use neutral entry paths so executables do not embed workspace names.
-    $helperTemp = Join-Path ([IO.Path]::GetTempPath()) ('PrinterCare-native-' + [Guid]::NewGuid().ToString('N'))
-    New-Item -ItemType Directory -Path $helperTemp | Out-Null
-    $usbEntry = Join-Path $helperTemp 'printer_worker.dart'
-    $queueEntry = Join-Path $helperTemp 'queue_worker.dart'
+    # Use a machine temporary directory so entry URIs contain no user profile path.
+    $helperTempBase = [Environment]::GetEnvironmentVariable('TEMP', 'Machine')
+    if (-not $helperTempBase) { $helperTempBase = Join-Path $env:WINDIR 'Temp' }
+    $helperTempBase = [IO.Path]::GetFullPath([Environment]::ExpandEnvironmentVariables($helperTempBase))
+    if ($helperTempBase.StartsWith($env:USERPROFILE, [StringComparison]::OrdinalIgnoreCase)) { throw 'Native helper compilation requires a temporary directory outside the user profile.' }
+    $helperPrefix = Join-Path $helperTempBase ('PrinterCare-native-' + [Guid]::NewGuid().ToString('N'))
+    $usbEntry = "$helperPrefix-printer_worker.dart"
+    $queueEntry = "$helperPrefix-queue_worker.dart"
     Copy-Item -LiteralPath bin/printer_worker.dart -Destination $usbEntry
     Copy-Item -LiteralPath bin/queue_worker.dart -Destination $queueEntry
     $packages = Join-Path $appRoot '.dart_tool/package_config.json'
@@ -55,9 +58,11 @@ try {
     Write-Output "Portable app: $out"
     Write-Output "Archive: $zip"
 } finally {
-    if ($helperTemp -and (Test-Path -LiteralPath $helperTemp)) {
-        Remove-Item -LiteralPath (Join-Path $helperTemp 'printer_worker.dart'),(Join-Path $helperTemp 'queue_worker.dart') -Force -ErrorAction SilentlyContinue
-        Remove-Item -LiteralPath $helperTemp -ErrorAction SilentlyContinue
+    foreach ($entry in @($usbEntry, $queueEntry)) {
+        if ($entry -and (Test-Path -LiteralPath $entry)) {
+            try { Remove-Item -LiteralPath $entry -Force -ErrorAction Stop }
+            catch { Write-Warning 'A temporary compiler entry could not be removed. The packaged build is unaffected.' }
+        }
     }
     Pop-Location
 }

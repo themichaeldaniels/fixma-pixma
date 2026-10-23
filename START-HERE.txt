@@ -1,4 +1,4 @@
-PRINTER CARE - WINDOWS PREVIEW 0.8.0
+PRINTER CARE - WINDOWS PREVIEW 0.8.1
 
 Extract the complete folder, then run printer_care.exe. Keep the DLLs, data
 directory, printer_care_worker.exe and printer_care_queue.exe beside it.

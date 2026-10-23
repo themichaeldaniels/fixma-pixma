@@ -1,6 +1,6 @@
 PRINTER CARE - RELEASE VALIDATION
 
-Maintenance-only scope, version 0.8.0.
+Maintenance-only scope, version 0.8.1.
 
 Completed on the G7020:
 1. Panel error cleared; printer returned to Ready after both check prints.

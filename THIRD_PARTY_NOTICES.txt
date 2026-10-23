@@ -4,7 +4,6 @@ No third-party printer utility, installer or firmware binary is distributed.
 
 Original component code notice:
 
-
 zlib License
 Copyright (c) 2026 Jess Sullivan
 
