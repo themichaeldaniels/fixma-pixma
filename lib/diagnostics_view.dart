@@ -124,6 +124,11 @@ class _DiagnosticsViewState extends State<DiagnosticsView> {
                 ),
               ],
             ),
+            const SizedBox(height: 12),
+            Text(
+              'The summary includes model, firmware, advertised capabilities, connection errors and recent operation outcomes. Known identifiers are redacted. Review the JSON before sharing. Nothing is uploaded automatically.',
+              style: TextStyle(color: colors(context).muted, height: 1.5),
+            ),
             if (c.usbBaseline != null)
               Padding(
                 padding: const EdgeInsets.only(top: 12),
@@ -581,6 +586,10 @@ class _DiagnosticsViewState extends State<DiagnosticsView> {
 
   Widget profiles(BuildContext context) => Column(
     children: [
+      const Panel(
+        child: Text(hardwareValidationNotice, style: TextStyle(height: 1.6)),
+      ),
+      const SizedBox(height: 16),
       for (final profile in ModelSupport.profiles)
         Padding(
           padding: const EdgeInsets.only(bottom: 16),

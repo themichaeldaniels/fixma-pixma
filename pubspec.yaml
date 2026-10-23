@@ -1,7 +1,7 @@
 name: pixma_fixa
 description: "Local diagnostics and maintenance for the Canon PIXMA G7020."
 publish_to: 'none'
-version: 0.9.0-beta.4+18
+version: 0.9.0-beta.5+19
 
 environment:
   sdk: ^3.13.5

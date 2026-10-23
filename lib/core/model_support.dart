@@ -1,5 +1,8 @@
 /// Feature evidence is independent of protocol discovery. A candidate profile
 /// never grants a maintenance command; transport allowlists remain authoritative.
+const hardwareValidationNotice =
+    'Hardware-tested only on the Canon PIXMA G7020, firmware 1.050. Other models have not been validated and may not work. You are welcome to try read-only discovery and connection checks and share a diagnostic summary. A family name alone does not prove compatibility; do not bypass model or firmware checks.';
+
 class ModelSupport {
   final String family, label, firmware, note;
   final bool verified;

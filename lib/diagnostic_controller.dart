@@ -351,33 +351,141 @@ extension CareDiagnostics on CareController {
     }
   }
 
-  String diagnosticSummary() => redactedDiagnosticText(
-    {
-      'application': 'Pixma Fixa 0.9.0-beta.4',
-      'checkedAt': connectionCheckedAt?.toIso8601String(),
-      'reportedUsage': canonUsage?.toJson(),
-      'checks': connectionChecks.map((v) => v.toJson()).toList(),
-      'usbProducts': devices
-          .map(
-            (d) => {
-              'product': ModelSupport.usbProduct(d['path'] as String),
-              'service': d['service'] == true,
-            },
-          )
-          .toList(),
-      'repairs': repairs
-          .map(
-            (r) => {'kind': r.kind, 'stage': r.stage, 'firmware': r.firmware},
-          )
-          .toList(),
-      'privacy': 'Serial numbers, raw USB paths, network addresses are omitted. Review before sharing.',
-      'verification': 'Live status checks do not prove printed quality.',
-    },
-    identifiers: [
-      if (diagnosticIdentity != null) diagnosticIdentity!.serial,
-      if (selectedPrinter != null) selectedPrinter!.uri.host,
-      if (selectedPrinter != null) selectedPrinter!.discoveryId,
-      ...repairs.map((r) => r.serial),
-    ],
-  );
+  String diagnosticSummary() {
+    final status = networkStatus;
+    final reportedModel = status?.text('printer-make-and-model');
+    final model = reportedModel == null || reportedModel.isEmpty
+        ? null
+        : reportedModel;
+    final reportedFirmware = status?.text('printer-firmware-string-version');
+    final capabilities = <String, List<Object?>>{};
+    for (final key in const [
+      'document-format-supported',
+      'sides-supported',
+      'color-supported',
+      'media-supported',
+      'marker-types',
+    ]) {
+      final values = status?.attributes[key];
+      if (values == null) continue;
+      capabilities[key] = values.take(64).map((value) {
+        if (value is String) {
+          return value.length > 256 ? value.substring(0, 256) : value;
+        }
+        if (value is num || value is bool) return value;
+        return 'Unrecognized value type';
+      }).toList();
+    }
+    return redactedDiagnosticText(
+      {
+        'schemaVersion': 2,
+        'application': 'Pixma Fixa 0.9.0-beta.5',
+        'platform': {
+          'system': Platform.operatingSystem,
+          'version': Platform.operatingSystemVersion,
+        },
+        'hardwareValidation':
+            'Only PIXMA G7020 firmware 1.050 has been hardware-tested.',
+        'networkPrinter': status == null
+            ? null
+            : {
+                'reportedModel': model,
+                'firmware': reportedFirmware == null || reportedFirmware.isEmpty
+                    ? null
+                    : reportedFirmware,
+                'capturedAt': status.capturedAt.toIso8601String(),
+                'online': networkOnline,
+                'state': status.stateLabel,
+                'stateReasons': status.reasons,
+                'supportCode': status.canon?.supportCode,
+                'advertisedCapabilities': capabilities,
+                'verifiedFirmwareProfile':
+                    ModelSupport.find(status.model)
+                        ?.matchesFirmware(status.firmware) ??
+                    false,
+              },
+        'serviceReport': report == null
+            ? null
+            : {
+                'family': 'G7000 series',
+                'firmware': report!.firmware,
+                'sample': report!.sample,
+                'capturedAt': report!.capturedAt.toIso8601String(),
+              },
+        'currentErrors': {
+          'operation': lastError,
+          'network': networkError,
+          'usb': usbError,
+          'printerQueue': printerQueueError,
+          'windowsQueue': windowsQueueError,
+        },
+        'recentOperations': history
+            .take(20)
+            .map(
+              (entry) => {
+                for (final key in const [
+                  'kind',
+                  'status',
+                  'started',
+                  'finished',
+                  'counterClearAttempted',
+                  'inkCounterAttempted',
+                ])
+                  if (entry[key] is String || entry[key] is bool)
+                    key:
+                        entry[key] is String &&
+                            (entry[key] as String).length > 512
+                        ? (entry[key] as String).substring(0, 512)
+                        : entry[key],
+                'failed': entry['error'] != null,
+              },
+            )
+            .toList(),
+        'checkedAt': connectionCheckedAt?.toIso8601String(),
+        'reportedUsage': canonUsage?.toJson(),
+        'checks': connectionChecks.map((v) => v.toJson()).toList(),
+        'usbProducts': devices
+            .map(
+              (d) => {
+                'product': ModelSupport.usbProduct(d['path'] as String),
+                'service': d['service'] == true,
+              },
+            )
+            .toList(),
+        'repairs': repairs
+            .map(
+              (r) => {'kind': r.kind, 'stage': r.stage, 'firmware': r.firmware},
+            )
+            .toList(),
+        'privacy': 'Raw packets, event data, job titles and document contents are not included. Known serial numbers, device names, USB paths and network addresses are redacted. Review before sharing.',
+        'verification': 'Live status checks do not prove printed quality.',
+      },
+      identifiers: [
+        if (diagnosticIdentity != null) diagnosticIdentity!.serial,
+        if (report != null) report!.serial,
+        if (status != null) ...[
+          status.serial,
+          status.identity,
+          status.target.key,
+          status.target.uri.host,
+          if (status.name != model) status.name,
+        ],
+        if (selectedPrinter != null) selectedPrinter!.uri.host,
+        if (selectedPrinter != null) selectedPrinter!.discoveryId,
+        for (final target in networkPrinters) ...[
+          target.key,
+          target.uri.host,
+          target.discoveryId,
+          if (target.discoveredName != model) target.discoveredName,
+        ],
+        for (final queue in [printerJobs, windowsJobs])
+          for (final job in queue?.jobs ?? <QueueJob>[]) ...[
+            job.title,
+            job.owner,
+            job.uri,
+          ],
+        ...repairs.map((r) => r.serial),
+      ],
+    );
+  }
 }

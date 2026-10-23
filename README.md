@@ -4,13 +4,19 @@ A free, open-source Windows utility for maintaining Canon PIXMA printers. Built
 and hardware-tested for the PIXMA G7020, with a simple interface for diagnostics,
 ink counts, printhead care and guarded waste-counter repair.
 
-**[Download for Windows x64](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.4/PixmaFixa-Windows-0.9.0-beta.4.zip)**
+**Hardware-tested only on a Canon PIXMA G7020, firmware 1.050.** Other printers
+have not been validated and may not work. You are welcome to try read-only
+discovery, status and connection checks and [send a model report](SUPPORT.md).
+A G7000 family name is not proof that another regional model is compatible.
+Do not bypass the model or firmware checks to try maintenance or resets.
 
-[Release notes and all downloads](https://github.com/themichaeldaniels/pixma-fixa/releases/tag/v0.9.0-beta.4)
- · [Checksums](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.4/SHA256SUMS.txt)
- · [Source archive](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.4/PixmaFixa-source-0.9.0-beta.4.zip)
+**[Download for Windows x64](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.5/PixmaFixa-Windows-0.9.0-beta.5.zip)**
 
-Current release: **0.9.0-beta.4**, Windows x64. Extract the entire ZIP, then run
+[Release notes and all downloads](https://github.com/themichaeldaniels/pixma-fixa/releases/tag/v0.9.0-beta.5)
+ · [Checksums](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.5/SHA256SUMS.txt)
+ · [Source archive](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.5/PixmaFixa-source-0.9.0-beta.5.zip)
+
+Current release: **0.9.0-beta.5**, Windows x64. Extract the entire ZIP, then run
 `pixma_fixa.exe`. No installer, Python setup, account, or purchased reset key is
 needed to use the app. While this repository is private, GitHub access is required
 to download its files. macOS and Android builds are not available yet.
@@ -152,7 +158,7 @@ before and after completion when available, and never repeats an uncertain comma
 
 Extract the complete Windows ZIP and run `pixma_fixa.exe`. Keep both helper executables, DLLs, and the data directory together. See [START-HERE.txt](START-HERE.txt).
 
-The current package is a Windows beta. Version 0.9.0-beta.4 passed automated startup and interactive checks in fresh Windows Sandbox without development tools. Both themes, device-theme following, offline controls, absorber warnings and native sample-report export were checked. All 136 regression tests pass; static analysis is clean. Distribution files are unsigned. Native nonzero waste-counter clear and printer-side in-flight job cancellation are marked Experimental and require acknowledgment. The waste reset also requires acknowledgment of the spill risk. See [BETA-NOTES.md](BETA-NOTES.md) and [VALIDATION.md](VALIDATION.md) for the evidence and limits.
+The current package is a Windows beta. Version 0.9.0-beta.5 passed automated startup and interactive checks in fresh Windows Sandbox without development tools. Both themes, device-theme following, offline checks, compatibility notices and native diagnostic-summary export were checked. All 139 regression tests pass; static analysis is clean. Distribution files are unsigned. Native nonzero waste-counter clear and printer-side in-flight job cancellation are marked Experimental and require acknowledgment. The waste reset also requires acknowledgment of the spill risk. See [BETA-NOTES.md](BETA-NOTES.md) and [VALIDATION.md](VALIDATION.md) for the evidence and limits.
 
 ## Build and test
 
@@ -173,6 +179,10 @@ Mutations require live identity/readiness checks and explicit preparation. Uncer
 Only service selector `10077c`, report query `15`, and waste clear `0d0000` are exposed by the USB worker. The worker runs separately to bound stalled driver calls. Normal-mode Canon commands use bounded CHMP requests. Network queues use IPP status/listing/identity/cancellation only; no print documents or empty Create-Job probes are submitted by the utility. Jobs still held on other computers or phones are outside this PC's view.
 
 ## Getting help
+
+See [SUPPORT.md](SUPPORT.md) for the exact steps to export diagnostics or request
+another model. Reports can help us investigate without owning the printer;
+they cannot by themselves establish that a new write command is safe.
 
 Read the [usage guide](START-HERE.txt) first. If something goes wrong, [open an
 issue](https://github.com/themichaeldaniels/pixma-fixa/issues) with the app version,

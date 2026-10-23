@@ -48,7 +48,7 @@ try {
     Get-ChildItem -LiteralPath build/windows/x64/runner/Release | Where-Object {
         $_.Extension -ne '.pdb' -and ($_.Extension -ne '.exe' -or $_.Name -in $executables)
     } | Copy-Item -Destination $out -Recurse
-    Copy-Item -LiteralPath START-HERE.txt,PENDING-WORK.txt,THIRD_PARTY_NOTICES.txt,LICENSE,README.md,TESTING.md,VALIDATION.md,BETA-NOTES.md -Destination $out
+    Copy-Item -LiteralPath START-HERE.txt,PENDING-WORK.txt,THIRD_PARTY_NOTICES.txt,LICENSE,README.md,TESTING.md,VALIDATION.md,BETA-NOTES.md,SUPPORT.md -Destination $out
     $vswhere = 'C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe'
     $vs = & $vswhere -latest -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
     $redist = Join-Path $vs 'VC/Redist/MSVC'

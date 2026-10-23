@@ -1,7 +1,15 @@
-# Pixma Fixa 0.9.0-beta.4
+# Pixma Fixa 0.9.0-beta.5
 
 Windows x64 beta, verified on Canon PIXMA G7020 firmware 1.050.
 Extract the complete portable ZIP and run `pixma_fixa.exe`.
+
+Hardware testing covers only the G7020, firmware 1.050. Other models may not work.
+Read-only discovery and connection reports from other models are welcome; do not
+bypass model or firmware guards. See [SUPPORT.md](SUPPORT.md) for the reporting guide.
+The manually exported diagnostic summary includes reported model, firmware,
+advertised capabilities, connection errors and up to 20 recent operation outcomes.
+Known identifiers are redacted; raw packets and job contents are excluded.
+Review the JSON before sharing. Nothing is uploaded automatically.
 
 Connection requirements are explicit in the interface and README. The 5B00 waste
 counter and service report require USB plus manual service mode; Wi-Fi is not
@@ -77,3 +85,10 @@ review them before sharing. Do not post serial numbers or private captures.
 
 Application data stays local. Packages are unsigned. Licenses and required
 third-party notices are included. No account or external reset key is required.
+
+Version 0.9.0-beta.5 passed fresh normal-user Windows Sandbox startup and native
+interface checks. The compatibility notice and diagnostic-export explanation
+were inspected in both themes. Read-only checks and native JSON export passed;
+the saved summary was independently checked for version, Windows information,
+operation outcomes, omitted raw payloads and unknown offline identity. All 139
+tests pass; static analysis is clean. No printer writes were sent.

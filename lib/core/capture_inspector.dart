@@ -64,10 +64,13 @@ String redactedDiagnosticText(
   Iterable<String> identifiers = const [],
 }) {
   var text = const JsonEncoder.withIndent('  ').convert(value);
-  for (final id
-      in identifiers
+  final privateValues =
+      identifiers
           .where((v) => v.length >= 4 && v != 'Not reported')
-          .toSet()) {
+          .toSet()
+          .toList()
+        ..sort((a, b) => b.length.compareTo(a.length));
+  for (final id in privateValues) {
     final escaped = jsonEncode(id);
     text = text.replaceAll(
       escaped.substring(1, escaped.length - 1),

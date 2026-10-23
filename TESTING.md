@@ -23,6 +23,7 @@ screenshots only after intentional UI changes and visual review.
 | Network | network_test, network_controller_test | IPP lengths/types/errors, DNS bounds/loops, discovery, address fallback, polling, offline recovery, restored selection |
 | Queues | queue_test, queue_widget_test | Source identity, job fingerprints, stale views, new arrivals, confirmed lists, cancellation once, Windows helper bounds |
 | Diagnostics | diagnostics_test, diagnostics_widget_test | Usage parsing, redaction, model evidence, report comparisons/imports, offline capture bounds, read-only checks |
+| Model reports | support_summary_test | Unknown-model evidence, missing identity, bounded capability/history fields, private payload exclusion, longest-first identifier redaction |
 | Repair tracking | repair_verification_test | Restart/display confirmation, same-device pinning, busy/error refusal, persistent guards, failed checks revoke verification |
 | Reliability | release_reliability_test | Corrupt history, unwritable/failing storage, cleanup errors, cross-instance locking, preference preservation, invalid reset evidence, upgrade data preservation |
 | Interface | widget_test and other widget files | System/light/dark appearance, minimum-width layouts, accessibility text scaling, confirmations, null dropdown guards, sample separation, navigation scope |
@@ -30,6 +31,12 @@ screenshots only after intentional UI changes and visual review.
 | Action errors | action_feedback_test | USB/service-mode help, normal-mode mismatch, network errors after explicit refresh, quiet background failures, uncertain-delivery warning, no retry on dismiss, safe completion after screen removal |
 
 ## Individual test cases
+
+### support_summary_test.dart
+
+- Unknown-model support summaries preserve model, firmware and advertised capabilities without granting maintenance eligibility.
+- Capabilities and recent history are bounded; missing identity remains unknown and malformed history is excluded.
+- Full private URIs are redacted before overlapping shorter hostnames, preserving valid JSON.
 
 ### action_feedback_test.dart
 
@@ -240,3 +247,10 @@ native launch, read-only printer identity/status/queue checks, archive integrity
 required notices, absence of private evidence/build products from source archives,
 and a clean Git tree. Passing tests reduce regression risk; they are not a proof
 that every possible printer/driver/firmware state is bug-free.
+
+Version 0.9.0-beta.5 passed fresh normal-user Windows Sandbox startup and native
+interface checks. The compatibility notice and diagnostic-export explanation
+were inspected in both themes. Read-only checks and native JSON export passed;
+the saved summary was independently checked for version, Windows information,
+operation outcomes, omitted raw payloads and unknown offline identity. All 139
+tests pass; static analysis is clean. No printer writes were sent.

@@ -1,0 +1,61 @@
+name: Printer model report
+description: Share read-only results from another model or firmware version.
+title: "Model report: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Hardware testing has covered only the Canon PIXMA G7020, firmware 1.050.
+        Other models may not work. Start with read-only discovery, status and
+        connection checks. Do not bypass blocked maintenance or reset commands.
+        Do not post a serial number, full history folder or raw service report.
+  - type: input
+    id: physical_model
+    attributes:
+      label: Exact model on the printer label
+      description: Include the regional model number, without its serial number.
+      placeholder: Canon PIXMA model number
+    validations:
+      required: true
+  - type: input
+    id: firmware
+    attributes:
+      label: Reported model/family and firmware
+      description: Use Not reported if the printer does not expose a value.
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Pixma Fixa version and Windows version
+    validations:
+      required: true
+  - type: dropdown
+    id: connection
+    attributes:
+      label: Connection used
+      options:
+        - Wi-Fi or Ethernet, normal mode
+        - USB, normal mode
+        - Other or not sure
+    validations:
+      required: true
+  - type: textarea
+    id: results
+    attributes:
+      label: What worked, what failed, and the feature you need
+      description: Include the steps, expected result, actual result and any panel support code.
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: Reviewed diagnostic summary
+      description: Attach the JSON from Diagnostics > Connection > Export diagnostic summary, if available. Review it first. Do not attach raw captures or the full history folder here.
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Before submitting
+      options:
+        - label: I reviewed the report and attachments for serial numbers, personal information and private network details.
+          required: true
