@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:printer_care/controller.dart';
-import 'package:printer_care/core/network_status.dart';
-import 'package:printer_care/core/print_queue.dart';
-import 'package:printer_care/main.dart';
+import 'package:pixma_fixa/controller.dart';
+import 'package:pixma_fixa/core/network_status.dart';
+import 'package:pixma_fixa/core/print_queue.dart';
+import 'package:pixma_fixa/main.dart';
 
 class QueueCancellationRecorder extends CareController {
   QueueCancellationRecorder({required super.directory});
@@ -57,7 +57,7 @@ void main() {
     await t.pumpWidget(
       MediaQuery(
         data: MediaQueryData(textScaler: TextScaler.linear(scale)),
-        child: PrinterCare(controller: c, nativeFrame: false),
+        child: PixmaFixa(controller: c, nativeFrame: false),
       ),
     );
     await t.tap(find.text(page));

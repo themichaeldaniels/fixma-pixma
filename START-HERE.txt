@@ -1,7 +1,7 @@
-PRINTER CARE - WINDOWS BETA CANDIDATE 0.9.0-beta.1
+PIXMA FIXA - WINDOWS PUBLIC BETA 0.9.0-beta.2
 
-Extract the complete folder, then run printer_care.exe. Keep the DLLs, data
-directory, printer_care_worker.exe and printer_care_queue.exe beside it.
+Extract the complete folder, then run pixma_fixa.exe. Keep the DLLs, data
+directory, pixma_fixa_worker.exe and pixma_fixa_queue.exe beside it.
 No Python installation, account, reset key, or Canon utility is required.
 
 Overview discovers network printers and reads firmware, ink estimates and current
@@ -52,6 +52,7 @@ Connection checks do not print, clean, reset or reboot. A redacted diagnostic
 summary is separate from a full private report export. Review before sharing.
 
 History, settings, guards and follow-ups stay under %LOCALAPPDATA%/PrinterCare.
+The earlier data-folder name is retained to preserve transaction safeguards.
 Preserve them after an uncertain operation. Scanning, document handling and PDF
 generation have been removed. Former scan caches and saved files are untouched.
 

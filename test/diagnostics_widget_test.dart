@@ -3,11 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:printer_care/controller.dart';
-import 'package:printer_care/core/model_support.dart';
-import 'package:printer_care/core/repair_record.dart';
-import 'package:printer_care/core/report.dart';
-import 'package:printer_care/main.dart';
+import 'package:pixma_fixa/controller.dart';
+import 'package:pixma_fixa/core/model_support.dart';
+import 'package:pixma_fixa/core/repair_record.dart';
+import 'package:pixma_fixa/core/report.dart';
+import 'package:pixma_fixa/main.dart';
 
 void main() {
   late Directory dir;
@@ -79,7 +79,7 @@ void main() {
     addTearDown(t.view.resetPhysicalSize);
     addTearDown(t.view.resetDevicePixelRatio);
     await t.pumpWidget(
-      PrinterCare(controller: c, nativeFrame: false, initialPage: 6),
+      PixmaFixa(controller: c, nativeFrame: false, initialPage: 6),
     );
     await t.pumpAndSettle();
     // System accessibility text scaling, while keeping this test's window size.

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:printer_care/experimental_reset_dialog.dart';
-import 'package:printer_care/theme.dart';
+import 'package:pixma_fixa/experimental_reset_dialog.dart';
+import 'package:pixma_fixa/theme.dart';
 
 void main() {
   for (final accept in [false, true]) {

@@ -9,7 +9,7 @@ $ErrorActionPreference = 'Stop'
 if (Test-Path -LiteralPath $OutputPath) { throw 'Use a new report filename.' }
 $package = (Resolve-Path -LiteralPath $PackageZip).Path
 $reportPath = [IO.Path]::GetFullPath($OutputPath)
-$work = Join-Path ([IO.Path]::GetTempPath()) ('PrinterCare-clean-test-' + [Guid]::NewGuid().ToString('N'))
+$work = Join-Path ([IO.Path]::GetTempPath()) ('PixmaFixa-clean-test-' + [Guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $work | Out-Null
 $developerTools = @(Get-Command flutter.bat,dart.exe,cl.exe,cmake.exe,MSBuild.exe -ErrorAction SilentlyContinue | ForEach-Object Name)
 if (Test-Path -LiteralPath "${env:ProgramFiles(x86)}/Microsoft Visual Studio/Installer/vswhere.exe") { $developerTools += 'Visual Studio installation' }
@@ -63,7 +63,7 @@ try {
     $report['lastStep'] = 'Extract portable archive'
     $extracted = Join-Path $work 'Portable folder with spaces'
     Expand-Archive -LiteralPath $package -DestinationPath $extracted
-    $applications = @(Get-ChildItem -LiteralPath $extracted -Filter printer_care.exe -Recurse -File)
+    $applications = @(Get-ChildItem -LiteralPath $extracted -Filter pixma_fixa.exe -Recurse -File)
     if ($applications.Count -ne 1) { throw 'Expected one application executable.' }
     $app = $applications[0]
     $appFolder = $app.DirectoryName
@@ -83,12 +83,12 @@ try {
     $report['lastStep'] = 'Native USB helper initialization and enumeration'
     $profile = Get-Content -LiteralPath (Join-Path $appFolder 'data/flutter_assets/assets/protocol.json') -Raw | ConvertFrom-Json
     $requests = (@{op='init';profile=$profile;reset=$false} | ConvertTo-Json -Depth 30 -Compress) + "`n" + '{"op":"scan"}' + "`n" + '{"op":"close"}' + "`n"
-    $worker = Invoke-TestProcess (Join-Path $appFolder 'printer_care_worker.exe') '' $requests
+    $worker = Invoke-TestProcess (Join-Path $appFolder 'pixma_fixa_worker.exe') '' $requests
     $replies = @($worker.Output -split "`n" | Where-Object { $_.Trim() } | ForEach-Object { $_ | ConvertFrom-Json })
     if ($worker.ExitCode -ne 0 -or $replies.Count -ne 3 -or @($replies | Where-Object { -not $_.ok }).Count) { throw 'USB helper checks did not pass.' }
     $report.tests['usbHelperReadOnlyEnumeration'] = $true
     $report['lastStep'] = 'Windows queue helper read-only listing'
-    $queue = Invoke-TestProcess (Join-Path $appFolder 'printer_care_queue.exe') '' ('{"op":"list"}' + "`n")
+    $queue = Invoke-TestProcess (Join-Path $appFolder 'pixma_fixa_queue.exe') '' ('{"op":"list"}' + "`n")
     $queueReply = $queue.Output | ConvertFrom-Json
     if (-not $queueReply.ok -and -not $queueReply.error) { throw 'Queue helper returned an invalid response.' }
     $report.tests['queueHelperResponsive'] = $true
@@ -96,9 +96,9 @@ try {
     $report['lastStep'] = 'Graceful missing-helper startup'
     $missing = Join-Path $work 'Application without USB helper'
     New-Item -ItemType Directory -Path $missing | Out-Null
-    Get-ChildItem -LiteralPath $appFolder | Where-Object Name -NE 'printer_care_worker.exe' | Copy-Item -Destination $missing -Recurse
+    Get-ChildItem -LiteralPath $appFolder | Where-Object Name -NE 'pixma_fixa_worker.exe' | Copy-Item -Destination $missing -Recurse
     $missingProof = Join-Path $work 'missing-helper.json'
-    $missingRun = Invoke-TestProcess (Join-Path $missing 'printer_care.exe') "--smoke-output=`"$missingProof`""
+    $missingRun = Invoke-TestProcess (Join-Path $missing 'pixma_fixa.exe') "--smoke-output=`"$missingProof`""
     $missingResult = Get-Content -LiteralPath $missingProof -Raw | ConvertFrom-Json
     if ($missingRun.ExitCode -ne 0 -or -not $missingResult.launched -or -not $missingResult.usbError -or $missingResult.counterCommandsSent) { throw 'Missing-helper handling did not pass.' }
     $report.tests['missingHelperReportedWithoutStartupCrash'] = $true

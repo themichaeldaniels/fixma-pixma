@@ -27,7 +27,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   FlutterWindow window(project);
   Win32Window::Point origin(80, 60);
   Win32Window::Size size(1280, 900);
-  if (!window.Create(L"Printer Care", origin, size)) {
+  if (!window.Create(L"Pixma Fixa", origin, size)) {
     return EXIT_FAILURE;
   }
   window.SetQuitOnClose(true);

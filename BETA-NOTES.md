@@ -1,7 +1,11 @@
-# Printer Care 0.9.0-beta.1
+# Pixma Fixa 0.9.0-beta.2
 
 Windows x64 public beta, verified on Canon PIXMA G7020 firmware 1.050.
-Extract the complete portable ZIP and run `printer_care.exe`.
+Extract the complete portable ZIP and run `pixma_fixa.exe`.
+
+This release introduces the Pixma Fixa name and renamed Windows executables.
+The existing local data folder is retained so earlier preferences, history and
+transaction safeguards remain available. Supported maintenance behavior is unchanged.
 
 ## Experimental features
 

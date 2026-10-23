@@ -2,10 +2,10 @@ import 'dart:io';
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:printer_care/core/canon_maintenance.dart';
-import 'package:printer_care/core/ink_counter.dart';
-import 'package:printer_care/controller.dart';
-import 'package:printer_care/core/network_status.dart';
+import 'package:pixma_fixa/core/canon_maintenance.dart';
+import 'package:pixma_fixa/core/ink_counter.dart';
+import 'package:pixma_fixa/controller.dart';
+import 'package:pixma_fixa/core/network_status.dart';
 
 import 'network_controller_test.dart' show TestNetwork;
 

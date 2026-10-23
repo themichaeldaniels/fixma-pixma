@@ -2,8 +2,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:printer_care/core/protocol.dart';
-import 'package:printer_care/platform/windows_usb.dart';
+import 'package:pixma_fixa/core/protocol.dart';
+import 'package:pixma_fixa/platform/windows_usb.dart';
 
 Future<void> main() async {
   if (!Platform.isWindows) {

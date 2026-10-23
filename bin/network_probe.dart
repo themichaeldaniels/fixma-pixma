@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:printer_care/core/printer_network.dart';
-import 'package:printer_care/core/network_status.dart';
+import 'package:pixma_fixa/core/printer_network.dart';
+import 'package:pixma_fixa/core/network_status.dart';
 
 Future<void> main(List<String> args) async {
   final network = LocalPrinterNetwork();

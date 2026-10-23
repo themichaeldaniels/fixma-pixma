@@ -153,7 +153,7 @@ class IppQueueService implements PrinterQueueService {
         IppMessage.attribute(
           0x42,
           'requesting-user-name',
-          Platform.environment['USERNAME'] ?? 'PrinterCare',
+          Platform.environment['USERNAME'] ?? 'PixmaFixa',
         ),
         IppMessage.attribute(0x44, 'which-jobs', 'not-completed'),
         IppMessage.attribute(0x22, 'my-jobs', false),
@@ -169,7 +169,7 @@ class IppQueueService implements PrinterQueueService {
       IppMessage.attribute(
         0x42,
         'requesting-user-name',
-        Platform.environment['USERNAME'] ?? 'PrinterCare',
+        Platform.environment['USERNAME'] ?? 'PixmaFixa',
       ),
     ], id: id);
   }
@@ -341,7 +341,7 @@ class NativeWindowsQueueService implements WindowsQueueService {
     final path =
         executable ??
         Platform.environment['PRINTERCARE_QUEUE_WORKER'] ??
-        '${File(Platform.resolvedExecutable).parent.path}/printer_care_queue.exe';
+        '${File(Platform.resolvedExecutable).parent.path}/pixma_fixa_queue.exe';
     if (!File(path).existsSync()) {
       throw StateError(
         'The Windows queue helper is missing. Extract the entire app folder.',

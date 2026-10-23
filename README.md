@@ -1,8 +1,51 @@
-# Printer Care
+# Pixma Fixa
 
-A local Windows utility for maintaining the Canon PIXMA G7020. No account, reset key, Python installation, or bundled Canon application is required.
+A free, open-source Windows utility for maintaining Canon PIXMA printers. Built
+and hardware-tested for the PIXMA G7020, with a simple interface for diagnostics,
+ink counts, printhead care and guarded waste-counter repair.
 
-## Scope
+**[Download for Windows x64](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.2/PixmaFixa-Windows-0.9.0-beta.2.zip)**
+
+[Release notes and all downloads](https://github.com/themichaeldaniels/pixma-fixa/releases/tag/v0.9.0-beta.2)
+ · [Checksums](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.2/SHA256SUMS.txt)
+ · [Source archive](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.2/PixmaFixa-source-0.9.0-beta.2.zip)
+
+Current release: **0.9.0-beta.2**, Windows x64. Extract the entire ZIP, then run
+`pixma_fixa.exe`. No installer, Python setup, account, or purchased reset key is
+needed to use the app. While this repository is private, GitHub access is required
+to download its files. macOS and Android builds are not available yet.
+
+## Why it exists, and why it is free
+
+A printer should remain useful after routine maintenance. This project grew from
+repairing a serviced printer that was still blocked by its waste-ink counter, and
+from wanting everyday maintenance in one clear, accessible utility.
+
+Pixma Fixa makes the supported maintenance operations available without paid reset
+keys, subscriptions or an account. It is released under the [zlib license](LICENSE),
+so anyone can inspect, use and improve it. It works locally and has no analytics,
+advertising or built-in upload service. Required third-party license notices are
+included. This is an independent project, unaffiliated with Canon.
+
+## Start here
+
+1. Download the Windows ZIP above and extract it into a regular folder.
+2. Keep `pixma_fixa.exe`, both helper executables, the DLLs and `data` together.
+3. Open the app with the printer powered on normally. Use **Find printers**, or
+   **Add by address** if automatic network discovery is unavailable.
+4. Read the model, firmware, current errors and ink estimates in **Overview**.
+5. Open **Maintenance** for the controls supported by the selected printer. Each
+   operation explains its preparation and asks for confirmation before it runs.
+
+Most maintenance uses the local network. **USB service diagnostics and waste-counter
+repair require manually entering service mode**; the app includes a model-specific
+guide. A waste-counter reset is only appropriate after the absorber has been
+serviced. It does not remove ink from the pads.
+
+See the [complete usage guide](START-HERE.txt), [beta notes](BETA-NOTES.md) and
+[hardware validation](VALIDATION.md). The Windows package is currently unsigned.
+
+## What it does
 
 - Discover network printers and read identity, firmware, estimated ink, current errors, and reported capabilities.
 - Read G7000 page counts and printhead replacement counters.
@@ -17,6 +60,8 @@ A local Windows utility for maintaining the Canon PIXMA G7020. No account, reset
 Document scanning, document previews, PDF generation, and scan archives are removed in 0.7.0. Existing files from older versions are preserved. General document printing is outside this utility's scope.
 
 ## Compatibility and verification
+
+![Pixma Fixa maintenance interface in dark mode](test/goldens/maintenance-dark.png)
 
 Windows x64 is the supported platform. Canon maintenance and reset commands are restricted to the G7020/G7000 profile and firmware 1.050. A family name alone does not establish compatibility with every regional model. Other IPP printers can expose read-only status and queue capabilities. G6020 is a research candidate, with no service writes enabled.
 
@@ -42,9 +87,9 @@ an idle error-free printer, reported ink in all colors and preparation confirmat
 The app tracks the matching job for up to ten minutes, records adjustment values
 before and after completion when available, and never repeats an uncertain command.
 
-## Run
+## Release status
 
-Extract the complete Windows ZIP and run `printer_care.exe`. Keep both helper executables, DLLs, and the data directory together. See [START-HERE.txt](START-HERE.txt).
+Extract the complete Windows ZIP and run `pixma_fixa.exe`. Keep both helper executables, DLLs, and the data directory together. See [START-HERE.txt](START-HERE.txt).
 
 The current package is a public beta. Offline startup, native helpers, missing-helper handling, appearance and sample report export passed in fresh Windows Sandbox without development tools. Distribution files are unsigned. Native nonzero waste-counter clear and printer-side in-flight job cancellation are marked Experimental in the interface and require an additional acknowledgment. No driver changes or automatic service-mode transitions are performed. See [BETA-NOTES.md](BETA-NOTES.md) and [VALIDATION.md](VALIDATION.md) for observed results and limits.
 
@@ -60,11 +105,19 @@ The script resolves locked dependencies, runs static analysis and tests, compile
 
 ## Data and transaction handling
 
-Application data lives in `%LOCALAPPDATA%/PrinterCare`. History and settings remain local. Full report exports contain private printer information; the separate diagnostic summary omits known serials, network addresses and raw USB paths. Review exports before sharing.
+Application data lives in `%LOCALAPPDATA%/PrinterCare`, retaining the existing data-folder name to preserve earlier history, preferences and transaction guards. History and settings remain local. Full report exports contain private printer information; the separate diagnostic summary omits known serials, network addresses and raw USB paths. Review exports before sharing.
 
 Mutations require live identity/readiness checks and explicit preparation. Uncertain commands are never automatically repeated. Waste resets use an exclusive durable attempt marker; refill/maintenance attempts have persistent guards. An OS file lock serializes recorded transactions across instances sharing the same state directory. Losing a reply does not establish success. Repair verification requires a normal restart, same-device status, and display confirmation.
 
 Only service selector `10077c`, report query `15`, and waste clear `0d0000` are exposed by the USB worker. The worker runs separately to bound stalled driver calls. Normal-mode Canon commands use bounded CHMP requests. Network queues use IPP status/listing/identity/cancellation only; no print documents or empty Create-Job probes are submitted by the utility. Jobs still held on other computers or phones are outside this PC's view.
+
+## Getting help
+
+Read the [usage guide](START-HERE.txt) first. If something goes wrong, [open an
+issue](https://github.com/themichaeldaniels/pixma-fixa/issues) with the app version,
+Windows version, printer model and firmware, the action taken, and the visible
+error. Use the redacted diagnostic summary where possible. Review any export or
+screenshot before sharing; do not post serial numbers or private network details.
 
 ## License
 

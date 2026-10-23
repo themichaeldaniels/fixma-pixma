@@ -1,6 +1,6 @@
-PRINTER CARE - RELEASE VALIDATION
+PIXMA FIXA - RELEASE VALIDATION
 
-Maintenance-only scope, public beta 0.9.0-beta.1.
+Maintenance-only scope, public beta 0.9.0-beta.2.
 
 Completed on the G7020:
 1. Panel error cleared; printer returned to Ready after both check prints.

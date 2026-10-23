@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "Printer Care" "\0"
-            VALUE "FileDescription", "Printer Care" "\0"
+            VALUE "CompanyName", "Pixma Fixa" "\0"
+            VALUE "FileDescription", "Pixma Fixa" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "Printer Care" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2026 Printer Care contributors." "\0"
-            VALUE "OriginalFilename", "printer_care.exe" "\0"
-            VALUE "ProductName", "Printer Care" "\0"
+            VALUE "InternalName", "Pixma Fixa" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2026 Pixma Fixa contributors." "\0"
+            VALUE "OriginalFilename", "pixma_fixa.exe" "\0"
+            VALUE "ProductName", "Pixma Fixa" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

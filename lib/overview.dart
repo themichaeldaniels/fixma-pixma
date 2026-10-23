@@ -465,7 +465,7 @@ class PrinterOverview extends StatelessWidget {
                   if (s.model.toLowerCase().contains('canon g7000') &&
                       s.firmware == '1.050') ...[
                     const Text(
-                      'In Printer Care',
+                      'In Pixma Fixa',
                       style: TextStyle(fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(height: 8),

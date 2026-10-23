@@ -4,10 +4,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:printer_care/controller.dart';
-import 'package:printer_care/core/connection.dart';
-import 'package:printer_care/core/report.dart';
-import 'package:printer_care/core/protocol.dart';
+import 'package:pixma_fixa/controller.dart';
+import 'package:pixma_fixa/core/connection.dart';
+import 'package:pixma_fixa/core/report.dart';
+import 'package:pixma_fixa/core/protocol.dart';
 
 import '../bin/ink_probe.dart' as ink_probe;
 
@@ -27,7 +27,7 @@ void main() {
   late CareController controller;
   setUp(() {
     directory = Directory.systemTemp.createTempSync(
-      'printer-care-reliability-',
+      'pixma-fixa-reliability-',
     );
     controller = CareController(directory: directory);
   });
@@ -176,7 +176,7 @@ void main() {
       });
       expect(dispatched, false);
       expect(second.busy, false);
-      expect(second.lastError, contains('Another Printer Care instance'));
+      expect(second.lastError, contains('Another Pixma Fixa instance'));
       finish.complete();
       await firstRun;
       await second.run('third', () async {

@@ -209,13 +209,14 @@ Windows spool job was canceled, while changed job identity was rejected. Native
 export, extracted portable startup, and upgrade data preservation passed.
 Automatic alignment completed through the native interface; its matching job and
 saved adjustments were verified separately from the alignment-value check print.
-Clean Windows machine validation and physical in-flight IPP cancellation remain
-outstanding. See [VALIDATION.md](VALIDATION.md) for the evidence and its limits.
+Fresh Windows Sandbox startup and native interface checks passed. Physical
+in-flight IPP cancellation remains unverified. See [VALIDATION.md](VALIDATION.md)
+for the evidence and its limits.
 The clean Windows test kit is documented in [tool/CLEAN-WINDOWS-TEST.txt](tool/CLEAN-WINDOWS-TEST.txt).
 It checks fresh portable startup, restricted PATH, an unrelated working directory,
 read-only helper responses and graceful missing-helper handling. It records a
 clean-system pass separately from a development-host run. Genuine fresh Windows
-validation and manual theme/layout/save-dialog inspection remain release gates.
+validation and manual theme/layout/save-dialog inspection are release gates.
 Keep nonzero native waste-clear validation listed as untested; do not reset a
 healthy zero-counter printer to manufacture evidence. Standard cleaning, settings,
 refill reset and native service diagnostics have prior hardware evidence.

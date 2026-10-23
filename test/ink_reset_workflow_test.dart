@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:printer_care/controller.dart';
-import 'package:printer_care/core/ink_counter.dart';
+import 'package:pixma_fixa/controller.dart';
+import 'package:pixma_fixa/core/ink_counter.dart';
 
 import 'network_controller_test.dart' show TestNetwork;
 

@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:printer_care/controller.dart';
-import 'package:printer_care/core/connection.dart';
-import 'package:printer_care/core/protocol.dart';
-import 'package:printer_care/core/report.dart';
+import 'package:pixma_fixa/controller.dart';
+import 'package:pixma_fixa/core/connection.dart';
+import 'package:pixma_fixa/core/protocol.dart';
+import 'package:pixma_fixa/core/report.dart';
 
 class SimulatedPrinter implements PrinterPeer {
   final String text;
@@ -63,7 +63,7 @@ void main() {
   late Directory temp;
   late String source;
   setUp(() {
-    temp = Directory.systemTemp.createTempSync('printer-care-flow-');
+    temp = Directory.systemTemp.createTempSync('pixma-fixa-flow-');
     source = File('assets/sample-report.txt').readAsStringSync();
   });
   tearDown(() {

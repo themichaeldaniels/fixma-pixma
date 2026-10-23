@@ -53,7 +53,7 @@ class ModelSupport {
           'Upstream waste-counter reset',
           'Reported validated on upstream G6020',
         ),
-        ('Printer Care support', 'Hardware validation required'),
+        ('Pixma Fixa support', 'Hardware validation required'),
         ('Full EEPROM backup', 'Upstream command unresolved'),
       ],
     ),

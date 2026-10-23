@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:printer_care/core/protocol.dart';
-import 'package:printer_care/core/report.dart';
-import 'package:printer_care/core/connection.dart';
+import 'package:pixma_fixa/core/protocol.dart';
+import 'package:pixma_fixa/core/report.dart';
+import 'package:pixma_fixa/core/connection.dart';
 
 void main() {
   final spec = jsonDecode(

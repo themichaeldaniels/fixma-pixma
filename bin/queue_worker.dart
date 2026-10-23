@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:printer_care/core/print_queue.dart';
-import 'package:printer_care/platform/windows_queue.dart';
+import 'package:pixma_fixa/core/print_queue.dart';
+import 'package:pixma_fixa/platform/windows_queue.dart';
 
 Future<void> main() async {
   try {

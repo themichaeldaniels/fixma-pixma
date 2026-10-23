@@ -3,10 +3,10 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:printer_care/controller.dart';
-import 'package:printer_care/core/ipp_message.dart';
-import 'package:printer_care/core/network_status.dart';
-import 'package:printer_care/core/print_queue.dart';
+import 'package:pixma_fixa/controller.dart';
+import 'package:pixma_fixa/core/ipp_message.dart';
+import 'package:pixma_fixa/core/network_status.dart';
+import 'package:pixma_fixa/core/print_queue.dart';
 
 Uint8List packet(
   List<(int, List<(int, String, Object)>)> groups, {

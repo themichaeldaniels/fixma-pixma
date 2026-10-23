@@ -5,12 +5,12 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:printer_care/controller.dart';
-import 'package:printer_care/core/report.dart';
-import 'package:printer_care/core/network_status.dart';
-import 'package:printer_care/core/ink_counter.dart';
-import 'package:printer_care/core/canon_maintenance.dart';
-import 'package:printer_care/main.dart';
+import 'package:pixma_fixa/controller.dart';
+import 'package:pixma_fixa/core/report.dart';
+import 'package:pixma_fixa/core/network_status.dart';
+import 'package:pixma_fixa/core/ink_counter.dart';
+import 'package:pixma_fixa/core/canon_maintenance.dart';
+import 'package:pixma_fixa/main.dart';
 
 class VerifyRecorder extends CareController {
   VerifyRecorder({required super.directory});
@@ -74,7 +74,7 @@ void main() {
   late Directory temp;
   late CareController controller;
   setUp(() {
-    temp = Directory.systemTemp.createTempSync('printer-care-ui-');
+    temp = Directory.systemTemp.createTempSync('pixma-fixa-ui-');
     controller = CareController(directory: temp);
   });
   tearDown(() {
@@ -124,7 +124,7 @@ void main() {
       );
     }
     await tester.pumpWidget(
-      PrinterCare(controller: controller, nativeFrame: false),
+      PixmaFixa(controller: controller, nativeFrame: false),
     );
     await tester.pumpAndSettle();
     if (sample) {
@@ -139,7 +139,7 @@ void main() {
       final recorder = VerifyRecorder(directory: temp);
       addTearDown(recorder.dispose);
       await tester.pumpWidget(
-        PrinterCare(controller: recorder, nativeFrame: false),
+        PixmaFixa(controller: recorder, nativeFrame: false),
       );
       await tester.tap(find.text('Maintenance'));
       await tester.pumpAndSettle();
