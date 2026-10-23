@@ -379,7 +379,7 @@ extension CareDiagnostics on CareController {
     return redactedDiagnosticText(
       {
         'schemaVersion': 2,
-        'application': 'Pixma Fixa 0.9.0-beta.7',
+        'application': 'Pixma Fixa 0.9.0-beta.8',
         'platform': {
           'system': Platform.operatingSystem,
           'version': Platform.operatingSystemVersion,
@@ -461,6 +461,7 @@ extension CareDiagnostics on CareController {
         'verification': 'Live status checks do not prove printed quality.',
       },
       identifiers: [
+        ...knownDiagnosticIdentifiers([currentLog, ...history]),
         if (diagnosticIdentity != null) diagnosticIdentity!.serial,
         if (report != null) report!.serial,
         if (status != null) ...[

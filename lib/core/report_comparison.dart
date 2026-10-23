@@ -75,12 +75,17 @@ List<ServiceReport> importReports(String input) {
   final reports = <ServiceReport>[];
   if (text.startsWith('{') || text.startsWith('[')) {
     final value = jsonDecode(text);
-    void add(Object? v) {
+    void add(Object? v, [int depth = 0]) {
+      if (depth > 8 || reports.length >= 200) {
+        throw const FormatException(
+          'Too many reports or nested report wrappers.',
+        );
+      }
       if (v is! Map) return;
       if (v['raw'] is String) {
         reports.add(ServiceReport.fromJson(Map<String, dynamic>.from(v)));
       }
-      if (v['report'] is Map) add(v['report']);
+      if (v['report'] is Map) add(v['report'], depth + 1);
     }
 
     if (value is List) {

@@ -348,6 +348,7 @@ class NativeWindowsQueueService implements WindowsQueueService {
       );
     }
     final process = await Process.start(path, []);
+    process.stdin.done.catchError((Object _) {});
     final output = StringBuffer();
     var length = 0;
     final done = process.stdout.transform(utf8.decoder).listen((s) {

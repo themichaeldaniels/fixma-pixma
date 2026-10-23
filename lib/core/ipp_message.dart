@@ -142,7 +142,9 @@ class IppMessage {
         if (v.length != 4) throw const FormatException('Invalid IPP integer.');
         value = ByteData.sublistView(v).getInt32(0);
       } else if (tag == 0x22) {
-        if (v.length != 1) throw const FormatException('Invalid IPP boolean.');
+        if (v.length != 1 || v[0] > 1) {
+          throw const FormatException('Invalid IPP boolean.');
+        }
         value = v[0] != 0;
       } else if (tag == 0x32 && v.length == 9) {
         final b = ByteData.sublistView(v);

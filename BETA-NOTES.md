@@ -1,7 +1,12 @@
-# Pixma Fixa 0.9.0-beta.7
+# Pixma Fixa 0.9.0-beta.8
 
 Windows x64 beta, verified on Canon PIXMA G7020 firmware 1.050.
 Extract the complete portable ZIP and run `pixma_fixa.exe`.
+
+This beta includes the final code review fixes for diagnostic privacy, malformed
+discovery/IPP replies, bounded history/imports, clock-rollback confirmations,
+helper failures and native window lifecycle errors. See [REVIEW.md](REVIEW.md)
+for the scope, regression coverage and remaining limits.
 
 Report a problem now saves the diagnostic JSON before opening GitHub. Choose
 Save report and open issue form, select a file location, then review and attach
@@ -124,3 +129,13 @@ All 150 tests pass; static analysis is clean. No issue was submitted and no
 printer writes were sent. Save failures, browser retry without another save,
 duplicate dispatch, closing during save and original error preservation are
 covered by regression tests. Networking and printer access were disabled.
+
+Version 0.9.0-beta.8 passed fresh normal-user Windows Sandbox startup, native
+USB/queue helpers, missing-helper recovery and both-theme reporting. Native
+save cancellation wrote no file and opened no form. Saving generated valid
+diagnostic JSON before browser handoff; independent checks verified schema,
+version, Windows information, privacy exclusions and unknown offline identity.
+All 168 tests pass, including 18 review regressions; static analysis is clean.
+All 26 locked hosted packages returned no registry advisories on 2026-10-23.
+A separate read-only G7020 check returned firmware 1.050, Ready and four full
+ink estimates. No physical printing, cleaning or reset commands were sent.

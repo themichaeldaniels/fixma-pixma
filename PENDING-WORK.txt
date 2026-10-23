@@ -1,6 +1,6 @@
 PIXMA FIXA - RELEASE VALIDATION
 
-Maintenance-only scope, Windows beta 0.9.0-beta.7.
+Maintenance-only scope, Windows beta 0.9.0-beta.8.
 
 Completed hardware and release checks:
 1. Panel error cleared; printer returned to Ready after both check prints.
@@ -32,6 +32,10 @@ Completed hardware and release checks:
 10. Beta.7 passed fresh Sandbox startup, native integrated report saving, save
     cancellation and browser handoff. Generated JSON was independently checked.
     Both themes and the G7020 service guide were inspected. All 150 tests pass.
+
+12. Beta.8 final review completed: privacy/parser/helper/lifecycle fixes, 168
+    passing tests, static analysis, fresh Sandbox and read-only G7020 status
+    checks. Review scope and remaining limits are recorded in REVIEW.md.
 
 Remaining validation:
 1. Physical in-flight IPP job cancellation when a suitable test job exists.

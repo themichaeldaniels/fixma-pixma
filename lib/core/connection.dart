@@ -15,7 +15,43 @@ class WorkerPeer implements PrinterPeer {
   final void Function(Map<String, dynamic>) record;
   bool stopped = false;
   Future<void>? _closing;
-  WorkerPeer._(this.process, this.replies, this.record);
+  WorkerPeer.fromProcess(this.process, this.record)
+    : replies = StreamIterator(
+        _boundedOutput(process)
+            .transform(utf8.decoder)
+            .transform(const LineSplitter()),
+      ) {
+    process.stdin.done.catchError((Object _) {});
+    var stderrBytes = 0;
+    process.stderr.transform(const Utf8Decoder(allowMalformed: true)).listen((
+      s,
+    ) {
+      stderrBytes += s.length;
+      if (stderrBytes > 65536) {
+        process.kill();
+        return;
+      }
+      try {
+        record({'workerError': s});
+      } catch (_) {
+        // A failed journal must not escape this asynchronous callback.
+        process.kill();
+      }
+    }, onError: (Object _) => process.kill());
+  }
+
+  static Stream<List<int>> _boundedOutput(Process process) {
+    var bytes = 0;
+    return process.stdout.map((chunk) {
+      bytes += chunk.length;
+      if (bytes > 4 * 1024 * 1024) {
+        process.kill();
+        throw StateError('The USB helper response is too large.');
+      }
+      return chunk;
+    });
+  }
+
   static Future<WorkerPeer> start(
     Map<String, dynamic> profile, {
     bool reset = false,
@@ -31,15 +67,7 @@ class WorkerPeer implements PrinterPeer {
       );
     }
     final p = await Process.start(path, [], mode: ProcessStartMode.normal);
-    p.stdin.done.catchError((Object _) {});
-    p.stderr.transform(utf8.decoder).listen((s) => record({'workerError': s}));
-    final peer = WorkerPeer._(
-      p,
-      StreamIterator(
-        p.stdout.transform(utf8.decoder).transform(const LineSplitter()),
-      ),
-      record,
-    );
+    final peer = WorkerPeer.fromProcess(p, record);
     try {
       await peer.call('init', {'profile': profile, 'reset': reset});
       return peer;
@@ -90,7 +118,11 @@ class WorkerPeer implements PrinterPeer {
   Future<void> _close() async {
     if (!stopped) {
       stopped = true;
-      process.stdin.writeln(jsonEncode({'op': 'close'}));
+      try {
+        process.stdin.writeln(jsonEncode({'op': 'close'}));
+      } catch (_) {
+        process.kill();
+      }
     }
     try {
       await process.stdin.close().timeout(

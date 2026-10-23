@@ -13,13 +13,31 @@ class DnsRecord {
   const DnsRecord(this.name, this.type, this.value, this.source);
 }
 
+/// One discovery window has a fixed memory and packet budget, shared across
+/// interfaces. Malformed packets consume the budget too.
+class DiscoveryWindow {
+  static const maxPackets = 256, maxRecords = 2048;
+  final records = <DnsRecord>[];
+  int packets = 0;
+  bool get full => packets >= maxPackets || records.length >= maxRecords;
+  void add(List<int> packet, String source) {
+    if (full) return;
+    packets++;
+    final decoded = DiscoveryCodec.decode(packet, source);
+    records.addAll(decoded.take(maxRecords - records.length));
+  }
+}
+
 /// Bounded DNS decoding, including compressed names in additional records.
 class DiscoveryCodec {
   static List<int> question(String name, int type) {
     final out = BytesBuilder()..add([0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0]);
+    var nameLength = 1;
     for (final label in name.split('.').where((s) => s.isNotEmpty)) {
       final value = utf8.encode(label);
       if (value.length > 63) throw const FormatException('DNS label too long.');
+      nameLength += value.length + 1;
+      if (nameLength > 255) throw const FormatException('DNS name too long.');
       out.addByte(value.length);
       out.add(value);
     }
@@ -45,6 +63,7 @@ class DiscoveryCodec {
     (String, int) nameAt(int at) {
       final labels = <String>[], seen = <int>{};
       int? end;
+      var expandedLength = 1;
       while (true) {
         need(at, 1);
         if (!seen.add(at) || seen.length > 128) {
@@ -59,6 +78,10 @@ class DiscoveryCodec {
           continue;
         }
         if (length > 63) throw const FormatException('Invalid DNS name.');
+        expandedLength += length + 1;
+        if (expandedLength > 255) {
+          throw const FormatException('DNS name is too long.');
+        }
         need(at, length);
         labels.add(
           utf8.decode(data.sublist(at, at + length), allowMalformed: true),
@@ -96,9 +119,19 @@ class DiscoveryCodec {
         continue;
       }
       if (type == 1 && length == 4) value = data.sublist(pos, next).join('.');
-      if (type == 12) value = nameAt(pos).$1;
+      if (type == 12) {
+        final decoded = nameAt(pos);
+        if (decoded.$2 != next) {
+          throw const FormatException('Invalid DNS PTR size.');
+        }
+        value = decoded.$1;
+      }
       if (type == 33 && length >= 7) {
-        value = {'port': word(pos + 4), 'host': nameAt(pos + 6).$1};
+        final decoded = nameAt(pos + 6);
+        if (decoded.$2 != next) {
+          throw const FormatException('Invalid DNS SRV size.');
+        }
+        value = {'port': word(pos + 4), 'host': decoded.$1};
       }
       if (type == 16) {
         final text = <String, String>{};
@@ -136,6 +169,11 @@ class DiscoveryCodec {
               r.name.toLowerCase().contains('._ipps._tcp.')),
     )) {
       final info = srv.value as Map;
+      if (info['port'] is! int ||
+          (info['port'] as int) < 1 ||
+          (info['port'] as int) > 65535) {
+        continue;
+      }
       final host = info['host'] as String;
       final address =
           all
@@ -193,7 +231,7 @@ class DiscoveryCodec {
 Future<List<PrinterTarget>> discoverPrinters({
   Duration duration = const Duration(seconds: 3),
 }) async {
-  final records = <DnsRecord>[],
+  final window = DiscoveryWindow(),
       sockets = <RawDatagramSocket>[],
       listeners = <StreamSubscription<RawSocketEvent>>[];
   final interfaces = await NetworkInterface.list(
@@ -221,14 +259,26 @@ Future<List<PrinterTarget>> discoverPrinters({
           socket.listen((event) {
             if (event != RawSocketEvent.read) return;
             Datagram? d;
-            while ((d = socket.receive()) != null) {
-              try {
-                records.addAll(
-                  DiscoveryCodec.decode(d!.data, d.address.address),
-                );
-              } on FormatException {
-                /* Ignore unrelated/malformed responses. */
+            try {
+              for (
+                var batch = 0;
+                batch < 64 && (d = socket.receive()) != null;
+                batch++
+              ) {
+                if (window.full) {
+                  socket.close();
+                  return;
+                }
+                try {
+                  window.add(d!.data, d.address.address);
+                } on FormatException {
+                  /* Ignore unrelated/malformed responses. */
+                }
               }
+            } on SocketException {
+              // An interface can disappear while a discovery window is open.
+            } on StateError {
+              // A queued event can arrive after its socket was closed.
             }
           }, onError: (Object _) {}),
         );
@@ -237,12 +287,20 @@ Future<List<PrinterTarget>> discoverPrinters({
       }
     }
     void send(String name, int type) {
-      final query = DiscoveryCodec.question(name, type);
+      if (window.full) return;
+      List<int> query;
+      try {
+        query = DiscoveryCodec.question(name, type);
+      } on FormatException {
+        return;
+      }
       for (final socket in sockets) {
         try {
           socket.send(query, group, 5353);
         } on SocketException {
           /* Interface went away. */
+        } on StateError {
+          /* Socket closed after an interface error. */
         }
       }
     }
@@ -250,16 +308,16 @@ Future<List<PrinterTarget>> discoverPrinters({
     send('_ipp._tcp.local', 12);
     send('_ipps._tcp.local', 12);
     await Future<void>.delayed(duration ~/ 3);
-    for (final ptr in records.where((r) => r.type == 12).toList()) {
+    for (final ptr in window.records.where((r) => r.type == 12).toList()) {
       send(ptr.value as String, 33);
       send(ptr.value as String, 16);
     }
     await Future<void>.delayed(duration ~/ 3);
-    for (final srv in records.where((r) => r.type == 33).toList()) {
+    for (final srv in window.records.where((r) => r.type == 33).toList()) {
       send((srv.value as Map)['host'] as String, 1);
     }
     await Future<void>.delayed(duration ~/ 3);
-    return DiscoveryCodec.targets(records);
+    return DiscoveryCodec.targets(window.records);
   } finally {
     for (final listener in listeners) {
       await listener.cancel();

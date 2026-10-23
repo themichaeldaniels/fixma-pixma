@@ -10,13 +10,13 @@ discovery, status and connection checks and [send a model report](SUPPORT.md).
 A G7000 family name is not proof that another regional model is compatible.
 Do not bypass the model or firmware checks to try maintenance or resets.
 
-**[Download for Windows x64](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.7/PixmaFixa-Windows-0.9.0-beta.7.zip)**
+**[Download for Windows x64](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.8/PixmaFixa-Windows-0.9.0-beta.8.zip)**
 
-[Release notes and all downloads](https://github.com/themichaeldaniels/pixma-fixa/releases/tag/v0.9.0-beta.7)
- · [Checksums](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.7/SHA256SUMS.txt)
- · [Source archive](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.7/PixmaFixa-source-0.9.0-beta.7.zip)
+[Release notes and all downloads](https://github.com/themichaeldaniels/pixma-fixa/releases/tag/v0.9.0-beta.8)
+ · [Checksums](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.8/SHA256SUMS.txt)
+ · [Source archive](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.8/PixmaFixa-source-0.9.0-beta.8.zip)
 
-Current release: **0.9.0-beta.7**, Windows x64. Extract the entire ZIP, then run
+Current release: **0.9.0-beta.8**, Windows x64. Extract the entire ZIP, then run
 `pixma_fixa.exe`. No installer, Python setup, account, or purchased reset key is
 needed to use the app. While this repository is private, GitHub access is required
 to download its files. macOS and Android builds are not available yet.
@@ -190,9 +190,13 @@ before and after completion when available, and never repeats an uncertain comma
 
 Extract the complete Windows ZIP and run `pixma_fixa.exe`. Keep both helper executables, DLLs, and the data directory together. See [START-HERE.txt](START-HERE.txt).
 
-The current package is a Windows beta. Version 0.9.0-beta.7 passed automated startup and interactive checks in fresh Windows Sandbox without development tools. The integrated report flow was inspected in both themes. Native save cancellation produced no file or browser launch; saving generated valid JSON before the browser received the exact issue-form URL. No issue was submitted. All 150 regression tests pass; static analysis is clean. Distribution files are unsigned. Native nonzero waste-counter clear and printer-side in-flight job cancellation are marked Experimental and require acknowledgment. The waste reset also requires acknowledgment of the spill risk. See [BETA-NOTES.md](BETA-NOTES.md) and [VALIDATION.md](VALIDATION.md) for the evidence and limits.
+The current package is a Windows beta. Version 0.9.0-beta.8 passed automated startup and interactive checks in fresh Windows Sandbox without development tools. The final review corrected privacy, parser, resource-bound, clock-rollback and helper/window lifecycle issues. Both-theme native reporting, save cancellation and valid JSON export before browser handoff passed. See REVIEW.md for the scope and remaining limits. No issue was submitted. All 168 regression tests pass; static analysis is clean. Distribution files are unsigned. Native nonzero waste-counter clear and printer-side in-flight job cancellation are marked Experimental and require acknowledgment. The waste reset also requires acknowledgment of the spill risk. See [BETA-NOTES.md](BETA-NOTES.md) and [VALIDATION.md](VALIDATION.md) for the evidence and limits.
 
 ## Build and test
+
+The final review and corrected issues are documented in [REVIEW.md](REVIEW.md).
+Use `-OutputDirectory C:/releases/PixmaFixa` with the build script to choose a
+package location outside the checkout.
 
 Use Flutter 3.47.7 / Dart 3.13.5 and Visual Studio with Desktop development with C++. From the project directory:
 

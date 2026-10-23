@@ -1,4 +1,7 @@
-param([string]$FlutterRoot = (Join-Path $PSScriptRoot '../../work/tooling/flutter'))
+param(
+    [string]$FlutterRoot = (Join-Path $PSScriptRoot '../../work/tooling/flutter'),
+    [string]$OutputDirectory = (Join-Path $PSScriptRoot '../../outputs')
+)
 $ErrorActionPreference = 'Stop'
 $env:FLUTTER_SUPPRESS_ANALYTICS = 'true'
 $appRoot = Split-Path $PSScriptRoot -Parent
@@ -12,7 +15,7 @@ Push-Location $appRoot
 try {
     & $flutter pub get
     if ($LASTEXITCODE) { throw 'Dependency resolution failed.' }
-    $outputRoot = Join-Path (Split-Path $appRoot -Parent) 'outputs'
+    $outputRoot = [IO.Path]::GetFullPath($OutputDirectory)
     New-Item -ItemType Directory -Path $outputRoot -Force | Out-Null
     $analysisLog = Join-Path $outputRoot "PixmaFixa-$releaseVersion-analysis-final.log"
     $testLog = Join-Path $outputRoot "PixmaFixa-$releaseVersion-tests-final.log"
@@ -48,7 +51,7 @@ try {
     Get-ChildItem -LiteralPath build/windows/x64/runner/Release | Where-Object {
         $_.Extension -ne '.pdb' -and ($_.Extension -ne '.exe' -or $_.Name -in $executables)
     } | Copy-Item -Destination $out -Recurse
-    Copy-Item -LiteralPath START-HERE.txt,PENDING-WORK.txt,THIRD_PARTY_NOTICES.txt,LICENSE,README.md,TESTING.md,VALIDATION.md,BETA-NOTES.md,SUPPORT.md -Destination $out
+    Copy-Item -LiteralPath START-HERE.txt,PENDING-WORK.txt,THIRD_PARTY_NOTICES.txt,LICENSE,README.md,TESTING.md,VALIDATION.md,BETA-NOTES.md,SUPPORT.md,REVIEW.md -Destination $out
     $vswhere = 'C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe'
     $vs = & $vswhere -latest -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
     $redist = Join-Path $vs 'VC/Redist/MSVC'

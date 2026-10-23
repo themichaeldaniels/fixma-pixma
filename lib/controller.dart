@@ -31,8 +31,9 @@ class CanonControlCheck {
     this.target,
     this.identity,
     this.capabilities,
-    this.settings,
-  ) : checkedAt = DateTime.now();
+    this.settings, {
+    DateTime? checkedAt,
+  }) : checkedAt = checkedAt ?? DateTime.now();
 }
 
 class InkResetCheck {
@@ -40,8 +41,12 @@ class InkResetCheck {
   final InkIdentity identity;
   final InkCounters counters;
   final DateTime checkedAt;
-  InkResetCheck(this.target, this.identity, this.counters)
-    : checkedAt = DateTime.now();
+  InkResetCheck(
+    this.target,
+    this.identity,
+    this.counters, {
+    DateTime? checkedAt,
+  }) : checkedAt = checkedAt ?? DateTime.now();
 }
 
 typedef PeerFactory = Future<PrinterPeer> Function(
@@ -185,8 +190,9 @@ class CareController extends ChangeNotifier {
     required bool confirmed,
   }) async {
     if (!confirmed || busy || networkRefreshing || jobs.isEmpty) return;
-    if (DateTime.now().difference(snapshot.readAt) >
-        const Duration(minutes: 2)) {
+    if (DateTime.now().isBefore(snapshot.readAt) ||
+        DateTime.now().difference(snapshot.readAt) >
+            const Duration(minutes: 2)) {
       lastError = 'The queue view is out of date. Refresh it before canceling.';
       notifyListeners();
       return;
@@ -340,9 +346,12 @@ class CareController extends ChangeNotifier {
               .where((f) => f.path.endsWith('.json'))
               .toList()
             ..sort((a, b) => b.path.compareTo(a.path));
+      var remainingBytes = 32 * 1024 * 1024;
       for (final file in files.take(200)) {
         try {
-          if (file.lengthSync() > 16 * 1024 * 1024) continue;
+          final size = file.lengthSync();
+          if (size > 16 * 1024 * 1024 || size > remainingBytes) continue;
+          remainingBytes -= size;
           final value = jsonDecode(file.readAsStringSync());
           if (value is! Map<String, dynamic> ||
               value['started'] is! String ||
@@ -617,6 +626,7 @@ class CareController extends ChangeNotifier {
         colors.isEmpty ||
         colors.any((color) => !inkNames.containsKey(color)) ||
         check.target.key != selectedPrinter?.key ||
+        DateTime.now().isBefore(check.checkedAt) ||
         DateTime.now().difference(check.checkedAt) >
             const Duration(minutes: 2)) {
       lastError = 'Choose the refilled colors, confirm the upper line, and run a fresh ink check.';
@@ -787,6 +797,7 @@ class CareController extends ChangeNotifier {
 
   bool _validCanonCheck(CanonControlCheck check) =>
       check.target.key == selectedPrinter?.key &&
+      !DateTime.now().isBefore(check.checkedAt) &&
       DateTime.now().difference(check.checkedAt) < const Duration(minutes: 10);
 
   Future<InkIdentity> _checkCanonIdentity(
@@ -1300,7 +1311,10 @@ class CareController extends ChangeNotifier {
   void dispose() {
     disposed = true;
     _monitor?.cancel();
-    activePeer?.close();
+    final peer = activePeer;
+    if (peer != null) {
+      unawaited(Future<void>.sync(peer.close).catchError((Object _) {}));
+    }
     super.dispose();
   }
 }

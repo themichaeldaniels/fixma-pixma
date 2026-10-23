@@ -23,6 +23,8 @@ Future<void> main(List<String> args) async {
   if (task != null && !args.contains('--confirm-test')) {
     throw ArgumentError('Explicit --confirm-test is required.');
   }
+  // Reserve before connecting; two concurrent probes cannot share a proof file.
+  file.createSync(exclusive: true);
   final result = <String, dynamic>{
     'started': DateTime.now().toIso8601String(),
     'exchanges': [],

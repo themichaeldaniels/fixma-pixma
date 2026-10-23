@@ -32,6 +32,24 @@ screenshots only after intentional UI changes and visual review.
 
 ## Individual test cases
 
+### final_review_test.dart
+
+- Redaction preserves JSON keys and primitive types, including identifiers matching JSON literals.
+- Quoted, forward-slash, network and local user paths, URLs and email addresses redact without corrupting JSON.
+- Prior-operation printer identifiers and document metadata are removed from current errors.
+- Discovery limits total records and packets, including malformed packets.
+- Overlong names, invalid DNS record boundaries, invalid ports and malformed IPP booleans are rejected.
+- Nested report imports have depth and total-count bounds; history has an aggregate memory budget.
+- Disposal handles a failed helper close.
+- Clock rollback cannot authorize queue cancellation, ink reset, maintenance or settings.
+
+### worker_lifecycle_test.dart
+
+- Non-UTF8 diagnostics do not crash a pending request.
+- An asynchronous journal failure terminates the helper without an uncaught error.
+- Closing an already-closed helper input is safe and idempotent.
+- Oversized helper output terminates the helper and reports a bounded failure.
+
 The service-guide widget test also verifies the complete G7020 instructions fit
 the minimum window width with larger text, scroll when needed and can be closed.
 
@@ -291,3 +309,13 @@ All 150 tests pass; static analysis is clean. No issue was submitted and no
 printer writes were sent. Save failures, browser retry without another save,
 duplicate dispatch, closing during save and original error preservation are
 covered by regression tests. Networking and printer access were disabled.
+
+Version 0.9.0-beta.8 passed fresh normal-user Windows Sandbox startup, native
+USB/queue helpers, missing-helper recovery and both-theme reporting. Native
+save cancellation wrote no file and opened no form. Saving generated valid
+diagnostic JSON before browser handoff; independent checks verified schema,
+version, Windows information, privacy exclusions and unknown offline identity.
+All 168 tests pass, including 18 review regressions; static analysis is clean.
+All 26 locked hosted packages returned no registry advisories on 2026-10-23.
+A separate read-only G7020 check returned firmware 1.050, Ready and four full
+ink estimates. No physical printing, cleaning or reset commands were sent.

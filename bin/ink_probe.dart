@@ -33,6 +33,7 @@ Future<void> main(List<String> args) async {
     if (reset != null && record.existsSync()) {
       throw StateError('This reset proof already exists. Do not replay it.');
     }
+    if (reset != null) record.createSync(exclusive: true);
   }
   void save() => record?.writeAsStringSync(
     const JsonEncoder.withIndent('  ').convert(result),
