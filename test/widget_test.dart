@@ -369,6 +369,32 @@ void main() {
       await tester.tap(find.text('Print check'));
       await tester.pumpAndSettle();
       expect(recorder.lastTask, CanonTask.nozzleCheck);
+      await tester.ensureVisible(find.text('Align printhead'));
+      await tester.tap(find.text('Align printhead'));
+      await tester.pumpAndSettle();
+      expect(find.textContaining('Load two sheets'), findsOneWidget);
+      expect(
+        tester
+            .widget<FilledButton>(
+              find.widgetWithText(FilledButton, 'Start alignment'),
+            )
+            .onPressed,
+        isNull,
+      );
+      await tester.tap(find.text('Cancel'));
+      await tester.pumpAndSettle();
+      expect(recorder.lastTask, CanonTask.nozzleCheck);
+      await tester.tap(find.text('Align printhead'));
+      await tester.pumpAndSettle();
+      await tester.tap(
+        find.text(
+          'Two sheets are loaded, the output tray is open, and the tanks contain enough ink.',
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Start alignment'));
+      await tester.pumpAndSettle();
+      expect(recorder.lastTask, CanonTask.automaticAlignment);
       expect(recorder.paper, letterPaper);
       await tester.ensureVisible(find.text('Clean printhead'));
       await tester.tap(find.text('Clean printhead'));
@@ -387,7 +413,7 @@ void main() {
       );
       await tester.tap(find.text('Cancel'));
       await tester.pumpAndSettle();
-      expect(recorder.lastTask, CanonTask.nozzleCheck);
+      expect(recorder.lastTask, CanonTask.automaticAlignment);
     },
   );
 

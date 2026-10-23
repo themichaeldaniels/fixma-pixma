@@ -1,4 +1,4 @@
-PRINTER CARE - WINDOWS PREVIEW 0.7.1
+PRINTER CARE - WINDOWS PREVIEW 0.8.0
 
 Extract the complete folder, then run printer_care.exe. Keep the DLLs, data
 directory, printer_care_worker.exe and printer_care_queue.exe beside it.
@@ -10,11 +10,17 @@ refresh runs every 15 seconds; failed refreshes are labeled as last known.
 Appearance follows Windows unless you choose Light or Dark at the top right.
 
 Maintenance reads live Canon controls. The verified G7020/G7000 firmware 1.050
-profile provides standard cleaning, nozzle/alignment checks, and five settings.
-Printed patterns require one plain Letter/A4 sheet in the front cassette and an
-open output tray. Cleaning uses ink and requires a visual tank check. Settings
+profile provides standard cleaning, nozzle/alignment checks, automatic printhead
+alignment, and five settings. Check patterns require one plain Letter/A4 sheet in
+the front cassette and an open output tray. Cleaning uses ink and requires a visual tank check. Settings
 are read back. Both check sheets were physically verified on the G7020. The
 alignment check prints existing adjustment values; it does not calibrate the head.
+
+Align printhead performs automatic calibration using two plain Letter/A4 sheets
+in the front cassette. Allow about 4 to 5 minutes. Confirm enough ink and an open
+output tray, leave power connected and do not use the printer until completion.
+The app tracks the matching job and saves before/after values in its local record.
+An uncertain command is never repeated automatically.
 
 Reset ink counts is for colors refilled to the upper line. Ink percentages are
 stored estimates, not measured tank levels. Full counts are skipped. A failed or

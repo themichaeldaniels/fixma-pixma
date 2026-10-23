@@ -10,24 +10,44 @@ const a4Paper = 'iso_a4_210x297mm';
 enum CanonTask {
   nozzleCheck('Nozzle check', 'TestPrint', 'nozzle_check'),
   cleaning('Printhead cleaning', 'Cleaning', 'regular'),
-  alignmentCheck('Alignment check', 'TestPrint', 'regi_check');
+  alignmentCheck('Alignment check', 'TestPrint', 'regi_check'),
+  automaticAlignment(
+    'Automatic printhead alignment',
+    'TestPrint',
+    'auto_registration',
+  );
 
   final String label, operation, type;
   const CanonTask(this.label, this.operation, this.type);
   bool get usesPaper => this != cleaning;
+  int get sheetCount => this == automaticAlignment
+      ? 2
+      : usesPaper
+      ? 1
+      : 0;
+  Duration get completionTimeout =>
+      Duration(minutes: this == automaticAlignment ? 10 : 5);
 }
 
 class MaintenanceCapabilities {
   final Map<String, Set<String>> printSizes;
   final Set<String> cleaningGroups;
-  const MaintenanceCapabilities(this.printSizes, this.cleaningGroups);
+  final Map<String, Map<String, int>> paperCounts;
+  const MaintenanceCapabilities(
+    this.printSizes,
+    this.cleaningGroups, {
+    this.paperCounts = const {},
+  });
   bool supports(CanonTask task, String paper) => task == CanonTask.cleaning
       ? cleaningGroups.contains('all')
-      : printSizes[task.type]?.contains(paper) == true;
+      : printSizes[task.type]?.contains(paper) == true &&
+            (task != CanonTask.automaticAlignment ||
+                paperCounts[task.type]?[paper] == task.sheetCount);
 
   static MaintenanceCapabilities parse(String xml) {
     final p = CanonInkPeer.reply(xml, 'GetCapabilityResponse', 'maintenance');
     final sizes = <String, Set<String>>{};
+    final counts = <String, Map<String, int>>{};
     for (final type
         in p
             .findElements('TestPrint', namespace: canonCommon)
@@ -40,6 +60,11 @@ class MaintenanceCapabilities {
         type,
         'papersize',
       ).split(',').toSet();
+      counts[type.getAttribute('value') ?? ''] = {
+        for (final n in type.findElements('papernum', namespace: canonCommon))
+          if (int.tryParse(n.innerText.trim()) case final int count)
+            n.getAttribute('papersize') ?? '': count,
+      };
     }
     final regular = p
         .findElements('Cleaning', namespace: canonCommon)
@@ -49,6 +74,7 @@ class MaintenanceCapabilities {
     return MaintenanceCapabilities(
       sizes,
       regular == null ? {} : _text(regular, 'inkgroup').split(',').toSet(),
+      paperCounts: counts,
     );
   }
 }
@@ -64,7 +90,8 @@ String _text(XmlElement p, String name) =>
 /// Only the user-facing settings we can read back independently.
 class CanonSettings {
   final Map<String, String> values;
-  const CanonSettings(this.values);
+  final Map<String, int> alignment;
+  const CanonSettings(this.values, {this.alignment = const {}});
   static const allowed = {
     'quiet': {'ON', 'OFF'},
     'autoPowerOn': {'ON', 'OFF'},
@@ -87,6 +114,21 @@ class CanonSettings {
     final quiet = p
         .findElements('silentmode', namespace: canonCommon)
         .singleOrNull;
+    final alignment = <String, int>{};
+    for (final group in p.findElements(
+      'setregistration',
+      namespace: canonCommon,
+    )) {
+      for (final item in group.findElements('item', namespace: canonCommon)) {
+        final sign = item.getAttribute('sign') ?? '';
+        final value = int.tryParse(item.innerText.trim());
+        if (RegExp(r'^[A-T]$').hasMatch(sign) &&
+            value != null &&
+            value.abs() <= 5) {
+          alignment[sign] = value;
+        }
+      }
+    }
     return CanonSettings({
       'quiet': quiet == null ? '' : _text(quiet, 'mode'),
       'autoPowerOn': _text(p, 'autopoweron'),
@@ -97,7 +139,7 @@ class CanonSettings {
           : _text(off, 'time'),
       'paperGap': _text(p, 'papergap'),
       'dryLevel': _text(p, 'drylevel'),
-    });
+    }, alignment: alignment);
   }
 
   static String display(String key, String value) =>

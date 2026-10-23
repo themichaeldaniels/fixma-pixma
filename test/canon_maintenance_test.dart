@@ -16,8 +16,11 @@ class MaintenancePrinter implements CanonMaintenancePeer {
   final Directory folder;
   MaintenancePrinter(this.folder);
   String serial = 'TEST12345', state = 'idle';
-  bool loseReply = false, otherSettingChanges = false;
+  bool loseReply = false,
+      otherSettingChanges = false,
+      failAlignmentReadback = false;
   bool active = false;
+  CanonTask lastTask = CanonTask.cleaning;
   int polls = 0, commands = 0, closed = 0, settingWrites = 0;
   Map<String, String> values = CanonSettings.parse(fixture('device-settings'))
       .values;
@@ -28,7 +31,21 @@ class MaintenancePrinter implements CanonMaintenancePeer {
   Future<MaintenanceCapabilities> capabilities() async =>
       MaintenanceCapabilities.parse(fixture('maintenance-capability'));
   @override
-  Future<CanonSettings> settings() async => CanonSettings({...values});
+  Future<CanonSettings> settings() async {
+    if (failAlignmentReadback &&
+        active &&
+        lastTask == CanonTask.automaticAlignment) {
+      throw StateError('Configuration unavailable');
+    }
+    return CanonSettings(
+      {...values},
+      alignment: {
+        ...CanonSettings.parse(fixture('device-settings')).alignment,
+        if (active && lastTask == CanonTask.automaticAlignment) 'G': 2,
+      },
+    );
+  }
+
   @override
   Future<void> setSetting(String key, String value) async {
     settingWrites++;
@@ -50,6 +67,7 @@ class MaintenancePrinter implements CanonMaintenancePeer {
     expect(guard.existsSync(), true);
     expect((jsonDecode(guard.readAsStringSync()) as Map)['job'], job);
     commands++;
+    lastTask = task;
     active = true;
     if (loseReply) throw const SocketException('Lost reply');
   }
@@ -59,10 +77,18 @@ class MaintenancePrinter implements CanonMaintenancePeer {
   @override
   Future<String> jobStatus(String job) async {
     return fixture(
-      polls++ == 0
-          ? 'maintenance-processing-response'
-          : 'maintenance-finished-response',
-    );
+          polls++ == 0
+              ? 'maintenance-processing-response'
+              : 'maintenance-finished-response',
+        )
+        .replaceAll(
+          '<ivec:maintenance_operation>Cleaning</ivec:maintenance_operation>',
+          '<ivec:maintenance_operation>${lastTask.operation}</ivec:maintenance_operation>',
+        )
+        .replaceAll(
+          '<ivec:type>regular</ivec:type>',
+          '<ivec:type>${lastTask.type}</ivec:type>',
+        );
   }
 
   @override
@@ -124,6 +150,83 @@ void main() {
     expect(text, contains('<ivec:type>nozzle_check</ivec:type>'));
     expect(text, contains('<ivec:inputbin>inputbin_p2</ivec:inputbin>'));
     expect(text, contains(letterPaper));
+  });
+  test(
+    'automatic alignment requires the advertised two-sheet cassette capability',
+    () {
+      final xml = fixture('maintenance-capability');
+      final supported = MaintenanceCapabilities.parse(xml);
+      for (final paper in [letterPaper, a4Paper]) {
+        expect(supported.supports(CanonTask.automaticAlignment, paper), true);
+        expect(supported.paperCounts['auto_registration']?[paper], 2);
+      }
+      for (final broken in [
+        xml.replaceAll('auto_registration', 'other'),
+        xml.replaceAll('>2</ivec:papernum>', '>1</ivec:papernum>'),
+        xml.replaceAll('inputbin_p2', 'inputbin_p1'),
+        xml.replaceAll(RegExp(r'<ivec:papernum[^>]*>2</ivec:papernum>'), ''),
+      ]) {
+        expect(
+          MaintenanceCapabilities.parse(broken)
+              .supports(CanonTask.automaticAlignment, letterPaper),
+          false,
+        );
+      }
+    },
+  );
+  test('automatic alignment command selects calibration and allows sufficient completion time', () {
+    expect(
+      LocalCanonMaintenance.taskContent(
+        CanonTask.automaticAlignment,
+        '12345678',
+        a4Paper,
+      ),
+      '<ivec:jobID>12345678</ivec:jobID><ivec:type>auto_registration</ivec:type>'
+      '<ivec:inputbin>inputbin_p2</ivec:inputbin><ivec:papersize>iso_a4_210x297mm</ivec:papersize><ivec:papertype>stationery</ivec:papertype>',
+    );
+    expect(CanonTask.automaticAlignment.operation, 'TestPrint');
+    expect(CanonTask.automaticAlignment.sheetCount, 2);
+    expect(
+      CanonTask.automaticAlignment.completionTimeout,
+      const Duration(minutes: 10),
+    );
+    expect(CanonTask.alignmentCheck.sheetCount, 1);
+  });
+  test('alignment readback preserves zero and signed values, ignoring unknown or invalid items', () {
+    final xml = fixture('device-settings');
+    final alignment = CanonSettings.parse(xml).alignment;
+    expect(alignment.length, 20);
+    expect(alignment['A'], 0);
+    expect(alignment['G'], 5);
+    expect(alignment['H'], -5);
+    expect(
+      CanonSettings.parse(xml.replaceAll('sign="A">0', 'sign="A">unknown'))
+          .alignment
+          .containsKey('A'),
+      false,
+    );
+    expect(
+      CanonSettings.parse(xml.replaceAll('sign="A">0', 'sign="A">99')).alignment
+          .containsKey('A'),
+      false,
+    );
+  });
+  test('alignment completion must match auto_registration rather than a check print', () {
+    final xml = fixture('maintenance-processing-response')
+        .replaceAll('Cleaning', 'TestPrint')
+        .replaceAll('regular', 'auto_registration');
+    expect(
+      MaintenanceJob.parse(
+        xml,
+        '12345678',
+        CanonTask.automaticAlignment,
+      ).matched,
+      true,
+    );
+    expect(
+      () => MaintenanceJob.parse(xml, '12345678', CanonTask.alignmentCheck),
+      throwsStateError,
+    );
   });
   test('settings parse named values; settings generator rejects arbitrary commands', () {
     final s = CanonSettings.parse(fixture('device-settings'));
@@ -228,6 +331,43 @@ void main() {
         expect(printer.commands, 0);
       },
     );
+    test('automatic alignment records before and after adjustments after matching completion', () async {
+      await c.runCanonTask(CanonTask.automaticAlignment, prepared: true);
+      expect(printer.commands, 1);
+      final record = c.history.first;
+      expect(record['status'], 'Completed');
+      expect(record['verified'], true);
+      expect(record['sheetCount'], 2);
+      expect(record['alignmentBefore']['G'], 5);
+      expect(record['alignmentAfter']['G'], 2);
+      expect(c.canonControls!.settings.alignment['G'], 2);
+      expect(c.message, contains('finished its adjustment'));
+    });
+    test('automatic alignment cannot start unprepared or repeat after lost acknowledgment', () async {
+      await c.runCanonTask(CanonTask.automaticAlignment, prepared: false);
+      expect(printer.commands, 0);
+      printer.loseReply = true;
+      await c.runCanonTask(CanonTask.automaticAlignment, prepared: true);
+      expect(printer.commands, 1);
+      printer.active = false;
+      printer.loseReply = false;
+      await c.runCanonTask(CanonTask.automaticAlignment, prepared: true);
+      expect(printer.commands, 1);
+      expect(c.lastError, contains('uncertain'));
+    });
+    test('successful alignment remains completed if optional adjustment readback is unavailable', () async {
+      printer.failAlignmentReadback = true;
+      await c.runCanonTask(CanonTask.automaticAlignment, prepared: true);
+      expect(printer.commands, 1);
+      expect(c.history.first['verified'], true);
+      expect(c.history.first['status'], 'Completed');
+      expect(
+        c.history.first['alignmentReadbackError'],
+        contains('Configuration unavailable'),
+      );
+      expect(c.canonControls, isNull);
+      expect(c.lastError, isEmpty);
+    });
     test('lost acknowledgment is never replayed; durable guard survives new controller', () async {
       printer.loseReply = true;
       await c.runCanonTask(CanonTask.cleaning, prepared: true);

@@ -47,7 +47,9 @@ Future<void> main(List<String> args) async {
     final identity = await peer.identity();
     result['identity'] = identity.toJson();
     final caps = await peer.capabilities();
-    result['settings'] = (await peer.settings()).values;
+    final settings = await peer.settings();
+    result['settings'] = settings.values;
+    result['alignmentBefore'] = settings.alignment;
     final before = await peer.read();
     result['before'] = before.toJson();
     save();
@@ -126,19 +128,45 @@ Future<void> main(List<String> args) async {
       final finishedJob = job;
       job = null;
       var busySeen = false;
-      for (var i = 0; i < 90; i++) {
+      var matchingJobSeen = false;
+      final deadline = DateTime.now().add(task.completionTimeout);
+      while (DateTime.now().isBefore(deadline)) {
         final status = await peer.read();
         result['after'] = status.toJson();
         busySeen |= !status.ready;
         result['busyObserved'] = busySeen;
         result['jobStatus'] = await peer.jobStatus(finishedJob);
+        final progress = MaintenanceJob.parse(
+          result['jobStatus'] as String,
+          finishedJob,
+          task,
+        );
+        matchingJobSeen |=
+            progress.matched && progress.progress == 'processing';
+        result['matchingJobSeen'] = matchingJobSeen;
         save();
         stdout.writeln(
           '${DateTime.now().toIso8601String()} ${status.state} ${status.supportCode}',
         );
-        if (status.supportCode.isNotEmpty) break;
-        if (status.ready && (busySeen || i >= 5)) break;
+        if (status.supportCode.isNotEmpty || progress.failed) {
+          throw StateError(
+            'Maintenance stopped or printer reports an error. No task was repeated.',
+          );
+        }
+        if (status.ready &&
+            (progress.completed || (matchingJobSeen && progress.absent))) {
+          result['verified'] = true;
+          if (task == CanonTask.automaticAlignment) {
+            result['alignmentAfter'] = (await peer.settings()).alignment;
+          }
+          break;
+        }
         await Future<void>.delayed(const Duration(seconds: 2));
+      }
+      if (result['verified'] != true) {
+        throw StateError(
+          'Matching maintenance completion was not observed. No task was repeated.',
+        );
       }
     }
   } catch (e) {

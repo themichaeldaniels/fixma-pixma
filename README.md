@@ -7,7 +7,7 @@ A local Windows utility for maintaining the Canon PIXMA G7020. No account, reset
 - Discover network printers and read identity, firmware, estimated ink, current errors, and reported capabilities.
 - Read G7000 page counts and printhead replacement counters.
 - Reset remaining-ink counts after confirming the selected tanks were refilled.
-- Run standard printhead cleaning, nozzle checks, and alignment checks.
+- Run standard printhead cleaning, nozzle checks, alignment-value checks, and automatic printhead alignment.
 - Read and change quiet mode, automatic power on/off, paper-abrasion prevention, and ink drying wait.
 - Inspect the printer queue and separately selected Windows queues; cancel only confirmed jobs.
 - Read the USB service report and perform a guarded waste-counter reset after absorber servicing.
@@ -28,10 +28,19 @@ Windows x64 is the supported platform. Canon maintenance and reset commands are 
 | USB service report, history/export and reset guards | Hardware tested |
 | Waste-counter clear | Original protocol reset succeeded; native nonzero clear remains untested |
 | Nozzle/alignment checks | Matching jobs completed, both sheets printed and photographed; no obvious nozzle defects in the supplied photo |
+| Automatic printhead alignment | One matching calibration job completed in about 4 minutes 19 seconds; saved A-T values read back, with seven adjustments changed |
 | Queue cancellation | Completed, held one-page Canon Windows spool job canceled; changed identity rejected; physical in-flight IPP job cancellation remains untested |
 | Portable startup and upgrade | Extracted ZIP runs with a restricted PATH and unrelated working directory; prior settings, history, guards and saved files preserved |
 
 Ink percentages are stored estimates, not physical tank measurements. Remaining-ink reset and waste-absorber reset are separate operations. A counter reset does not remove waste ink. Full EEPROM backup, firmware flashing, ink flush, deep cleaning, and unvalidated model writes are not implemented.
+
+Automatic printhead alignment uses two plain Letter or A4 sheets in the front
+cassette and takes about 4 to 5 minutes. It prints and measures alignment patterns
+and saves the adjustment in the printer. The separate alignment check prints
+existing values on one sheet. Alignment requires live capability/identity checks,
+an idle error-free printer, reported ink in all colors and preparation confirmation.
+The app tracks the matching job for up to ten minutes, records adjustment values
+before and after completion when available, and never repeats an uncertain command.
 
 ## Run
 

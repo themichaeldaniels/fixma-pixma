@@ -93,6 +93,14 @@ class CanonMaintenancePanel extends StatelessWidget {
                 'Print alignment check',
                 enabled,
               ),
+              Divider(height: 1, color: p.line),
+              _taskRow(
+                context,
+                CanonTask.automaticAlignment,
+                'Print two sheets and let the printer adjust alignment automatically. Takes about 4 to 5 minutes.',
+                'Align printhead',
+                enabled,
+              ),
             ],
           ),
         ),
@@ -221,7 +229,9 @@ class _TaskDialogState extends State<_TaskDialog> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                task.usesPaper
+                task == CanonTask.automaticAlignment
+                    ? 'Load two sheets of plain Letter or A4 paper in the front cassette and open the output tray. The printer will print and read its alignment patterns, then save the adjustment automatically. Allow about 4 to 5 minutes. Leave the printer powered on and do not use it until this finishes.'
+                    : task.usesPaper
                     ? 'Load one sheet of plain Letter or A4 paper in the front cassette. Open the output tray. The printer will print its own check pattern.'
                     : 'This runs one standard cleaning cycle for all colors. Leave the printer powered on until it finishes. Cleaning uses ink.',
                 style: const TextStyle(fontSize: 14, height: 1.6),
@@ -237,7 +247,9 @@ class _TaskDialogState extends State<_TaskDialog> {
                     DropdownMenuItem(value: letterPaper, child: Text('Letter')),
                     DropdownMenuItem(value: a4Paper, child: Text('A4')),
                   ],
-                  onChanged: (v) => setState(() => paper = v!),
+                  onChanged: (v) {
+                    if (v != null) setState(() => paper = v);
+                  },
                 ),
               ],
               const SizedBox(height: 14),
@@ -247,7 +259,9 @@ class _TaskDialogState extends State<_TaskDialog> {
                 value: ready,
                 onChanged: (v) => setState(() => ready = v ?? false),
                 title: Text(
-                  task.usesPaper
+                  task == CanonTask.automaticAlignment
+                      ? 'Two sheets are loaded, the output tray is open, and the tanks contain enough ink.'
+                      : task.usesPaper
                       ? 'The paper and output tray are ready.'
                       : 'I checked that the tanks contain enough ink.',
                   style: const TextStyle(fontSize: 14),
@@ -264,7 +278,13 @@ class _TaskDialogState extends State<_TaskDialog> {
         ),
         FilledButton(
           onPressed: ready ? () => Navigator.pop(context, paper) : null,
-          child: Text(task.usesPaper ? 'Print check' : 'Start cleaning'),
+          child: Text(
+            task == CanonTask.automaticAlignment
+                ? 'Start alignment'
+                : task.usesPaper
+                ? 'Print check'
+                : 'Start cleaning',
+          ),
         ),
       ],
     );

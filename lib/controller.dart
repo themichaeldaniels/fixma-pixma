@@ -840,6 +840,10 @@ class CareController extends ChangeNotifier {
         currentLog!['task'] = task.name;
         currentLog!['paper'] = task.usesPaper ? paper : null;
         currentLog!['before'] = before.toJson();
+        if (task == CanonTask.automaticAlignment) {
+          currentLog!['alignmentBefore'] = (await peer.settings()).alignment;
+        }
+        currentLog!['sheetCount'] = task.sheetCount;
         job = await peer.startJob();
         currentLog!['job'] = job;
         guard.writeAsStringSync(
@@ -860,7 +864,7 @@ class CareController extends ChangeNotifier {
         final expectedJob = job;
         job = null;
         var matchedJobSeen = false;
-        final deadline = DateTime.now().add(const Duration(minutes: 5));
+        final deadline = DateTime.now().add(task.completionTimeout);
         while (DateTime.now().isBefore(deadline)) {
           final status = await peer.read();
           final jobXml = await peer.jobStatus(expectedJob);
@@ -886,7 +890,24 @@ class CareController extends ChangeNotifier {
               (result.completed || (matchedJobSeen && result.absent))) {
             guard.deleteSync();
             currentLog!['verified'] = true;
-            message = task.usesPaper
+            if (task == CanonTask.automaticAlignment) {
+              canonControls = null;
+              try {
+                final afterSettings = await peer.settings();
+                currentLog!['alignmentAfter'] = afterSettings.alignment;
+                canonControls = CanonControlCheck(
+                  check.target,
+                  identity,
+                  caps,
+                  afterSettings,
+                );
+              } catch (e) {
+                currentLog!['alignmentReadbackError'] = cleanError(e);
+              }
+            }
+            message = task == CanonTask.automaticAlignment
+                ? 'Automatic printhead alignment completed. The printer finished its adjustment and is ready.'
+                : task.usesPaper
                 ? '${task.label} completed. Examine the printed sheet; print quality needs a visual check.'
                 : 'Printhead cleaning completed. Print a nozzle check to examine the result.';
             return;

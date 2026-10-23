@@ -353,7 +353,7 @@ extension CareDiagnostics on CareController {
 
   String diagnosticSummary() => redactedDiagnosticText(
     {
-      'application': 'Printer Care 0.7.1',
+      'application': 'Printer Care 0.8.0',
       'checkedAt': connectionCheckedAt?.toIso8601String(),
       'reportedUsage': canonUsage?.toJson(),
       'checks': connectionChecks.map((v) => v.toJson()).toList(),

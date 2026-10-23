@@ -19,7 +19,7 @@ screenshots only after intentional UI changes and visual review.
 | --- | --- | --- |
 | USB protocol | protocol_test, workflow_test | Captured vectors, encode/decode, fragments, selector rejection, one-shot clear, interrupted writes, readback |
 | Canon refill | ink_counter_test, ink_reset_workflow_test | XML namespaces, capability/firmware checks, selected colors, full counts, changed identity, unknown levels, durable guards |
-| Maintenance/settings | canon_maintenance_test | Captured commands, capability restrictions, preparation, idle/ink requirements, job ownership/completion, lost replies, settings readback/restoration |
+| Maintenance/settings | canon_maintenance_test | Captured commands, two-sheet automatic alignment capability, preparation, idle/ink requirements, matching task completion, lost replies, adjustment readback failures, settings readback/restoration |
 | Network | network_test, network_controller_test | IPP lengths/types/errors, DNS bounds/loops, discovery, address fallback, polling, offline recovery, restored selection |
 | Queues | queue_test, queue_widget_test | Source identity, job fingerprints, stale views, new arrivals, confirmed lists, cancellation once, Windows helper bounds |
 | Diagnostics | diagnostics_test, diagnostics_widget_test | Usage parsing, redaction, model evidence, report comparisons/imports, offline capture bounds, read-only checks |
@@ -34,16 +34,23 @@ expands them for each theme/vector. Line locations refer to the current source.
 
 ### canon_maintenance_test.dart
 
-- [captured capability enables only supported print patterns and standard cleaning](test/canon_maintenance_test.dart#L76)
-- [standard cleaning packet equals the physically tested command](test/canon_maintenance_test.dart#L88)
-- [nozzle packet selects one plain sheet from the cassette](test/canon_maintenance_test.dart#L118)
-- [settings parse named values; settings generator rejects arbitrary commands](test/canon_maintenance_test.dart#L128)
-- [completion requires the matching job, operation and type](test/canon_maintenance_test.dart#L150)
-- [switching printers discards cached maintenance controls](test/canon_maintenance_test.dart#L196)
-- [one standard cycle waits for matching busy-to-idle completion](test/canon_maintenance_test.dart#L203)
-- [confirmation, fresh identity and readiness are required before dispatch](test/canon_maintenance_test.dart#L217)
-- [lost acknowledgment is never replayed; durable guard survives new controller](test/canon_maintenance_test.dart#L231)
-- [selected setting readback and untouched other values are required](test/canon_maintenance_test.dart#L252)
+- [captured capability enables only supported print patterns and standard cleaning](test/canon_maintenance_test.dart#L102)
+- [standard cleaning packet equals the physically tested command](test/canon_maintenance_test.dart#L114)
+- [nozzle packet selects one plain sheet from the cassette](test/canon_maintenance_test.dart#L144)
+- [automatic alignment requires the advertised two-sheet cassette capability](test/canon_maintenance_test.dart#L154)
+- [automatic alignment command selects calibration and allows sufficient completion time](test/canon_maintenance_test.dart#L177)
+- [alignment readback preserves zero and signed values, ignoring unknown or invalid items](test/canon_maintenance_test.dart#L195)
+- [alignment completion must match auto_registration rather than a check print](test/canon_maintenance_test.dart#L214)
+- [settings parse named values; settings generator rejects arbitrary commands](test/canon_maintenance_test.dart#L231)
+- [completion requires the matching job, operation and type](test/canon_maintenance_test.dart#L253)
+- [switching printers discards cached maintenance controls](test/canon_maintenance_test.dart#L299)
+- [one standard cycle waits for matching busy-to-idle completion](test/canon_maintenance_test.dart#L306)
+- [confirmation, fresh identity and readiness are required before dispatch](test/canon_maintenance_test.dart#L320)
+- [automatic alignment records before and after adjustments after matching completion](test/canon_maintenance_test.dart#L334)
+- [automatic alignment cannot start unprepared or repeat after lost acknowledgment](test/canon_maintenance_test.dart#L346)
+- [successful alignment remains completed if optional adjustment readback is unavailable](test/canon_maintenance_test.dart#L358)
+- [lost acknowledgment is never replayed; durable guard survives new controller](test/canon_maintenance_test.dart#L371)
+- [selected setting readback and untouched other values are required](test/canon_maintenance_test.dart#L392)
 
 ### diagnostics_test.dart
 
@@ -172,12 +179,12 @@ expands them for each theme/vector. Line locations refer to the current source.
 - [ink reset dialog requires selected colors and refill confirmation](test/widget_test.dart#L271)
 - [refill guide explains stale estimates without changing counts](test/widget_test.dart#L305)
 - [maintenance confirmation requires preparation before one command](test/widget_test.dart#L326)
-- [unread Canon settings do not create dropdowns with null values](test/widget_test.dart#L394)
-- [scheduled quiet mode is preserved as a non-null current choice](test/widget_test.dart#L405)
-- [compact report remains aligned at minimum window width](test/widget_test.dart#L443)
-- [${mode.name} maintenance screenshot](test/widget_test.dart#L453)
-- [${mode.name} service report screenshot](test/widget_test.dart#L464)
-- [${mode.name} live overview screenshot](test/widget_test.dart#L472)
+- [unread Canon settings do not create dropdowns with null values](test/widget_test.dart#L420)
+- [scheduled quiet mode is preserved as a non-null current choice](test/widget_test.dart#L431)
+- [compact report remains aligned at minimum window width](test/widget_test.dart#L469)
+- [${mode.name} maintenance screenshot](test/widget_test.dart#L479)
+- [${mode.name} service report screenshot](test/widget_test.dart#L490)
+- [${mode.name} live overview screenshot](test/widget_test.dart#L498)
 
 ### workflow_test.dart
 
@@ -194,6 +201,8 @@ Automated tests do not establish every physical outcome. Nozzle and alignment-va
 sheets were printed and photographed on the G7020. A complete held one-page Canon
 Windows spool job was canceled, while changed job identity was rejected. Native
 export, extracted portable startup, and upgrade data preservation passed.
+Automatic alignment completed through the native interface; its matching job and
+saved adjustments were verified separately from the alignment-value check print.
 Clean Windows machine validation and physical in-flight IPP cancellation remain
 outstanding. See [VALIDATION.md](VALIDATION.md) for the evidence and its limits.
 Keep nonzero native waste-clear validation listed as untested; do not reset a

@@ -26,6 +26,10 @@ class ModelSupport {
         ('Remaining-ink reset', 'Hardware verified'),
         ('Standard cleaning and five settings', 'Hardware verified'),
         ('Nozzle and alignment checks', 'Both sheets physically verified'),
+        (
+          'Automatic printhead alignment',
+          'Completed on hardware; adjustments read back',
+        ),
         ('Windows queue cancellation', 'Held Canon spool job verified'),
         (
           'Network queues',
