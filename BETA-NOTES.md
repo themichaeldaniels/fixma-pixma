@@ -1,6 +1,6 @@
 # Printer Care 0.9.0-beta.1
 
-Windows x64 public beta candidate, verified on Canon PIXMA G7020 firmware 1.050.
+Windows x64 public beta, verified on Canon PIXMA G7020 firmware 1.050.
 Extract the complete portable ZIP and run `printer_care.exe`.
 
 ## Experimental features
@@ -28,13 +28,18 @@ Physical tests cover status, refill counts, standard cleaning, five settings,
 nozzle and alignment checks, automatic alignment and USB service diagnostics.
 See [VALIDATION.md](VALIDATION.md) and [TESTING.md](TESTING.md) for limits.
 
-**Clean Windows machine validation is pending.** A restricted-PATH run on the
-development host does not replace a fresh Windows environment. The separate
-clean Windows test kit prepares an offline Sandbox run or tests another clean
-Windows PC/VM. It reports startup, read-only native helpers and missing-helper
-handling without sending printer writes. The report distinguishes host checks
-from an explicitly confirmed clean system. Native UI, theme and save-dialog
-inspection are also required on that system before recording the release gate.
+**Clean Windows validation passed on 2026-10-23.** A fresh Windows Sandbox guest
+with no detected development tools passed offline startup, restricted PATH and
+working-directory isolation, read-only USB and Windows queue helpers, and
+graceful missing-helper handling. Networking and printer redirection were
+disabled. Native interface inspection verified light and dark appearance,
+device-theme following, offline controls, both experimental warnings, and sample
+report export through the Windows save dialog. No printer writes were sent.
+
+This validates the portable package on the tested Windows guest. It does not
+certify every Windows version, display scaling, driver or hardware configuration.
+Physical printer behavior is covered separately by the hardware evidence above.
+The separate clean Windows test kit supports repeating these startup checks.
 
 ## Reporting a beta issue
 

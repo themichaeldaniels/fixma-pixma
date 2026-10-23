@@ -1,6 +1,6 @@
 PRINTER CARE - RELEASE VALIDATION
 
-Maintenance-only scope, beta candidate 0.9.0-beta.1.
+Maintenance-only scope, public beta 0.9.0-beta.1.
 
 Completed on the G7020:
 1. Panel error cleared; printer returned to Ready after both check prints.
@@ -11,11 +11,13 @@ Completed on the G7020:
 4. Extracted portable startup, native export and upgrade data preservation passed.
 5. Automatic printhead alignment completed through the native interface in about
    4 minutes 19 seconds. The printer saved changes to seven adjustment values.
+6. Fresh Windows Sandbox passed offline portable startup, read-only native USB
+   and queue helpers, and missing-helper handling without development tools.
+   Native UI inspection verified both themes, device-theme following, offline
+   controls, experimental warnings and sample report export. Zero printer writes.
 
 Remaining validation:
-1. Clean Windows machine startup without development tools. The restricted-PATH
-   test and dependency audit passed; a clean Windows VM was unavailable.
-2. Physical in-flight IPP job cancellation when a suitable test job exists.
+1. Physical in-flight IPP job cancellation when a suitable test job exists.
 
 The native nonzero waste-counter clear and printer-side in-flight cancellation
 are labeled Experimental, with a separate acknowledgment before dispatch.
