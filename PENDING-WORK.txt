@@ -1,6 +1,6 @@
 PIXMA FIXA - RELEASE VALIDATION
 
-Maintenance-only scope, public beta 0.9.0-beta.2.
+Maintenance-only scope, Windows beta 0.9.0-beta.2.
 
 Completed on the G7020:
 1. Panel error cleared; printer returned to Ready after both check prints.
@@ -18,6 +18,10 @@ Completed on the G7020:
 
 Remaining validation:
 1. Physical in-flight IPP job cancellation when a suitable test job exists.
+2. Repeat interactive Sandbox inspection for renamed 0.9.0-beta.2. All automated
+   checks passed in the clean guest's system session; guest login reported a
+   session-limit error. Native title, themes and status were inspected on the
+   development host. The earlier interactive guest inspection was 0.9.0-beta.1.
 
 The native nonzero waste-counter clear and printer-side in-flight cancellation
 are labeled Experimental, with a separate acknowledgment before dispatch.

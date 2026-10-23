@@ -1,6 +1,6 @@
 # Pixma Fixa 0.9.0-beta.2
 
-Windows x64 public beta, verified on Canon PIXMA G7020 firmware 1.050.
+Windows x64 beta, verified on Canon PIXMA G7020 firmware 1.050.
 Extract the complete portable ZIP and run `pixma_fixa.exe`.
 
 This release introduces the Pixma Fixa name and renamed Windows executables.
@@ -44,6 +44,13 @@ This validates the portable package on the tested Windows guest. It does not
 certify every Windows version, display scaling, driver or hardware configuration.
 Physical printer behavior is covered separately by the hardware evidence above.
 The separate clean Windows test kit supports repeating these startup checks.
+
+For the renamed 0.9.0-beta.2 build, all automated checks passed again in fresh
+Sandbox, using its system session because interactive guest login reported a
+session-limit error. The renamed native title, light/dark frames and live status
+were inspected on the development host, and all 129 regression tests passed.
+The full interactive Sandbox inspection above applies to 0.9.0-beta.1; repeating
+that inspection for 0.9.0-beta.2 remains pending. No printer writes were sent.
 
 ## Reporting a beta issue
 

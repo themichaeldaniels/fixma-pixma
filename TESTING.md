@@ -212,6 +212,8 @@ saved adjustments were verified separately from the alignment-value check print.
 Fresh Windows Sandbox startup and native interface checks passed. Physical
 in-flight IPP cancellation remains unverified. See [VALIDATION.md](VALIDATION.md)
 for the evidence and its limits.
+The renamed 0.9.0-beta.2 passed clean guest automation and host appearance checks;
+its interactive guest recheck is pending. Full guest UI inspection was 0.9.0-beta.1.
 The clean Windows test kit is documented in [tool/CLEAN-WINDOWS-TEST.txt](tool/CLEAN-WINDOWS-TEST.txt).
 It checks fresh portable startup, restricted PATH, an unrelated working directory,
 read-only helper responses and graceful missing-helper handling. It records a

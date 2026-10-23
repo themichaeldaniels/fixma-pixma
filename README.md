@@ -91,7 +91,7 @@ before and after completion when available, and never repeats an uncertain comma
 
 Extract the complete Windows ZIP and run `pixma_fixa.exe`. Keep both helper executables, DLLs, and the data directory together. See [START-HERE.txt](START-HERE.txt).
 
-The current package is a public beta. Offline startup, native helpers, missing-helper handling, appearance and sample report export passed in fresh Windows Sandbox without development tools. Distribution files are unsigned. Native nonzero waste-counter clear and printer-side in-flight job cancellation are marked Experimental in the interface and require an additional acknowledgment. No driver changes or automatic service-mode transitions are performed. See [BETA-NOTES.md](BETA-NOTES.md) and [VALIDATION.md](VALIDATION.md) for observed results and limits.
+The current package is a Windows beta. Offline startup, native helpers and missing-helper handling passed in fresh Windows Sandbox without development tools. Interactive Sandbox appearance and sample report export passed on 0.9.0-beta.1. The renamed 0.9.0-beta.2 passed automated guest checks and host appearance inspection; its interactive guest recheck is pending after a Sandbox login error. Distribution files are unsigned. Native nonzero waste-counter clear and printer-side in-flight job cancellation are marked Experimental in the interface and require an additional acknowledgment. No driver changes or automatic service-mode transitions are performed. See [BETA-NOTES.md](BETA-NOTES.md) and [VALIDATION.md](VALIDATION.md) for observed results and limits.
 
 ## Build and test
 
