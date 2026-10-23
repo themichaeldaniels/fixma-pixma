@@ -26,7 +26,7 @@ screenshots only after intentional UI changes and visual review.
 | Repair tracking | repair_verification_test | Restart/display confirmation, same-device pinning, busy/error refusal, persistent guards, failed checks revoke verification |
 | Reliability | release_reliability_test | Corrupt history, unwritable/failing storage, cleanup errors, cross-instance locking, preference preservation, invalid reset evidence, upgrade data preservation |
 | Interface | widget_test and other widget files | System/light/dark appearance, minimum-width layouts, accessibility text scaling, confirmations, null dropdown guards, sample separation, navigation scope |
-| Experimental actions | experimental_features_test, queue_widget_test | Reset acknowledgment required, cancellation remains separate by source, Cancel sends nothing, printer-side acknowledgment required before dispatch |
+| Experimental actions | experimental_features_test, queue_widget_test | Separate spill-risk and experimental acknowledgments required; either alone or unchecking the spill acknowledgment blocks reset. Cancel sends nothing. Printer-side cancellation acknowledgment remains separate. |
 
 ## Individual test cases
 
@@ -78,6 +78,7 @@ expands them for each theme/vector. Line locations refer to the current source.
 ### experimental_features_test.dart
 
 - [experimental reset requires explicit opt-in; confirm=$accept](test/experimental_features_test.dart#L8)
+- [experimental opt-in alone cannot bypass the spill warning](test/experimental_features_test.dart#L81)
 
 ### ink_counter_test.dart
 
@@ -212,8 +213,9 @@ saved adjustments were verified separately from the alignment-value check print.
 Fresh Windows Sandbox startup and native interface checks passed. Physical
 in-flight IPP cancellation remains unverified. See [VALIDATION.md](VALIDATION.md)
 for the evidence and its limits.
-The renamed 0.9.0-beta.2 passed clean guest automation and host appearance checks;
-its interactive guest recheck is pending. Full guest UI inspection was 0.9.0-beta.1.
+Version 0.9.0-beta.3 passed clean guest automation and interactive inspection under
+the normal Sandbox user account. Both themes, device-theme following, offline
+controls, the new absorber warning and nonempty native sample export were verified.
 The clean Windows test kit is documented in [tool/CLEAN-WINDOWS-TEST.txt](tool/CLEAN-WINDOWS-TEST.txt).
 It checks fresh portable startup, restricted PATH, an unrelated working directory,
 read-only helper responses and graceful missing-helper handling. It records a

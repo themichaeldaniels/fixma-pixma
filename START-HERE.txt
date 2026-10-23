@@ -1,4 +1,4 @@
-PIXMA FIXA - WINDOWS PUBLIC BETA 0.9.0-beta.2
+PIXMA FIXA - WINDOWS PUBLIC BETA 0.9.0-beta.3
 
 Extract the complete folder, then run pixma_fixa.exe. Keep the DLLs, data
 directory, pixma_fixa_worker.exe and pixma_fixa_queue.exe beside it.
@@ -38,6 +38,13 @@ The original waste-counter protocol reset succeeded. Native service diagnostics,
 history/export, and reset guards were hardware tested. A nonzero clear through
 the native application remains untested because the repaired printer is at zero.
 This reset is labeled Experimental and requires a separate acknowledgment.
+
+INK SPILL WARNING: If the waste-ink pads are saturated, blocked or full of ink,
+replace them before resetting the waste counter or running Ink Flush again on
+the printer. Flushing and cleaning send more waste ink into the absorber. With
+full or blocked pads, ink can spill out of the printer. A software counter reset
+does not empty or repair the pads. The app requires acknowledgment of this risk
+in the reset confirmation. The app does not run Ink Flush.
 
 Queues lists jobs received by the printer and jobs in a separately selected
 Windows queue. Cancellation uses the exact confirmed job identity; new arrivals

@@ -1,11 +1,16 @@
-# Pixma Fixa 0.9.0-beta.2
+# Pixma Fixa 0.9.0-beta.3
 
 Windows x64 beta, verified on Canon PIXMA G7020 firmware 1.050.
 Extract the complete portable ZIP and run `pixma_fixa.exe`.
 
-This release introduces the Pixma Fixa name and renamed Windows executables.
+The waste-counter panel and reset popup now warn about ink spilling from full or
+blocked pads. Replace saturated or blocked pads before resetting the counter or
+running Ink Flush again on the printer. Reset requires a separate acknowledgment
+of this spill risk. A counter reset does not empty the pads. Ink Flush is not an
+implemented app action.
+
 The existing local data folder is retained so earlier preferences, history and
-transaction safeguards remain available. Supported maintenance behavior is unchanged.
+transaction safeguards remain available.
 
 ## Experimental features
 
@@ -32,25 +37,22 @@ Physical tests cover status, refill counts, standard cleaning, five settings,
 nozzle and alignment checks, automatic alignment and USB service diagnostics.
 See [VALIDATION.md](VALIDATION.md) and [TESTING.md](TESTING.md) for limits.
 
-**Clean Windows validation passed on 2026-10-23.** A fresh Windows Sandbox guest
+**0.9.0-beta.3 clean Windows validation passed on 2026-10-23.** A fresh Windows Sandbox guest
 with no detected development tools passed offline startup, restricted PATH and
 working-directory isolation, read-only USB and Windows queue helpers, and
 graceful missing-helper handling. Networking and printer redirection were
 disabled. Native interface inspection verified light and dark appearance,
 device-theme following, offline controls, both experimental warnings, and sample
-report export through the Windows save dialog. No printer writes were sent.
+report export through the Windows save dialog. The new spill warning was visible
+in the waste-counter panel, and reset stayed disabled without live evidence.
+The exported sample report was independently checked for nonempty content and
+sample identity. All 130 regression tests passed; static analysis is clean.
+No printer writes were sent.
 
 This validates the portable package on the tested Windows guest. It does not
 certify every Windows version, display scaling, driver or hardware configuration.
 Physical printer behavior is covered separately by the hardware evidence above.
 The separate clean Windows test kit supports repeating these startup checks.
-
-For the renamed 0.9.0-beta.2 build, all automated checks passed again in fresh
-Sandbox, using its system session because interactive guest login reported a
-session-limit error. The renamed native title, light/dark frames and live status
-were inspected on the development host, and all 129 regression tests passed.
-The full interactive Sandbox inspection above applies to 0.9.0-beta.1; repeating
-that inspection for 0.9.0-beta.2 remains pending. No printer writes were sent.
 
 ## Reporting a beta issue
 

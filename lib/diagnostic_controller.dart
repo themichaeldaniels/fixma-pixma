@@ -353,7 +353,7 @@ extension CareDiagnostics on CareController {
 
   String diagnosticSummary() => redactedDiagnosticText(
     {
-      'application': 'Pixma Fixa 0.9.0-beta.2',
+      'application': 'Pixma Fixa 0.9.0-beta.3',
       'checkedAt': connectionCheckedAt?.toIso8601String(),
       'reportedUsage': canonUsage?.toJson(),
       'checks': connectionChecks.map((v) => v.toJson()).toList(),

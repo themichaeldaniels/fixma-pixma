@@ -4,28 +4,64 @@ A free, open-source Windows utility for maintaining Canon PIXMA printers. Built
 and hardware-tested for the PIXMA G7020, with a simple interface for diagnostics,
 ink counts, printhead care and guarded waste-counter repair.
 
-**[Download for Windows x64](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.2/PixmaFixa-Windows-0.9.0-beta.2.zip)**
+**[Download for Windows x64](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.3/PixmaFixa-Windows-0.9.0-beta.3.zip)**
 
-[Release notes and all downloads](https://github.com/themichaeldaniels/pixma-fixa/releases/tag/v0.9.0-beta.2)
- · [Checksums](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.2/SHA256SUMS.txt)
- · [Source archive](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.2/PixmaFixa-source-0.9.0-beta.2.zip)
+[Release notes and all downloads](https://github.com/themichaeldaniels/pixma-fixa/releases/tag/v0.9.0-beta.3)
+ · [Checksums](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.3/SHA256SUMS.txt)
+ · [Source archive](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.3/PixmaFixa-source-0.9.0-beta.3.zip)
 
-Current release: **0.9.0-beta.2**, Windows x64. Extract the entire ZIP, then run
+Current release: **0.9.0-beta.3**, Windows x64. Extract the entire ZIP, then run
 `pixma_fixa.exe`. No installer, Python setup, account, or purchased reset key is
 needed to use the app. While this repository is private, GitHub access is required
 to download its files. macOS and Android builds are not available yet.
 
 ## Why it exists, and why it is free
 
-A printer should remain useful after routine maintenance. This project grew from
-repairing a serviced printer that was still blocked by its waste-ink counter, and
-from wanting everyday maintenance in one clear, accessible utility.
+### Canon 5B00: ink absorber full
+
+| Item | What it means |
+| --- | --- |
+| Support code | **5B00** |
+| Canon's published error message | **“Printer error has occurred.”** |
+| Problem addressed by this tool | The waste-ink absorber counter has reached its service limit, commonly called **ink absorber full**. |
+| Canon's repair instruction | **“Contact your nearest Canon service center to request a repair.”** |
+
+The message and repair instruction above are from Canon's [G7000 series 5B00
+manual page](https://ij.manual.canon/ij/webmanual/ErrorCode/G7000%20series/EN/ERR/5B00.html).
+The counter explanation describes the supported G7020 service profile; Canon's
+public error page gives the generic printer-error message.
+
+Cleaning and ink flushing send waste ink into pads inside the printer. The
+printer tracks estimated absorber use in a software counter. At its service
+limit, printing is blocked. Replacing the pads does not by itself clear that
+stored counter. Resetting the counter does not empty the pads, and a reading
+of zero does not prove the pads are dry or safe to reuse.
+
+I ran into this on my own printer. The only options I kept being offered were
+paying for a reset tool or taking it to a service center. I was aggravated that
+even after servicing the pads, I still needed to pay just to clear a counter.
+I wanted a free way to do that repair, so I built Pixma Fixa. It offers the
+supported counter reset without charging for a key or a subscription, along with
+the maintenance and diagnostic controls listed below.
 
 Pixma Fixa makes the supported maintenance operations available without paid reset
 keys, subscriptions or an account. It is released under the [zlib license](LICENSE),
 so anyone can inspect, use and improve it. It works locally and has no analytics,
 advertising or built-in upload service. Required third-party license notices are
 included. This is an independent project, unaffiliated with Canon.
+
+### Replace full or blocked pads before resetting
+
+**If the waste-ink pads are saturated, blocked or full of ink, replace them
+before resetting the waste counter or running Ink Flush again on the printer.**
+More flushing or cleaning sends more ink into the absorber. With full or blocked
+pads, that ink can spill out of the printer. A software reset cannot fix that
+physical problem. Pixma Fixa shows this warning before a waste-counter reset and
+requires acknowledgment of the spill risk as well as absorber-service confirmation.
+
+**Waste-counter reset and Ink Flush are different operations.** This app does
+not run Ink Flush. It also keeps remaining-ink count resets separate from the
+waste-ink absorber counter.
 
 ## Start here
 
@@ -91,7 +127,7 @@ before and after completion when available, and never repeats an uncertain comma
 
 Extract the complete Windows ZIP and run `pixma_fixa.exe`. Keep both helper executables, DLLs, and the data directory together. See [START-HERE.txt](START-HERE.txt).
 
-The current package is a Windows beta. Offline startup, native helpers and missing-helper handling passed in fresh Windows Sandbox without development tools. Interactive Sandbox appearance and sample report export passed on 0.9.0-beta.1. The renamed 0.9.0-beta.2 passed automated guest checks and host appearance inspection; its interactive guest recheck is pending after a Sandbox login error. Distribution files are unsigned. Native nonzero waste-counter clear and printer-side in-flight job cancellation are marked Experimental in the interface and require an additional acknowledgment. No driver changes or automatic service-mode transitions are performed. See [BETA-NOTES.md](BETA-NOTES.md) and [VALIDATION.md](VALIDATION.md) for observed results and limits.
+The current package is a Windows beta. Version 0.9.0-beta.3 passed automated startup and interactive checks in fresh Windows Sandbox without development tools. Both themes, device-theme following, offline controls, absorber warnings and native sample-report export were checked. All 130 regression tests pass; static analysis is clean. Distribution files are unsigned. Native nonzero waste-counter clear and printer-side in-flight job cancellation are marked Experimental and require acknowledgment. The waste reset also requires acknowledgment of the spill risk. See [BETA-NOTES.md](BETA-NOTES.md) and [VALIDATION.md](VALIDATION.md) for the evidence and limits.
 
 ## Build and test
 

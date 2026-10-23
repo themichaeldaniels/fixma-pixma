@@ -6,6 +6,9 @@ import 'theme.dart';
 const experimentalWasteResetNotice =
     'A nonzero waste-counter clear through this app has not been verified on hardware. The original protocol reset succeeded; app diagnostics and reset safeguards were tested.';
 
+const wasteInkSpillWarning =
+    'Resetting the counter does not empty or repair the waste-ink pads. If the pads are saturated, blocked or full of ink, replace them before resetting the counter or running Ink Flush on the printer. Ink Flush and cleaning send more waste ink into the absorber. Continuing with full or blocked pads can make ink spill out of the printer. This app resets the waste counter; it does not run Ink Flush.';
+
 class ExperimentalResetDialog extends StatefulWidget {
   final String serial;
   final double counter;
@@ -22,6 +25,7 @@ class ExperimentalResetDialog extends StatefulWidget {
 
 class _ExperimentalResetDialogState extends State<ExperimentalResetDialog> {
   bool accepted = false;
+  bool spillAccepted = false;
 
   @override
   Widget build(BuildContext context) => AlertDialog(
@@ -33,6 +37,16 @@ class _ExperimentalResetDialogState extends State<ExperimentalResetDialog> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
+            Text(
+              'Ink spill warning',
+              style: TextStyle(
+                color: colors(context).warning,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 8),
+            const Text(wasteInkSpillWarning, style: TextStyle(height: 1.5)),
+            const SizedBox(height: 16),
             const BadgeLabel('Experimental reset', warning: true),
             const SizedBox(height: 12),
             Text(
@@ -45,6 +59,16 @@ class _ExperimentalResetDialogState extends State<ExperimentalResetDialog> {
               style: const TextStyle(height: 1.7),
             ),
             const SizedBox(height: 12),
+            CheckboxListTile(
+              contentPadding: EdgeInsets.zero,
+              controlAffinity: ListTileControlAffinity.leading,
+              value: spillAccepted,
+              onChanged: (value) =>
+                  setState(() => spillAccepted = value ?? false),
+              title: const Text(
+                'I understand that full or blocked pads can spill ink.',
+              ),
+            ),
             CheckboxListTile(
               contentPadding: EdgeInsets.zero,
               controlAffinity: ListTileControlAffinity.leading,
@@ -62,7 +86,9 @@ class _ExperimentalResetDialogState extends State<ExperimentalResetDialog> {
         child: const Text('Cancel'),
       ),
       FilledButton(
-        onPressed: accepted ? () => Navigator.pop(context, true) : null,
+        onPressed: accepted && spillAccepted
+            ? () => Navigator.pop(context, true)
+            : null,
         child: const Text('Reset counter'),
       ),
     ],

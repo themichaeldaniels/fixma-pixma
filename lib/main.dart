@@ -75,7 +75,7 @@ Future<void> main(List<String> arguments) async {
         .writeAsString(controller.exportText(), flush: true);
     await File(output).writeAsString(
       const JsonEncoder.withIndent('  ').convert({
-        'version': '0.9.0-beta.2',
+        'version': '0.9.0-beta.3',
         'nativeLaunch': true,
         'report': r?.toJson(),
         'diagnosticCompleted': r != null && controller.liveValid && !r.sample,
@@ -100,7 +100,7 @@ Future<void> main(List<String> arguments) async {
     final output = diagnosticsProof.substring('--diagnostics-proof='.length);
     await File(output).writeAsString(
       const JsonEncoder.withIndent('  ').convert({
-        'version': '0.9.0-beta.2',
+        'version': '0.9.0-beta.3',
         'nativeLaunch': true,
         'error': controller.lastError,
         'checks': controller.connectionChecks.map((v) => v.toJson()).toList(),
@@ -175,7 +175,7 @@ Future<void> main(List<String> arguments) async {
     await File(smoke.substring('--smoke-output='.length)).writeAsString(
       jsonEncode({
         'launched': true,
-        'version': '0.9.0-beta.2',
+        'version': '0.9.0-beta.3',
         'theme': controller.themeMode.name,
         'usbInterfaces': controller.devices.length,
         'serviceInterfaces': controller.devices
@@ -333,7 +333,7 @@ class _PixmaFixaState extends State<PixmaFixa> with WidgetsBindingObserver {
                         ),
                         const Spacer(),
                         Text(
-                          'Local device access     |     Version 0.9.0-beta.2',
+                          'Local device access     |     Version 0.9.0-beta.3',
                           style: TextStyle(
                             fontSize: 12,
                             color: colors(context).muted,
@@ -1054,7 +1054,7 @@ class _PixmaFixaState extends State<PixmaFixa> with WidgetsBindingObserver {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Clean or replace the absorber before resetting its counter.',
+                      wasteInkSpillWarning,
                       style: TextStyle(
                         color: p.muted,
                         fontSize: 14,
