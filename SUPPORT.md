@@ -11,6 +11,11 @@ model/firmware check. Do not reset a healthy waste counter just to create a test
 
 ## Make a useful report
 
+Choose **Report a problem** at the top right of Diagnostics for these steps in
+the app and a button that opens the GitHub issue form in your default browser.
+Nothing is attached or submitted automatically. If the browser cannot open, the
+dialog provides a link to copy instead.
+
 1. Leave the printer in normal mode. Connect it and the PC to the same local
    network, then use **Overview > Find printers** or **Add by address**.
 2. Note the exact model printed on the printer's label. A reported family such
@@ -19,9 +24,11 @@ model/firmware check. Do not reset a healthy waste counter just to create a test
    interfaces, status and visible queues; they do not print, clean or reset.
 4. Choose **Export diagnostic summary**. Open the JSON and review it before
    sharing. Describe the action, expected result, actual result and panel error.
-5. [Open an issue](https://github.com/themichaeldaniels/pixma-fixa/issues), or add
+5. [Open the issue form](https://github.com/themichaeldaniels/pixma-fixa/issues/new?template=model-support.yml), or add
    the report to an existing issue for that model. Repository access is required
    while the project is private. The app does not upload anything automatically.
+   Drag the reviewed `.json` file into the **Reviewed diagnostic summary** field,
+   or use that field's attachment control. GitHub sign-in is required to submit.
 
 The summary includes the app/Windows version, reported model and firmware,
 selected advertised capabilities, current connection errors, connection-check

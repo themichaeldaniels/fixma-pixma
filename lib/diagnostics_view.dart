@@ -11,6 +11,7 @@ import 'core/report_comparison.dart';
 import 'core/repair_record.dart';
 import 'core/capture_inspector.dart';
 import 'platform/save_report.dart';
+import 'problem_report.dart';
 import 'theme.dart';
 
 class DiagnosticsView extends StatefulWidget {
@@ -47,9 +48,17 @@ class _DiagnosticsViewState extends State<DiagnosticsView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Diagnostics',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+        const Row(
+          children: [
+            Expanded(
+              child: Text(
+                'Diagnostics',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+              ),
+            ),
+            SizedBox(width: 16),
+            ReportProblemButton(),
+          ],
         ),
         const SizedBox(height: 5),
         Text(

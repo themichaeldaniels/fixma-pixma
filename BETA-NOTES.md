@@ -1,7 +1,13 @@
-# Pixma Fixa 0.9.0-beta.5
+# Pixma Fixa 0.9.0-beta.6
 
 Windows x64 beta, verified on Canon PIXMA G7020 firmware 1.050.
 Extract the complete portable ZIP and run `pixma_fixa.exe`.
+
+Diagnostics now has a Report a problem button. It explains how to export and
+review the diagnostic JSON, then attach it to the GitHub issue form. The form
+opens in the default browser only after choosing Open GitHub issue form. Nothing
+is attached or submitted automatically. A failed browser launch leaves a
+copyable link and the instructions available.
 
 Hardware testing covers only the G7020, firmware 1.050. Other models may not work.
 Read-only discovery and connection reports from other models are welcome; do not
@@ -92,3 +98,12 @@ were inspected in both themes. Read-only checks and native JSON export passed;
 the saved summary was independently checked for version, Windows information,
 operation outcomes, omitted raw payloads and unknown offline identity. All 139
 tests pass; static analysis is clean. No printer writes were sent.
+
+Version 0.9.0-beta.6 passed fresh normal-user Windows Sandbox startup and
+read-only helper checks. The Report a problem dialog was inspected in both
+themes. Closing the instructions returned to Diagnostics. An explicit launch
+opened the default browser; its process independently confirmed the fixed
+issue-form URL with no diagnostic query data. All 143 tests pass; static
+analysis is clean. Networking and printer access were disabled. No issue was
+submitted and no printer writes were sent. Browser failure, duplicate launch
+and closing during launch are covered by simulated widget tests.

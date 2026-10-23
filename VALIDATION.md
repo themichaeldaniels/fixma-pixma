@@ -24,6 +24,8 @@ Private captures and photographs are excluded from public source and packages.
 
 | 0.9.0-beta.5 model reports | Fresh normal-user Sandbox passed portable startup and read-only helpers. The G7020-only hardware notice and export explanation were inspected in both themes. Read-only connection checks and diagnostic-summary export through the Windows save dialog passed; the saved JSON was independently checked for schema/version, Windows information, connection outcomes, omitted raw payloads and unknown offline identity. All 139 tests pass; static analysis is clean. | Networking and printer access were disabled. Unknown-model fields, bounded payloads and private identifier removal are covered by simulated tests. No physical printer writes. |
 
+| 0.9.0-beta.6 problem reports | Fresh normal-user Sandbox passed portable startup and read-only helpers. Report instructions were inspected in both themes; Close returned to Diagnostics. Explicit browser launch succeeded, and the browser process independently confirmed the fixed issue-form URL with no diagnostic data. All 143 tests pass; static analysis is clean. | Networking and printer access were disabled. No issue was submitted. Browser failure, duplicate launch and closing during launch are covered by widget tests. No printer writes. |
+
 The nozzle assessment follows Canon's [G7000 nozzle check guidance](https://ij.manual.canon/ij/webmanual/Manual/All/G7000%20series/EN/UG/ug-134.html).
 Canon distinguishes [printing alignment values from adjusting alignment](https://ij.manual.canon/ij/webmanual/PrinterDriver/W/G7000%20series/1.0/EN/PPG/Dg-printer_assistant.html).
 No cleaning, refill reset, waste reset, scanning or service-mode transition was

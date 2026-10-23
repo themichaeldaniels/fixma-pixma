@@ -32,6 +32,13 @@ screenshots only after intentional UI changes and visual review.
 
 ## Individual test cases
 
+### problem_report_test.dart
+
+- Opening the instructions or closing them never opens a browser.
+- An explicit launch opens the fixed issue-form URL, with no diagnostic query data; duplicate clicks are blocked while pending.
+- Browser failure retains instructions and a selectable fallback URL, without automatic retry.
+- Closing during launch safely ignores a late failure without updating a disposed dialog.
+
 ### support_summary_test.dart
 
 - Unknown-model support summaries preserve model, firmware and advertised capabilities without granting maintenance eligibility.
@@ -254,3 +261,12 @@ were inspected in both themes. Read-only checks and native JSON export passed;
 the saved summary was independently checked for version, Windows information,
 operation outcomes, omitted raw payloads and unknown offline identity. All 139
 tests pass; static analysis is clean. No printer writes were sent.
+
+Version 0.9.0-beta.6 passed fresh normal-user Windows Sandbox startup and
+read-only helper checks. The Report a problem dialog was inspected in both
+themes. Closing the instructions returned to Diagnostics. An explicit launch
+opened the default browser; its process independently confirmed the fixed
+issue-form URL with no diagnostic query data. All 143 tests pass; static
+analysis is clean. Networking and printer access were disabled. No issue was
+submitted and no printer writes were sent. Browser failure, duplicate launch
+and closing during launch are covered by simulated widget tests.

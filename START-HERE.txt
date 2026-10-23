@@ -1,4 +1,4 @@
-PIXMA FIXA - WINDOWS PUBLIC BETA 0.9.0-beta.5
+PIXMA FIXA - WINDOWS PUBLIC BETA 0.9.0-beta.6
 
 Extract the complete folder, then run pixma_fixa.exe. Keep the DLLs, data
 directory, pixma_fixa_worker.exe and pixma_fixa_queue.exe beside it.

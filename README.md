@@ -10,13 +10,13 @@ discovery, status and connection checks and [send a model report](SUPPORT.md).
 A G7000 family name is not proof that another regional model is compatible.
 Do not bypass the model or firmware checks to try maintenance or resets.
 
-**[Download for Windows x64](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.5/PixmaFixa-Windows-0.9.0-beta.5.zip)**
+**[Download for Windows x64](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.6/PixmaFixa-Windows-0.9.0-beta.6.zip)**
 
-[Release notes and all downloads](https://github.com/themichaeldaniels/pixma-fixa/releases/tag/v0.9.0-beta.5)
- · [Checksums](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.5/SHA256SUMS.txt)
- · [Source archive](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.5/PixmaFixa-source-0.9.0-beta.5.zip)
+[Release notes and all downloads](https://github.com/themichaeldaniels/pixma-fixa/releases/tag/v0.9.0-beta.6)
+ · [Checksums](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.6/SHA256SUMS.txt)
+ · [Source archive](https://github.com/themichaeldaniels/pixma-fixa/releases/download/v0.9.0-beta.6/PixmaFixa-source-0.9.0-beta.6.zip)
 
-Current release: **0.9.0-beta.5**, Windows x64. Extract the entire ZIP, then run
+Current release: **0.9.0-beta.6**, Windows x64. Extract the entire ZIP, then run
 `pixma_fixa.exe`. No installer, Python setup, account, or purchased reset key is
 needed to use the app. While this repository is private, GitHub access is required
 to download its files. macOS and Android builds are not available yet.
@@ -158,7 +158,7 @@ before and after completion when available, and never repeats an uncertain comma
 
 Extract the complete Windows ZIP and run `pixma_fixa.exe`. Keep both helper executables, DLLs, and the data directory together. See [START-HERE.txt](START-HERE.txt).
 
-The current package is a Windows beta. Version 0.9.0-beta.5 passed automated startup and interactive checks in fresh Windows Sandbox without development tools. Both themes, device-theme following, offline checks, compatibility notices and native diagnostic-summary export were checked. All 139 regression tests pass; static analysis is clean. Distribution files are unsigned. Native nonzero waste-counter clear and printer-side in-flight job cancellation are marked Experimental and require acknowledgment. The waste reset also requires acknowledgment of the spill risk. See [BETA-NOTES.md](BETA-NOTES.md) and [VALIDATION.md](VALIDATION.md) for the evidence and limits.
+The current package is a Windows beta. Version 0.9.0-beta.6 passed automated startup and interactive checks in fresh Windows Sandbox without development tools. The reporting dialog was inspected in both themes, and its native default-browser handoff was verified with the exact issue-form URL. No issue was submitted. All 143 regression tests pass; static analysis is clean. Distribution files are unsigned. Native nonzero waste-counter clear and printer-side in-flight job cancellation are marked Experimental and require acknowledgment. The waste reset also requires acknowledgment of the spill risk. See [BETA-NOTES.md](BETA-NOTES.md) and [VALIDATION.md](VALIDATION.md) for the evidence and limits.
 
 ## Build and test
 
@@ -179,6 +179,10 @@ Mutations require live identity/readiness checks and explicit preparation. Uncer
 Only service selector `10077c`, report query `15`, and waste clear `0d0000` are exposed by the USB worker. The worker runs separately to bound stalled driver calls. Normal-mode Canon commands use bounded CHMP requests. Network queues use IPP status/listing/identity/cancellation only; no print documents or empty Create-Job probes are submitted by the utility. Jobs still held on other computers or phones are outside this PC's view.
 
 ## Getting help
+
+Use **Diagnostics > Report a problem** for export and attachment instructions,
+then open the GitHub issue form in your browser. Review the diagnostic `.json`
+before attaching it. The app does not attach files or submit an issue for you.
 
 See [SUPPORT.md](SUPPORT.md) for the exact steps to export diagnostics or request
 another model. Reports can help us investigate without owning the printer;

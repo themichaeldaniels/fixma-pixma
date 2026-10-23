@@ -1,6 +1,6 @@
 PIXMA FIXA - RELEASE VALIDATION
 
-Maintenance-only scope, Windows beta 0.9.0-beta.5.
+Maintenance-only scope, Windows beta 0.9.0-beta.6.
 
 Completed hardware and release checks:
 1. Panel error cleared; printer returned to Ready after both check prints.
@@ -24,6 +24,10 @@ Completed hardware and release checks:
 8. Beta.5 passed fresh Sandbox startup, both-theme compatibility notices and
    native diagnostic-summary export. Exported JSON was independently checked.
    All 139 tests pass. Read-only reports from other models are welcome.
+
+9. Beta.6 passed fresh Sandbox startup, both-theme reporting instructions and
+   default-browser handoff with the exact issue-form URL. All 143 tests pass.
+   No issue was submitted and no diagnostic data was sent.
 
 Remaining validation:
 1. Physical in-flight IPP job cancellation when a suitable test job exists.
