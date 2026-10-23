@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<cmd xmlns:ivec="http://www.canon.com/ns/cmd/2008/07/common/"
+xmlns:vcn="http://www.canon.com/ns/cmd/2008/07/canon/">
+<ivec:contents>
+<ivec:operation>GetConfigurationResponse</ivec:operation>
+<ivec:param_set servicetype="device">
+<ivec:response>OK</ivec:response>
+<ivec:response_detail/>
+<ivec:datetime>20261020131758</ivec:datetime>
+<ivec:autopoweron>ON</ivec:autopoweron>
+<ivec:autopoweroff>
+<ivec:mode>OFF</ivec:mode>
+<ivec:time>240</ivec:time>
+</ivec:autopoweroff>
+<ivec:silentmode>
+<ivec:mode>OFF</ivec:mode>
+<ivec:starttime>2100</ivec:starttime>
+<ivec:endtime>0700</ivec:endtime>
+</ivec:silentmode>
+<ivec:papergap>auto</ivec:papergap>
+<ivec:drylevel>3</ivec:drylevel>
+<ivec:setregistration id="1">
+<ivec:item sign="A">0</ivec:item>
+<ivec:item sign="B">1</ivec:item>
+<ivec:item sign="C">0</ivec:item>
+<ivec:item sign="D">1</ivec:item>
+<ivec:item sign="E">0</ivec:item>
+<ivec:item sign="F">1</ivec:item>
+<ivec:item sign="G">5</ivec:item>
+<ivec:item sign="H">-5</ivec:item>
+<ivec:item sign="I">1</ivec:item>
+<ivec:item sign="J">0</ivec:item>
+</ivec:setregistration>
+<ivec:setregistration id="2">
+<ivec:item sign="K">0</ivec:item>
+<ivec:item sign="L">4</ivec:item>
+<ivec:item sign="M">-5</ivec:item>
+</ivec:setregistration>
+<ivec:setregistration id="3">
+<ivec:item sign="N">0</ivec:item>
+<ivec:item sign="O">0</ivec:item>
+<ivec:item sign="P">0</ivec:item>
+<ivec:item sign="Q">0</ivec:item>
+<ivec:item sign="R">0</ivec:item>
+<ivec:item sign="S">0</ivec:item>
+<ivec:item sign="T">0</ivec:item>
+</ivec:setregistration>
+<ivec:ink_detect>ON</ivec:ink_detect>
+<vcn:webservice_agreement>unknown</vcn:webservice_agreement>
+<vcn:questionnaire_state>notanswer</vcn:questionnaire_state>
+</ivec:param_set>
+</ivec:contents>
+</cmd>

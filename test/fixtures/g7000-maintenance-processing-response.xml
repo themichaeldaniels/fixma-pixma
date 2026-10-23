@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<cmd xmlns:ivec="http://www.canon.com/ns/cmd/2008/07/common/"
+xmlns:vcn="http://www.canon.com/ns/cmd/2008/07/canon/">
+<ivec:contents>
+<ivec:operation>GetStatusResponse</ivec:operation>
+<ivec:param_set servicetype="maintenance">
+<ivec:response>OK</ivec:response>
+<ivec:response_detail></ivec:response_detail>
+<ivec:jobinfo jobID="12345678">
+<ivec:maintenance_operation>Cleaning</ivec:maintenance_operation>
+<ivec:type>regular</ivec:type>
+<ivec:jobprogress>processing</ivec:jobprogress>
+<ivec:username/>
+<ivec:computername/>
+<ivec:job_description/>
+<ivec:inputbin/>
+<ivec:papertype/>
+</ivec:jobinfo>
+</ivec:param_set>
+</ivec:contents>
+</cmd>

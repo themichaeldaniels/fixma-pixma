@@ -1,0 +1,50 @@
+PRINTER CARE - WINDOWS PREVIEW 0.7.0
+
+Extract the complete folder, then run printer_care.exe. Keep the DLLs, data
+directory, printer_care_worker.exe and printer_care_queue.exe beside it.
+No Python installation, account, reset key, or Canon utility is required.
+
+Overview discovers network printers and reads firmware, ink estimates and current
+errors. Add by address works when discovery is unavailable. Automatic status
+refresh runs every 15 seconds; failed refreshes are labeled as last known.
+Appearance follows Windows unless you choose Light or Dark at the top right.
+
+Maintenance reads live Canon controls. The verified G7020/G7000 firmware 1.050
+profile provides standard cleaning, nozzle/alignment checks, and five settings.
+Printed patterns require one plain Letter/A4 sheet in the front cassette and an
+open output tray. Cleaning uses ink and requires a visual tank check. Settings
+are read back. Nozzle/alignment printed-sheet validation is still pending.
+
+Reset ink counts is for colors refilled to the upper line. Ink percentages are
+stored estimates, not measured tank levels. Full counts are skipped. A failed or
+uncertain operation is never automatically repeated.
+
+Service report and waste-counter repair require manual USB service mode.
+Diagnostics verify identity and read the report. Reset requires a recent live
+report, supported firmware, nonzero waste count, and absorber-service confirmation.
+Resetting the counter does not empty the absorber. A durable record blocks repeat
+attempts. Keep USB and power connected until the result appears. Normal restart
+and display confirmation are required afterward. No remote service-mode exit,
+EEPROM backup/restore or firmware flashing is implemented.
+
+The original waste-counter protocol reset succeeded. Native service diagnostics,
+history/export, and reset guards were hardware tested. A nonzero clear through
+the native application remains untested because the repaired printer is at zero.
+
+Queues lists jobs received by the printer and jobs in a separately selected
+Windows queue. Cancellation uses the exact confirmed job identity; new arrivals
+are excluded. Other devices' unsent jobs are not visible here. Cancellation
+cannot recall pages already printed. An empty queue does not clear a device fault.
+
+Diagnostics provides connection checks, usage counters, repair follow-ups,
+report comparisons, model evidence and offline captured-reply inspection.
+Connection checks do not print, clean, reset or reboot. A redacted diagnostic
+summary is separate from a full private report export. Review before sharing.
+
+History, settings, guards and follow-ups stay under %LOCALAPPDATA%/PrinterCare.
+Preserve them after an uncertain operation. Scanning, document handling and PDF
+generation have been removed. Former scan caches and saved files are untouched.
+
+This preview is Windows x64 and unsigned. Extract the full ZIP before running.
+Unknown models may expose standard network information, but are not authorized
+for Canon maintenance/service writes. macOS and Android are not included.

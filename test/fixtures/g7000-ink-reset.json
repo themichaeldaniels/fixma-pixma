@@ -1,0 +1,17 @@
+{
+  "request": "<?xml version=\"1.0\" encoding=\"utf-8\" ?><cmd xmlns:ivec=\"http://www.canon.com/ns/cmd/2008/07/common/\" xmlns:vcn=\"http://www.canon.com/ns/cmd/2008/07/canon/\"><ivec:contents><ivec:operation>VendorCmd</ivec:operation><ivec:param_set servicetype=\"device\"><vcn:ijoperation>ResetCounter</vcn:ijoperation><vcn:type id=\"ink\"><vcn:resetink>BK</vcn:resetink></vcn:type></ivec:param_set></ivec:contents></cmd>",
+  "response": "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\r\n<cmd xmlns:ivec=\"http://www.canon.com/ns/cmd/2008/07/common/\"\r\nxmlns:vcn=\"http://www.canon.com/ns/cmd/2008/07/canon/\">\r\n<ivec:contents>\r\n<ivec:operation>VendorCmdResponse</ivec:operation>\r\n<ivec:param_set servicetype=\"device\">\r\n<ivec:response>OK</ivec:response>\r\n<ivec:response_detail/>\r\n<vcn:ijoperation>ResetCounterResponse</vcn:ijoperation>\r\n<vcn:ijresponse>OK</vcn:ijresponse>\r\n<vcn:ijresponse_detail/>\r\n</ivec:param_set>\r\n</ivec:contents>\r\n</cmd>",
+  "before": {
+    "PGBK": "20",
+    "C": "30",
+    "M": "30",
+    "Y": "30"
+  },
+  "after": {
+    "PGBK": "100",
+    "C": "30",
+    "M": "30",
+    "Y": "30"
+  },
+  "verified": true
+}

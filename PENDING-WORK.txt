@@ -1,0 +1,21 @@
+PRINTER CARE - RELEASE VALIDATION
+
+Maintenance-only scope, version 0.7.0.
+
+Remaining physical validation:
+1. Resolve any current panel error before further maintenance testing.
+2. Nozzle-check and alignment printouts after paper/output setup is confirmed.
+3. Cancellation of an ordinary physical printer job when a suitable test job exists.
+4. Clean Windows machine startup without development tools, and upgrade testing.
+
+The waste counter is already zero. Do not create another reset merely for testing.
+Original protocol reset succeeded; native diagnostics and rejection guards were
+hardware verified. Nonzero native clear remains untested and is documented.
+
+Scanning and document workflows are removed from the supported scope. The prior
+scan attempt aborted with JobCanceledAtDevice and was followed by DeviceBusy /
+D107. Remote UI called this an operator error without a specific support code.
+The utility does not attempt remote recovery or repeat that scan.
+
+EEPROM backup, additional absorber groups, unverified model writes, macOS and
+Android are outside this release. No automatic driver changes or firmware writes.
