@@ -144,7 +144,8 @@ Fault injection verified recovery when the new executable cannot run, when it
 runs without acknowledging startup, when another instance holds the operation
 lock, and when handoff is canceled before the parent exits. Failed installations
 did not select a new version; the previous application remained open or reopened.
-A private launcher fixture exercised the production shortcut-forwarding function
+A same-version reinstall repaired a damaged managed-version pointer. A private
+launcher fixture exercised the production shortcut-forwarding function
 and received startup acknowledgment from the real updated app. Fixtures were
 isolated, no fake public release was published, and no printer commands were sent.
 

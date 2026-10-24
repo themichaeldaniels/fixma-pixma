@@ -309,7 +309,7 @@ Future<void> runUpdatePlan(File planFile) async {
         previous['version'] is String &&
         (ReleaseVersion.tryParse(previous['version'])
                     ?.compareTo(ReleaseVersion.tryParse(plan['version'])!) ??
-                0) >=
+                0) >
             0) {
       throw StateError('A newer update is already installed.');
     }
