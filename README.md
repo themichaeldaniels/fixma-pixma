@@ -10,13 +10,13 @@ discovery, status and connection checks and [send a model report](SUPPORT.md).
 A G7000 family name is not proof that another regional model is compatible.
 Do not bypass the model or firmware checks to try maintenance or resets.
 
-**[Download for Windows x64](https://github.com/themichaeldaniels/fixma-pixma/releases/download/v0.9.0-beta.9/FixmaPixma-Windows-0.9.0-beta.9.zip)**
+**[Download for Windows x64](https://github.com/themichaeldaniels/fixma-pixma/releases/download/v0.9.0-beta.10/FixmaPixma-Windows-0.9.0-beta.10.zip)**
 
-[Release notes and all downloads](https://github.com/themichaeldaniels/fixma-pixma/releases/tag/v0.9.0-beta.9)
- · [Checksums](https://github.com/themichaeldaniels/fixma-pixma/releases/download/v0.9.0-beta.9/SHA256SUMS.txt)
- · [Source archive](https://github.com/themichaeldaniels/fixma-pixma/releases/download/v0.9.0-beta.9/FixmaPixma-source-0.9.0-beta.9.zip)
+[Release notes and all downloads](https://github.com/themichaeldaniels/fixma-pixma/releases/tag/v0.9.0-beta.10)
+ · [Checksums](https://github.com/themichaeldaniels/fixma-pixma/releases/download/v0.9.0-beta.10/SHA256SUMS.txt)
+ · [Source archive](https://github.com/themichaeldaniels/fixma-pixma/releases/download/v0.9.0-beta.10/FixmaPixma-source-0.9.0-beta.10.zip)
 
-Current release: **0.9.0-beta.9**, Windows x64. Extract the entire ZIP, then run
+Current release: **0.9.0-beta.10**, Windows x64. Extract the entire ZIP, then run
 `fixma_pixma.exe`. No installer, Python setup, account, or purchased reset key is
 needed to use the app. macOS and Android builds are not available yet.
 
@@ -191,7 +191,16 @@ Extract the complete Windows ZIP and run `fixma_pixma.exe`. Keep both helper exe
 
 The project was previously named Pixma Fixa. Existing local history, preferences and reset guards stay in the same `PrinterCare` application-data folder when upgrading.
 
-The current package is a Windows beta. Version 0.9.0-beta.9 passed automated startup and interactive checks in fresh Windows Sandbox without development tools. The final review corrected privacy, parser, resource-bound, clock-rollback and helper/window lifecycle issues. Both-theme native reporting, save cancellation and valid JSON export before browser handoff passed. See REVIEW.md for the scope and remaining limits. No issue was submitted. All 168 regression tests pass; static analysis is clean. Distribution files are unsigned. Native nonzero waste-counter clear and printer-side in-flight job cancellation are marked Experimental and require acknowledgment. The waste reset also requires acknowledgment of the spill risk. See [BETA-NOTES.md](BETA-NOTES.md) and [VALIDATION.md](VALIDATION.md) for the evidence and limits.
+The current package is a Windows beta. Version 0.9.0-beta.10 passed all 191
+regression tests and static analysis, plus fresh Windows Sandbox startup, helper,
+offline update-dialog and diagnostic-report checks. A live public API check and
+the production Windows browser handoff were verified separately. Update selection
+and newer-version notices use controlled tests; no fake release was published.
+See [TESTING.md](TESTING.md) and [VALIDATION.md](VALIDATION.md) for the evidence.
+Distribution files are unsigned. Native nonzero waste-counter clear and
+printer-side in-flight cancellation remain Experimental and require acknowledgment.
+The waste reset also requires acknowledgment of the spill risk. Hardware testing
+still covers only the G7020, firmware 1.050.
 
 ## Build and test
 
@@ -211,6 +220,31 @@ Use Flutter 3.47.7 / Dart 3.13.5 and Visual Studio with Desktop development with
 ```
 
 The script resolves locked dependencies, runs static analysis and tests, compiles native USB/queue helpers, builds the release application, and creates a portable ZIP. Debug symbols are kept outside that ZIP. See [TESTING.md](TESTING.md) for the regression inventory and manual checks.
+
+## Software updates
+
+Use **Check for updates** in the top-right toolbar. If a newer Windows release
+is available, **View release** opens its GitHub page with download links and notes.
+Beta builds include newer beta releases as well as stable releases; stable builds
+check for stable releases only. Drafts and releases without an uploaded Windows
+package are ignored. Versions are compared numerically, including beta numbers.
+
+Automatic checks are **off by default**. Enable **Check automatically once a day**
+in the update dialog to check at startup or while the app remains open. The choice
+and last attempt are stored locally in `PrinterCare/updates.json`, separately from
+printer settings and reset guards. A failed automatic check stays quiet; manual
+checks explain connection or GitHub rate-limit errors. A newer version shows a
+dismissible notice without interrupting printer operations.
+
+Checks make an anonymous HTTPS request to GitHub's public release API. No printer
+identity, address, report, history or account token is sent. As with other web
+requests, GitHub can see the connecting IP address and the app version in the
+User-Agent header. No binary is downloaded or executed automatically.
+
+To update, finish any printer operation, close the app, extract the complete
+Windows ZIP into a new folder and run `fixma_pixma.exe`. Existing local settings,
+history and transaction guards remain in `%LOCALAPPDATA%/PrinterCare`.
+Users of beta.9 or earlier must download beta.10 manually once to get update checks.
 
 ## Data and transaction handling
 

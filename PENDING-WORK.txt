@@ -1,6 +1,6 @@
 FIXMA PIXMA - RELEASE VALIDATION
 
-Maintenance-only scope, Windows beta 0.9.0-beta.9.
+Maintenance-only scope, Windows beta 0.9.0-beta.10.
 
 Completed hardware and release checks:
 1. Panel error cleared; printer returned to Ready after both check prints.

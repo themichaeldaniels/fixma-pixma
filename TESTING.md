@@ -335,3 +335,35 @@ missing-helper recovery. Both themes, native save cancellation and report saving
 were inspected. Independent checks confirmed the new report identity and exact
 new issue-form URL after saving, with no data in the URL. No issue was submitted
 and no printer commands were sent. Hardware limits and Experimental labels remain.
+
+## Software update verification
+
+Version 0.9.0-beta.10 adds manual and opt-in daily GitHub release checks. The
+full suite passes 191 tests, including 23 update regressions; static analysis
+is clean. Shared version metadata is checked against pubspec.yaml. Existing
+printer preferences, history and reset guards remain separate from updates.json.
+
+The new tests cover numeric/prerelease ordering and build metadata; invalid
+versions; stable/beta channels; draft, old and incomplete releases; uploaded
+Windows assets; fixed release-page URLs; anonymous requests without printer
+payloads; stable/latest behavior; rate limits; refused redirects; malformed JSON;
+response size and timeout bounds; default opt-out; persisted choices; daily
+attempt limits including failures and clock rollback; concurrent/disposed checks;
+damaged preferences and failed saves; startup with persisted opt-in; dismissible
+notices; preservation of printer errors; duplicate browser dispatch; browser
+failure fallback; offline errors; and closing during an unfinished request.
+
+A live public GitHub check found beta.9 when given beta.8 as the installed version,
+and found no newer release for the then-unpublished beta.10 build. No printer data
+or commands were sent. Newer-release selection and notices use controlled fixtures
+in automated tests; no fake release was published to manufacture an update.
+
+Fresh offline Windows Sandbox passed portable startup, native helpers and
+missing-helper recovery. Manual update checks displayed useful offline feedback
+in light/dark mode, with automatic checks visibly off. Independent preference
+inspection confirmed opt-out and recorded manual attempts. A private harness
+invoked the production Windows release-browser function; the browser received
+the exact fixed release URL without diagnostic data. The existing report save,
+cancel, valid JSON and issue-form browser flow also passed. No issue was submitted,
+no installer was run and no printer commands were sent. Native UI coverage is
+limited to the tested guest display settings. Prior hardware limits remain.

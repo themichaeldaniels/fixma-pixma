@@ -32,6 +32,8 @@ Private captures and photographs are excluded from public source and packages.
 
 | 0.9.0-beta.9 rename | Renamed Windows product, executables, reports, support links, screenshots and download packages. All 168 tests and static analysis pass. Fresh normal-user offline Sandbox startup, helpers, missing-helper recovery, both themes, native save/cancel and JSON/browser handoff to the new repository passed. | Existing PrinterCare data location and guards retained. No issue submitted or printer commands sent. Hardware and Experimental limits unchanged. |
 
+| 0.9.0-beta.10 software updates | 191 tests and static analysis pass. Live public release selection, fresh offline normal-user Sandbox startup/helpers, both-theme manual update feedback, default opt-out, production release-page browser handoff and existing diagnostic save/cancel/browser flow verified. | New-version notices and channel/version edge cases use controlled tests. No fake release, automatic installer, issue submission or printer commands. Hardware limits unchanged. |
+
 The nozzle assessment follows Canon's [G7000 nozzle check guidance](https://ij.manual.canon/ij/webmanual/Manual/All/G7000%20series/EN/UG/ug-134.html).
 Canon distinguishes [printing alignment values from adjusting alignment](https://ij.manual.canon/ij/webmanual/PrinterDriver/W/G7000%20series/1.0/EN/PPG/Dg-printer_assistant.html).
 No cleaning, refill reset, waste reset, scanning or service-mode transition was

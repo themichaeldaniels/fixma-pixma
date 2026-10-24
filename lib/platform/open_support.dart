@@ -3,16 +3,23 @@ import 'dart:io';
 
 import 'package:ffi/ffi.dart';
 
-const supportIssueUrl =
-    'https://github.com/themichaeldaniels/fixma-pixma/issues/new?template=model-support.yml';
+import '../app_info.dart';
+import '../core/software_update.dart';
+
+const supportIssueUrl = '$repositoryUrl/issues/new?template=model-support.yml';
 
 /// Opens only the fixed issue form. No diagnostic data is added to the URL.
-Future<void> openSupportIssue() async {
+Future<void> openSupportIssue() => _openBrowser(supportIssueUrl);
+
+Future<void> openSoftwareRelease(String tag) =>
+    _openBrowser(releasePageUri(tag).toString());
+
+Future<void> _openBrowser(String link) async {
   if (!Platform.isWindows) {
     throw UnsupportedError('Open this link in your browser instead.');
   }
   final verb = 'open'.toNativeUtf16();
-  final url = supportIssueUrl.toNativeUtf16();
+  final url = link.toNativeUtf16();
   final com = DynamicLibrary.open('ole32.dll');
   var uninitialize = false;
   try {

@@ -1,9 +1,13 @@
 import 'dart:io';
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
 import 'controller.dart';
+import 'app_info.dart';
+import 'update_controller.dart';
+import 'software_updates.dart';
 import 'components.dart';
 import 'theme.dart';
 import 'overview.dart';
@@ -76,7 +80,7 @@ Future<void> main(List<String> arguments) async {
         .writeAsString(controller.exportText(), flush: true);
     await File(output).writeAsString(
       const JsonEncoder.withIndent('  ').convert({
-        'version': '0.9.0-beta.9',
+        'version': applicationVersion,
         'nativeLaunch': true,
         'report': r?.toJson(),
         'diagnosticCompleted': r != null && controller.liveValid && !r.sample,
@@ -101,7 +105,7 @@ Future<void> main(List<String> arguments) async {
     final output = diagnosticsProof.substring('--diagnostics-proof='.length);
     await File(output).writeAsString(
       const JsonEncoder.withIndent('  ').convert({
-        'version': '0.9.0-beta.9',
+        'version': applicationVersion,
         'nativeLaunch': true,
         'error': controller.lastError,
         'checks': controller.connectionChecks.map((v) => v.toJson()).toList(),
@@ -176,7 +180,7 @@ Future<void> main(List<String> arguments) async {
     await File(smoke.substring('--smoke-output='.length)).writeAsString(
       jsonEncode({
         'launched': true,
-        'version': '0.9.0-beta.9',
+        'version': applicationVersion,
         'theme': controller.themeMode.name,
         'usbInterfaces': controller.devices.length,
         'serviceInterfaces': controller.devices
@@ -201,11 +205,13 @@ Future<void> main(List<String> arguments) async {
 class FixmaPixma extends StatefulWidget {
   final CareController controller;
   final bool nativeFrame;
+  final UpdateController? updates;
   final int initialPage;
   const FixmaPixma({
     super.key,
     required this.controller,
     this.nativeFrame = true,
+    this.updates,
     this.initialPage = 0,
   });
   @override
@@ -213,6 +219,8 @@ class FixmaPixma extends StatefulWidget {
 }
 
 class _FixmaPixmaState extends State<FixmaPixma> with WidgetsBindingObserver {
+  late final UpdateController updates;
+  late final bool ownsUpdates;
   int page = 0;
   int diagnosticTab = 0;
   late final TextEditingController ipInput;
@@ -221,9 +229,13 @@ class _FixmaPixmaState extends State<FixmaPixma> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     page = widget.initialPage;
+    ownsUpdates = widget.updates == null;
+    updates = widget.updates ?? UpdateController(directory: c.directory);
+    updates.addListener(changed);
     ipInput = TextEditingController(text: c.ip);
     WidgetsBinding.instance.addObserver(this);
     c.addListener(changed);
+    updates.initialize();
   }
 
   void changed() {
@@ -234,12 +246,19 @@ class _FixmaPixmaState extends State<FixmaPixma> with WidgetsBindingObserver {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) unawaited(updates.checkIfDue());
+  }
+
+  @override
   void didChangePlatformBrightness() {
     if (mounted) setState(() {});
   }
 
   @override
   void dispose() {
+    updates.removeListener(changed);
+    if (ownsUpdates) updates.dispose();
     ipInput.dispose();
     c.removeListener(changed);
     WidgetsBinding.instance.removeObserver(this);
@@ -282,6 +301,8 @@ class _FixmaPixmaState extends State<FixmaPixma> with WidgetsBindingObserver {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              if (updates.showNotice)
+                                UpdateNotice(updates: updates),
                               if (c.busy) busyPanel(context),
                               if (c.message.isNotEmpty ||
                                   c.lastError.isNotEmpty)
@@ -334,7 +355,7 @@ class _FixmaPixmaState extends State<FixmaPixma> with WidgetsBindingObserver {
                         ),
                         const Spacer(),
                         Text(
-                          'Local device access     |     Version 0.9.0-beta.9',
+                          'Version $applicationVersion',
                           style: TextStyle(
                             fontSize: 12,
                             color: colors(context).muted,
@@ -434,13 +455,15 @@ class _FixmaPixmaState extends State<FixmaPixma> with WidgetsBindingObserver {
             'Fixma Pixma',
             style: TextStyle(fontSize: 19, fontWeight: FontWeight.w600),
           ),
-          const SizedBox(width: 18),
-          Container(width: 1, height: 20, color: p.line),
-          const SizedBox(width: 18),
-          Text(
-            'Printer diagnostics',
-            style: TextStyle(fontSize: 13, color: p.muted),
-          ),
+          if (MediaQuery.sizeOf(context).width >= 1100) ...[
+            const SizedBox(width: 18),
+            Container(width: 1, height: 20, color: p.line),
+            const SizedBox(width: 18),
+            Text(
+              'Printer diagnostics',
+              style: TextStyle(fontSize: 13, color: p.muted),
+            ),
+          ],
           const Spacer(),
           if (c.report != null || c.networkStatus != null)
             TextButton.icon(
@@ -451,6 +474,14 @@ class _FixmaPixmaState extends State<FixmaPixma> with WidgetsBindingObserver {
           const SizedBox(width: 12),
           Container(height: 28, width: 1, color: p.line),
           const SizedBox(width: 12),
+          IconButton(
+            tooltip: 'Check for updates',
+            onPressed: () => showSoftwareUpdates(context, updates),
+            icon: Badge(
+              isLabelVisible: updates.available != null,
+              child: const Icon(Icons.system_update_alt, size: 20),
+            ),
+          ),
           PopupMenuButton<ThemeMode>(
             tooltip: 'Appearance',
             initialValue: c.themeMode,

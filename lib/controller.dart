@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'app_info.dart';
 import 'core/connection.dart';
 import 'core/protocol.dart';
 import 'core/report.dart';

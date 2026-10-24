@@ -1,4 +1,4 @@
-FIXMA PIXMA - WINDOWS PUBLIC BETA 0.9.0-beta.9
+FIXMA PIXMA - WINDOWS PUBLIC BETA 0.9.0-beta.10
 
 Extract the complete folder, then run fixma_pixma.exe. Keep the DLLs, data
 directory, fixma_pixma_worker.exe and fixma_pixma_queue.exe beside it.
@@ -86,3 +86,8 @@ generation have been removed. Former scan caches and saved files are untouched.
 This preview is Windows x64 and unsigned. Extract the full ZIP before running.
 Unknown models may expose standard network information, but are not authorized
 for Canon maintenance/service writes. macOS and Android are not included.
+
+SOFTWARE UPDATES
+Use Check for updates in the top-right toolbar. Daily checks are optional and
+off by default. No printer data is sent. Finish printer operations before closing
+the app to install a newer complete Windows ZIP. Local data is preserved.
