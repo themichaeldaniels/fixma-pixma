@@ -33,21 +33,26 @@ try {
     $helperPrefix = Join-Path $helperTempBase ('FixmaPixma-native-' + [Guid]::NewGuid().ToString('N'))
     $usbEntry = "$helperPrefix-printer_worker.dart"
     $queueEntry = "$helperPrefix-queue_worker.dart"
+    $updateEntry = "$helperPrefix-update_worker.dart"
     Copy-Item -LiteralPath bin/printer_worker.dart -Destination $usbEntry
     Copy-Item -LiteralPath bin/queue_worker.dart -Destination $queueEntry
+    Copy-Item -LiteralPath bin/update_worker.dart -Destination $updateEntry
     $packages = Join-Path $appRoot '.dart_tool/package_config.json'
     & $dart compile exe "--packages=$packages" $usbEntry -S build/symbols/fixma_pixma_worker.debug -o build/native/fixma_pixma_worker.exe
     if ($LASTEXITCODE) { throw 'Native helper compilation failed.' }
     & $dart compile exe "--packages=$packages" $queueEntry -S build/symbols/fixma_pixma_queue.debug -o build/native/fixma_pixma_queue.exe
     if ($LASTEXITCODE) { throw 'Queue helper compilation failed.' }
+    & $dart compile exe "--packages=$packages" $updateEntry -S build/symbols/fixma_pixma_updater.debug -o build/native/fixma_pixma_updater.exe
+    if ($LASTEXITCODE) { throw 'Update helper compilation failed.' }
     & $flutter build windows --release --no-pub --split-debug-info=build/symbols
     if ($LASTEXITCODE) { throw 'Windows compilation failed.' }
     Copy-Item -LiteralPath build/native/fixma_pixma_worker.exe -Destination build/windows/x64/runner/Release
     Copy-Item -LiteralPath build/native/fixma_pixma_queue.exe -Destination build/windows/x64/runner/Release
+    Copy-Item -LiteralPath build/native/fixma_pixma_updater.exe -Destination build/windows/x64/runner/Release
     $out = Join-Path $outputRoot "FixmaPixma-Windows-$releaseVersion"
     if (Test-Path -LiteralPath $out) { throw "Release directory already exists. Use a new version or move the previous package: $out" }
     New-Item -ItemType Directory -Path $out | Out-Null
-    $executables = @('fixma_pixma.exe', 'fixma_pixma_worker.exe', 'fixma_pixma_queue.exe')
+    $executables = @('fixma_pixma.exe', 'fixma_pixma_worker.exe', 'fixma_pixma_queue.exe', 'fixma_pixma_updater.exe')
     Get-ChildItem -LiteralPath build/windows/x64/runner/Release | Where-Object {
         $_.Extension -ne '.pdb' -and ($_.Extension -ne '.exe' -or $_.Name -in $executables)
     } | Copy-Item -Destination $out -Recurse
@@ -69,7 +74,7 @@ try {
     Write-Output "Portable app: $out"
     Write-Output "Archive: $zip"
 } finally {
-    foreach ($entry in @($usbEntry, $queueEntry)) {
+    foreach ($entry in @($usbEntry, $queueEntry, $updateEntry)) {
         if ($entry -and (Test-Path -LiteralPath $entry)) {
             try { Remove-Item -LiteralPath $entry -Force -ErrorAction Stop }
             catch { Write-Warning 'A temporary compiler entry could not be removed. The packaged build is unaffected.' }

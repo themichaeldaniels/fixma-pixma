@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 
 import 'app_info.dart';
 import 'core/software_update.dart';
+import 'core/update_package.dart';
 
 class UpdateController extends ChangeNotifier {
   final Directory directory;
@@ -20,6 +21,23 @@ class UpdateController extends ChangeNotifier {
   SoftwareRelease? available;
   String? dismissedTag;
   Timer? _timer;
+  final bool Function()? printerIdle;
+  final Future<void> Function(PreparedUpdate)? installHandler;
+  final UpdatePackageManager packages;
+  PreparedUpdate? prepared;
+  UpdateCancellation? _cancellation;
+  bool downloading = false, installing = false, installFailure = false;
+  int downloadedBytes = 0, downloadBytes = 0;
+  String installStatus = '';
+  String? _seenInstallToken;
+  bool get canInstall =>
+      !checking &&
+      !downloading &&
+      !installing &&
+      prepared != null &&
+      installHandler != null &&
+      (printerIdle?.call() ?? false);
+  void printerStateChanged() => _notify();
 
   UpdateController({
     required this.directory,
@@ -27,7 +45,11 @@ class UpdateController extends ChangeNotifier {
     Future<SoftwareRelease?> Function(String)? fetch,
     DateTime Function()? now,
     this.schedule = true,
-  }) : fetch = fetch ?? SoftwareUpdateService().check,
+    this.printerIdle,
+    this.installHandler,
+    UpdatePackageManager? packages,
+  }) : packages = packages ?? UpdatePackageManager(directory),
+       fetch = fetch ?? SoftwareUpdateService().check,
        now = now ?? DateTime.now;
 
   void _notify() {
@@ -45,13 +67,34 @@ class UpdateController extends ChangeNotifier {
           automatic = data['automatic'] == true;
           final last = data['lastAttempt'];
           if (last is String) lastAttempt = DateTime.tryParse(last)?.toUtc();
+          _seenInstallToken = data['seenInstallToken'] is String
+              ? data['seenInstallToken']
+              : null;
         }
       }
     } catch (_) {
       /* New or damaged preferences leave checks disabled. */
     }
+    try {
+      final result = File('${directory.path}/updates/last-result.json');
+      if (result.existsSync() && result.lengthSync() < 8192) {
+        final data = jsonDecode(result.readAsStringSync());
+        if (data is Map &&
+            data['token'] is String &&
+            validUpdateToken(data['token']) &&
+            data['token'] != _seenInstallToken &&
+            data['status'] == 'failed') {
+          _seenInstallToken = data['token'];
+          installFailure = true;
+          error = 'The update could not start. The previous version and printer data were preserved. Close other copies, check available disk space and try again.';
+          _save();
+        }
+      }
+    } catch (_) {
+      /* A damaged update result does not block the utility. */
+    }
     _schedule();
-    unawaited(checkIfDue());
+    if (!installFailure) unawaited(checkIfDue());
   }
 
   bool _save() {
@@ -61,6 +104,7 @@ class UpdateController extends ChangeNotifier {
       temporary.writeAsStringSync(
         jsonEncode({
           'automatic': automatic,
+          'seenInstallToken': _seenInstallToken,
           'lastAttempt': lastAttempt?.toUtc().toIso8601String(),
         }),
         flush: true,
@@ -95,7 +139,9 @@ class UpdateController extends ChangeNotifier {
   }
 
   Future<void> checkIfDue() async {
-    if (_disposed || !automatic || checking) return;
+    if (_disposed || !automatic || checking || downloading || installing) {
+      return;
+    }
     final age = lastAttempt == null
         ? null
         : now().toUtc().difference(lastAttempt!);
@@ -104,7 +150,7 @@ class UpdateController extends ChangeNotifier {
   }
 
   Future<void> check({bool background = false}) async {
-    if (_disposed || checking) return;
+    if (_disposed || checking || downloading || installing) return;
     checking = true;
     error = '';
     lastAttempt = now().toUtc();
@@ -118,6 +164,13 @@ class UpdateController extends ChangeNotifier {
     try {
       final release = await fetch(installed);
       if (_disposed) return;
+      if (prepared != null && prepared!.release.tag != release?.tag) {
+        final stale = prepared!;
+        prepared = null;
+        installStatus = '';
+        await packages.discard(stale);
+        if (_disposed) return;
+      }
       available = release;
       completed = true;
     } catch (e) {
@@ -131,6 +184,80 @@ class UpdateController extends ChangeNotifier {
     }
   }
 
+  Future<void> download() async {
+    if (_disposed ||
+        checking ||
+        downloading ||
+        installing ||
+        available == null) {
+      return;
+    }
+    final selected = available!;
+    downloading = true;
+    error = '';
+    installStatus = 'Downloading update...';
+    downloadedBytes = 0;
+    downloadBytes = selected.packageSize ?? 0;
+    final cancel = UpdateCancellation();
+    _cancellation = cancel;
+    _notify();
+    try {
+      if (prepared != null) {
+        await packages.discard(prepared!);
+        prepared = null;
+      }
+      final result = await packages.download(selected, cancel, (
+        received,
+        total,
+      ) {
+        if (_disposed) return;
+        downloadedBytes = received;
+        downloadBytes = total;
+        installStatus = received == total
+            ? 'Verifying and unpacking update...'
+            : 'Downloading update...';
+        _notify();
+      });
+      if (_disposed) {
+        await packages.discard(result);
+        return;
+      }
+      prepared = result;
+      installStatus = 'Download verified. Ready to install.';
+    } on UpdateCancelled {
+      installStatus = 'Download canceled.';
+    } catch (e) {
+      installStatus = '';
+      error = e is UpdateCheckException ? e.message : 'The update could not be prepared. Try again or open the release page.';
+    } finally {
+      downloading = false;
+      _cancellation = null;
+      _notify();
+    }
+  }
+
+  void cancelDownload() {
+    _cancellation?.cancel();
+  }
+
+  Future<void> install() async {
+    if (_disposed || !canInstall) return;
+    installing = true;
+    error = '';
+    installStatus = 'Preparing restart...';
+    _notify();
+    try {
+      await installHandler!(prepared!);
+    } catch (_) {
+      error = 'The update could not be installed. Finish printer operations, close other copies and try again. The current version and local data were preserved.';
+      prepared = null;
+      installStatus = '';
+    } finally {
+      installing = false;
+      _notify();
+    }
+  }
+
   void dismissNotice() {
     dismissedTag = available?.tag;
     _notify();
@@ -140,6 +267,7 @@ class UpdateController extends ChangeNotifier {
   @override
   void dispose() {
     _disposed = true;
+    _cancellation?.cancel();
     _timer?.cancel();
     super.dispose();
   }

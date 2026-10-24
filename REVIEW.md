@@ -118,3 +118,39 @@ the exact fixed release URL without diagnostic data. The existing report save,
 cancel, valid JSON and issue-form browser flow also passed. No issue was submitted,
 no installer was run and no printer commands were sent. Native UI coverage is
 limited to the tested guest display settings. Prior hardware limits remain.
+
+## In-app installation verification (beta.11)
+
+All 214 regression tests and static analysis pass. The 23 installation tests
+cover complete package extraction and hashes; an independent SHA-256 vector;
+unsafe Windows paths, alternate streams, traversal, extra roots, duplicate case,
+symlinks, missing helpers, existing destinations, ZIP size/count bounds, changed
+installed files, Flutter native-asset metadata, trusted HTTPS redirects, anonymous
+downloads, corruption, truncation, cancellation, digest/size fallback, duplicate
+asset metadata, stale prepared versions, printer/cross-instance locks, startup
+nonce/version/executable binding, downgrade/proof-mode forwarding guards, idle
+rechecks, handoff failure, one-time sanitized recovery feedback, confirmation,
+cancel and disabled controls, and back navigation during restart.
+
+A fresh offline Windows Sandbox, running as its normal guest without development
+tools, passed portable startup with restricted PATH and an unrelated working
+directory, USB and queue helper reads, updater invalid-argument handling, and
+missing-helper recovery. The final package also passed an actual beta.10-to-beta.11
+installation using the production updater and the real application. A first-frame
+startup acknowledgment preceded selection of the new managed version. Existing
+settings, history, reset-guard fixtures and the original executable stayed intact.
+
+Fault injection verified recovery when the new executable cannot run, when it
+runs without acknowledging startup, when another instance holds the operation
+lock, and when handoff is canceled before the parent exits. Failed installations
+did not select a new version; the previous application remained open or reopened.
+A private launcher fixture exercised the production shortcut-forwarding function
+and received startup acknowledgment from the real updated app. Fixtures were
+isolated, no fake public release was published, and no printer commands were sent.
+
+Native light/dark offline update feedback and default opt-out were inspected at
+the guest's current display settings. Available-update controls and confirmation
+use widget fixtures. Live GitHub metadata/download checks are recorded separately.
+No publisher signing certificate is provided; integrity uses GitHub's HTTPS asset
+digest. Startup recovery cannot guarantee recovery after later application bugs,
+OS failure or hardware failure. Original folders and managed versions are retained.

@@ -17,6 +17,7 @@ Future<void> showSoftwareUpdates(
   if (check) unawaited(updates.check());
   await showDialog<void>(
     context: context,
+    barrierDismissible: false,
     builder: (_) => _UpdatesDialog(
       updates: updates,
       openRelease: openRelease ?? openSoftwareRelease,
@@ -95,84 +96,157 @@ class _UpdatesDialogState extends State<_UpdatesDialog> {
     builder: (context, _) {
       final u = widget.updates;
       final release = u.available;
-      return AlertDialog(
-        scrollable: true,
-        title: const Text('Software updates'),
-        content: SizedBox(
-          width: 480,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('Installed version: ${u.installed}'),
-              const SizedBox(height: 16),
-              Text(
-                u.checking
-                    ? 'Checking GitHub for updates...'
-                    : u.error.isNotEmpty
-                    ? u.error
-                    : release != null
-                    ? 'Version ${release.version.text} is available.'
-                    : u.completed
-                    ? 'No newer Windows release was found.'
-                    : 'Check GitHub for a newer Windows release.',
-              ),
-              if (ReleaseVersion.tryParse(u.installed)?.isPrerelease ==
-                  true) ...[
-                const SizedBox(height: 8),
-                Text(
-                  'Beta updates are included for this beta build.',
-                  style: TextStyle(color: colors(context).muted),
-                ),
-              ],
-              const SizedBox(height: 16),
-              CheckboxListTile(
-                contentPadding: EdgeInsets.zero,
-                controlAffinity: ListTileControlAffinity.leading,
-                title: const Text('Check automatically once a day'),
-                value: u.automatic,
-                onChanged: (v) => u.setAutomatic(v ?? false),
-              ),
-              const Text(
-                'Off by default. Checks contact GitHub while the app is open. No printer data, reports or history are sent.',
-              ),
-              if (u.preferenceError.isNotEmpty) ...[
-                const SizedBox(height: 12),
-                Text(
-                  u.preferenceError,
-                  style: TextStyle(color: colors(context).warning),
-                ),
-              ],
-              if (release != null) ...[
+      return PopScope(
+        canPop: !u.installing,
+        child: AlertDialog(
+          scrollable: true,
+          title: const Text('Software updates'),
+          content: SizedBox(
+            width: 480,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text('Installed version: ${u.installed}'),
                 const SizedBox(height: 16),
-                const Text(
-                  'Installation is manual. Finish any printer operation, close the app, extract the complete Windows ZIP into a new folder, then run fixma_pixma.exe. Existing local settings and history are preserved.',
+                Text(
+                  u.checking
+                      ? 'Checking GitHub for updates...'
+                      : u.error.isNotEmpty
+                      ? u.error
+                      : release != null
+                      ? 'Version ${release.version.text} is available.'
+                      : u.completed
+                      ? 'No newer Windows release was found.'
+                      : 'Check GitHub for a newer Windows release.',
                 ),
+                if (ReleaseVersion.tryParse(u.installed)?.isPrerelease ==
+                    true) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    'Beta updates are included for this beta build.',
+                    style: TextStyle(color: colors(context).muted),
+                  ),
+                ],
+                const SizedBox(height: 16),
+                CheckboxListTile(
+                  contentPadding: EdgeInsets.zero,
+                  controlAffinity: ListTileControlAffinity.leading,
+                  title: const Text('Check automatically once a day'),
+                  value: u.automatic,
+                  onChanged: (v) => u.setAutomatic(v ?? false),
+                ),
+                const Text(
+                  'Off by default. Checks contact GitHub while the app is open. No printer data, reports or history are sent.',
+                ),
+                if (u.preferenceError.isNotEmpty) ...[
+                  const SizedBox(height: 12),
+                  Text(
+                    u.preferenceError,
+                    style: TextStyle(color: colors(context).warning),
+                  ),
+                ],
+                if (release != null) ...[
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Download the update here, then choose Install and restart when printer operations have finished. Settings, history and reset guards stay in place. The previous version is kept until the new one confirms startup.',
+                  ),
+                ],
+                if (u.downloading || u.installStatus.isNotEmpty) ...[
+                  const SizedBox(height: 16),
+                  Text(u.installStatus),
+                  if (u.downloading) ...[
+                    const SizedBox(height: 8),
+                    LinearProgressIndicator(
+                      value: u.downloadBytes > 0
+                          ? u.downloadedBytes / u.downloadBytes
+                          : null,
+                    ),
+                    TextButton(
+                      onPressed: u.cancelDownload,
+                      child: const Text('Cancel download'),
+                    ),
+                  ],
+                ],
+                if (u.prepared != null &&
+                    !(u.printerIdle?.call() ?? false)) ...[
+                  const SizedBox(height: 12),
+                  const Text(
+                    'Finish the current printer operation before installing. Your verified download is ready when the printer is idle.',
+                  ),
+                ],
+                if (release != null && !release.canDownload) ...[
+                  const SizedBox(height: 12),
+                  const Text(
+                    'This release has no verified in-app download. Use View release to download it manually.',
+                  ),
+                ],
+                if (browserError != null) ...[
+                  const SizedBox(height: 12),
+                  Text(browserError!),
+                  if (release != null) SelectableText(release.page.toString()),
+                ],
               ],
-              if (browserError != null) ...[
-                const SizedBox(height: 12),
-                Text(browserError!),
-                if (release != null) SelectableText(release.page.toString()),
-              ],
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
-          ),
-          TextButton(
-            onPressed: u.checking ? null : () => u.check(),
-            child: Text(u.checking ? 'Checking...' : 'Check for updates'),
-          ),
-          if (release != null)
-            FilledButton.icon(
-              onPressed: opening ? null : open,
-              icon: const Icon(Icons.open_in_new, size: 16),
-              label: const Text('View release'),
             ),
-        ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: u.installing ? null : () => Navigator.pop(context),
+              child: const Text('Close'),
+            ),
+            TextButton(
+              onPressed: u.checking || u.downloading || u.installing
+                  ? null
+                  : () => u.check(),
+              child: Text(u.checking ? 'Checking...' : 'Check for updates'),
+            ),
+            if (release != null && release.canDownload && u.prepared == null)
+              FilledButton.icon(
+                onPressed: u.checking || u.downloading || u.installing
+                    ? null
+                    : u.download,
+                icon: const Icon(Icons.download, size: 16),
+                label: const Text('Download update'),
+              ),
+            if (u.prepared != null)
+              FilledButton.icon(
+                onPressed: u.canInstall
+                    ? () async {
+                        final confirmed = await showDialog<bool>(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                            title: const Text('Install update and restart?'),
+                            content: const Text(
+                              'Fixma Pixma will close and restart with the verified update. Finish all printer operations first. Your settings, history and reset guards will be preserved.',
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(ctx, false),
+                                child: const Text('Cancel'),
+                              ),
+                              FilledButton(
+                                onPressed: () => Navigator.pop(ctx, true),
+                                child: const Text('Install and restart'),
+                              ),
+                            ],
+                          ),
+                        );
+                        if (confirmed == true && mounted) await u.install();
+                      }
+                    : null,
+                icon: const Icon(Icons.restart_alt, size: 16),
+                label: Text(
+                  u.installing ? 'Restarting...' : 'Install and restart',
+                ),
+              ),
+            if (release != null)
+              TextButton.icon(
+                onPressed: opening || u.installing ? null : open,
+                icon: const Icon(Icons.open_in_new, size: 16),
+                label: const Text('View release'),
+              ),
+          ],
+        ),
       );
     },
   );

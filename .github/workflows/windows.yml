@@ -53,5 +53,8 @@ jobs:
       - name: Compile queue helper
         run: dart compile exe bin/queue_worker.dart -o "$env:RUNNER_TEMP/fixma_pixma_queue.exe"
 
+      - name: Compile update helper
+        run: dart compile exe bin/update_worker.dart -o "$env:RUNNER_TEMP/fixma_pixma_updater.exe"
+
       - name: Compile Windows application
         run: flutter build windows --release --no-pub

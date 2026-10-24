@@ -1,16 +1,15 @@
-# Fixma Pixma 0.9.0-beta.10
+# Fixma Pixma 0.9.0-beta.11
 
-This release adds software update notifications. Use Check for updates in the
-top-right toolbar, or opt into daily checks in the dialog. Automatic checks are
-off by default. Beta builds include newer betas; stable builds use stable releases.
-Only newer versions with an uploaded Windows ZIP are offered. View release opens
-the fixed GitHub repository page; installation remains manual.
+This release adds downloading and installation from the app. Choose Check for
+updates > Download update, then Install and restart after printer operations
+finish. The app checks GitHub's SHA-256 digest before unpacking. Updates install
+in a separate local folder without administrator rights; the previous application
+is retained and reopened if the new version cannot confirm startup. Settings,
+history and reset guards stay in place. Keep the original portable folder.
 
-Checks do not send printer data, history or reports. They contact GitHub's public
-release API with a standard request containing the app version. The new notice is
-dismissible and does not interrupt printer operations. Offline and rate-limit
-errors stay within the update dialog. Existing local data and reset guards remain.
-Users on beta.9 or earlier need to download this version manually once.
+Automatic checks remain off by default. Downloads and installation require your
+choice. No printer information is sent. Beta.10 and earlier need one manual
+download of beta.11 to get in-app installation. The Windows files are unsigned.
 
 The application and repository are now named Fixma Pixma (`fixma-pixma`).
 The executables, download names, support links and diagnostic exports use
@@ -173,34 +172,38 @@ were inspected. Independent checks confirmed the new report identity and exact
 new issue-form URL after saving, with no data in the URL. No issue was submitted
 and no printer commands were sent. Hardware limits and Experimental labels remain.
 
-## Software update verification
+## In-app installation verification (beta.11)
 
-Version 0.9.0-beta.10 adds manual and opt-in daily GitHub release checks. The
-full suite passes 191 tests, including 23 update regressions; static analysis
-is clean. Shared version metadata is checked against pubspec.yaml. Existing
-printer preferences, history and reset guards remain separate from updates.json.
+All 214 regression tests and static analysis pass. The 23 installation tests
+cover complete package extraction and hashes; an independent SHA-256 vector;
+unsafe Windows paths, alternate streams, traversal, extra roots, duplicate case,
+symlinks, missing helpers, existing destinations, ZIP size/count bounds, changed
+installed files, Flutter native-asset metadata, trusted HTTPS redirects, anonymous
+downloads, corruption, truncation, cancellation, digest/size fallback, duplicate
+asset metadata, stale prepared versions, printer/cross-instance locks, startup
+nonce/version/executable binding, downgrade/proof-mode forwarding guards, idle
+rechecks, handoff failure, one-time sanitized recovery feedback, confirmation,
+cancel and disabled controls, and back navigation during restart.
 
-The new tests cover numeric/prerelease ordering and build metadata; invalid
-versions; stable/beta channels; draft, old and incomplete releases; uploaded
-Windows assets; fixed release-page URLs; anonymous requests without printer
-payloads; stable/latest behavior; rate limits; refused redirects; malformed JSON;
-response size and timeout bounds; default opt-out; persisted choices; daily
-attempt limits including failures and clock rollback; concurrent/disposed checks;
-damaged preferences and failed saves; startup with persisted opt-in; dismissible
-notices; preservation of printer errors; duplicate browser dispatch; browser
-failure fallback; offline errors; and closing during an unfinished request.
+A fresh offline Windows Sandbox, running as its normal guest without development
+tools, passed portable startup with restricted PATH and an unrelated working
+directory, USB and queue helper reads, updater invalid-argument handling, and
+missing-helper recovery. The final package also passed an actual beta.10-to-beta.11
+installation using the production updater and the real application. A first-frame
+startup acknowledgment preceded selection of the new managed version. Existing
+settings, history, reset-guard fixtures and the original executable stayed intact.
 
-A live public GitHub check found beta.9 when given beta.8 as the installed version,
-and found no newer release for the then-unpublished beta.10 build. No printer data
-or commands were sent. Newer-release selection and notices use controlled fixtures
-in automated tests; no fake release was published to manufacture an update.
+Fault injection verified recovery when the new executable cannot run, when it
+runs without acknowledging startup, when another instance holds the operation
+lock, and when handoff is canceled before the parent exits. Failed installations
+did not select a new version; the previous application remained open or reopened.
+A private launcher fixture exercised the production shortcut-forwarding function
+and received startup acknowledgment from the real updated app. Fixtures were
+isolated, no fake public release was published, and no printer commands were sent.
 
-Fresh offline Windows Sandbox passed portable startup, native helpers and
-missing-helper recovery. Manual update checks displayed useful offline feedback
-in light/dark mode, with automatic checks visibly off. Independent preference
-inspection confirmed opt-out and recorded manual attempts. A private harness
-invoked the production Windows release-browser function; the browser received
-the exact fixed release URL without diagnostic data. The existing report save,
-cancel, valid JSON and issue-form browser flow also passed. No issue was submitted,
-no installer was run and no printer commands were sent. Native UI coverage is
-limited to the tested guest display settings. Prior hardware limits remain.
+Native light/dark offline update feedback and default opt-out were inspected at
+the guest's current display settings. Available-update controls and confirmation
+use widget fixtures. Live GitHub metadata/download checks are recorded separately.
+No publisher signing certificate is provided; integrity uses GitHub's HTTPS asset
+digest. Startup recovery cannot guarantee recovery after later application bugs,
+OS failure or hardware failure. Original folders and managed versions are retained.

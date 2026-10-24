@@ -30,6 +30,8 @@ screenshots only after intentional UI changes and visual review.
 | Experimental actions | experimental_features_test, queue_widget_test | Separate spill-risk and experimental acknowledgments required; either alone or unchecking the spill acknowledgment blocks reset. Cancel sends nothing. Printer-side cancellation acknowledgment remains separate. |
 | Action errors | action_feedback_test | USB/service-mode help, normal-mode mismatch, network errors after explicit refresh, quiet background failures, uncertain-delivery warning, no retry on dismiss, safe completion after screen removal |
 
+| Software updates | software_update_test, update_install_test | Release channels, metadata, anonymous requests, bounded downloads, hash verification, safe extraction, cancellation, installation guards, startup acknowledgment, recovery feedback and confirmation |
+
 ## Individual test cases
 
 ### final_review_test.dart
@@ -367,3 +369,65 @@ the exact fixed release URL without diagnostic data. The existing report save,
 cancel, valid JSON and issue-form browser flow also passed. No issue was submitted,
 no installer was run and no printer commands were sent. Native UI coverage is
 limited to the tested guest display settings. Prior hardware limits remain.
+
+## In-app installation verification (beta.11)
+
+All 214 regression tests and static analysis pass. The 23 installation tests
+cover complete package extraction and hashes; an independent SHA-256 vector;
+unsafe Windows paths, alternate streams, traversal, extra roots, duplicate case,
+symlinks, missing helpers, existing destinations, ZIP size/count bounds, changed
+installed files, Flutter native-asset metadata, trusted HTTPS redirects, anonymous
+downloads, corruption, truncation, cancellation, digest/size fallback, duplicate
+asset metadata, stale prepared versions, printer/cross-instance locks, startup
+nonce/version/executable binding, downgrade/proof-mode forwarding guards, idle
+rechecks, handoff failure, one-time sanitized recovery feedback, confirmation,
+cancel and disabled controls, and back navigation during restart.
+
+A fresh offline Windows Sandbox, running as its normal guest without development
+tools, passed portable startup with restricted PATH and an unrelated working
+directory, USB and queue helper reads, updater invalid-argument handling, and
+missing-helper recovery. The final package also passed an actual beta.10-to-beta.11
+installation using the production updater and the real application. A first-frame
+startup acknowledgment preceded selection of the new managed version. Existing
+settings, history, reset-guard fixtures and the original executable stayed intact.
+
+Fault injection verified recovery when the new executable cannot run, when it
+runs without acknowledging startup, when another instance holds the operation
+lock, and when handoff is canceled before the parent exits. Failed installations
+did not select a new version; the previous application remained open or reopened.
+A private launcher fixture exercised the production shortcut-forwarding function
+and received startup acknowledgment from the real updated app. Fixtures were
+isolated, no fake public release was published, and no printer commands were sent.
+
+Native light/dark offline update feedback and default opt-out were inspected at
+the guest's current display settings. Available-update controls and confirmation
+use widget fixtures. Live GitHub metadata/download checks are recorded separately.
+No publisher signing certificate is provided; integrity uses GitHub's HTTPS asset
+digest. Startup recovery cannot guarantee recovery after later application bugs,
+OS failure or hardware failure. Original folders and managed versions are retained.
+
+### update_install_test.dart
+
+- valid complete package is extracted to a new folder and all hashes verify
+- release selection uses the validated uploaded asset when names repeat
+- a fresh check discards a prepared version when the available release changes
+- file hashing matches the independent SHA-256 test vector
+- unsafe Windows paths and alternate data streams are rejected
+- traversal, extra roots and unexpected executables cannot escape extraction
+- case collisions and symlink entries are rejected before extraction
+- missing helpers and existing destinations are refused without overwrite
+- oversized entry count is rejected before directory decoding
+- modified installed data and wrong manifest versions fail verification
+- download addresses reject HTTP, credentials, external hosts and fragments
+- download follows the GitHub CDN, checks digest and prepares a complete package
+- external redirects are refused before another request
+- corrupt hashes and truncated downloads never select an application
+- canceling a transfer prevents installation and closes the connection
+- absent or oversized download metadata keeps the release-page fallback
+- an active printer action and another instance block installation reservation
+- startup acknowledgment is bound to a nonce, version and exact application
+- forwarding ignores proof modes and never downgrades to an older pointer
+- controller keeps downloads separate from printer data and rechecks idle before installation
+- handoff failures preserve the running app and require a new prepared download
+- failed installation outcomes are shown once without leaking raw result messages
+- installation needs a verified download, idle printer and final confirmation

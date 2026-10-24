@@ -1,4 +1,4 @@
-FIXMA PIXMA - WINDOWS PUBLIC BETA 0.9.0-beta.10
+FIXMA PIXMA - WINDOWS PUBLIC BETA 0.9.0-beta.11
 
 Extract the complete folder, then run fixma_pixma.exe. Keep the DLLs, data
 directory, fixma_pixma_worker.exe and fixma_pixma_queue.exe beside it.
@@ -88,6 +88,11 @@ Unknown models may expose standard network information, but are not authorized
 for Canon maintenance/service writes. macOS and Android are not included.
 
 SOFTWARE UPDATES
-Use Check for updates in the top-right toolbar. Daily checks are optional and
-off by default. No printer data is sent. Finish printer operations before closing
-the app to install a newer complete Windows ZIP. Local data is preserved.
+Use Check for updates in the top-right toolbar, then Download update. The app
+checks the Windows ZIP against GitHub's SHA-256 digest. When printer operations
+are finished, choose Install and restart and confirm. The previous version stays
+available if startup fails. Settings, history and reset guards are preserved.
+Daily checks are optional and off by default. Downloads/installations require
+your choice. No printer data is sent. Beta.10 and earlier need one manual download
+of beta.11 to get this installer. Keep the complete original folder for recovery.
+Managed versions live under %LOCALAPPDATA%/PrinterCare/application.

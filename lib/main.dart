@@ -8,6 +8,7 @@ import 'controller.dart';
 import 'app_info.dart';
 import 'update_controller.dart';
 import 'software_updates.dart';
+import 'platform/install_update.dart';
 import 'components.dart';
 import 'theme.dart';
 import 'overview.dart';
@@ -42,6 +43,21 @@ Future<void> main(List<String> arguments) async {
         ? null
         : Directory.systemTemp.createTempSync('fixma-pixma-launch-'),
   );
+  String? forwardingError;
+  if (Platform.isWindows && const bool.fromEnvironment('dart.vm.product')) {
+    try {
+      if (await forwardInstalledUpdate(
+        controller.directory,
+        applicationVersion,
+        arguments,
+      )) {
+        controller.dispose();
+        exit(0);
+      }
+    } catch (_) {
+      forwardingError = 'The installed update could not start. This version is still available. Use Check for updates to repair the installation.';
+    }
+  }
   var initialized = true;
   try {
     await controller.initialize(scan: false);
@@ -61,6 +77,20 @@ Future<void> main(List<String> arguments) async {
     ),
   );
   if (!initialized) return;
+  if (forwardingError != null) {
+    controller.message = forwardingError;
+    controller.notifyListeners();
+  }
+  if (arguments.any((v) => v.startsWith('--update-ready='))) {
+    try {
+      await WidgetsBinding.instance.endOfFrame.timeout(
+        const Duration(seconds: 5),
+      );
+      await acknowledgeUpdateStartup(controller.directory, arguments);
+    } catch (_) {
+      /* The updater retains the previous version if startup is not confirmed. */
+    }
+  }
   if (serviceProof != null) {
     // Explicit hardware diagnostic mode. A zero-counter reset is checked only
     // through the controller guard; no nonzero reset is ever invoked here.
@@ -219,6 +249,7 @@ class FixmaPixma extends StatefulWidget {
 }
 
 class _FixmaPixmaState extends State<FixmaPixma> with WidgetsBindingObserver {
+  final navigatorKey = GlobalKey<NavigatorState>();
   late final UpdateController updates;
   late final bool ownsUpdates;
   int page = 0;
@@ -230,15 +261,49 @@ class _FixmaPixmaState extends State<FixmaPixma> with WidgetsBindingObserver {
     super.initState();
     page = widget.initialPage;
     ownsUpdates = widget.updates == null;
-    updates = widget.updates ?? UpdateController(directory: c.directory);
-    updates.addListener(changed);
+    updates =
+        widget.updates ??
+        UpdateController(
+          directory: c.directory,
+          printerIdle: () => !c.busy && !c.disposed,
+          installHandler: (prepared) async {
+            final lock = c.reserveSoftwareUpdate();
+            try {
+              await NativeUpdateInstaller(c.directory)
+                  .handoff(prepared, applicationVersion, () async {
+                    await c.stop();
+                    c.dispose();
+                    exit(0);
+                  });
+            } finally {
+              if (!c.disposed) c.releaseSoftwareUpdate(lock);
+            }
+          },
+        );
+    updates.addListener(updatesChanged);
     ipInput = TextEditingController(text: c.ip);
     WidgetsBinding.instance.addObserver(this);
     c.addListener(changed);
     updates.initialize();
+    if (updates.installFailure) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && navigatorKey.currentContext != null) {
+          showSoftwareUpdates(
+            navigatorKey.currentContext!,
+            updates,
+            check: false,
+          );
+        }
+      });
+    }
+  }
+
+  void updatesChanged() {
+    if (mounted) setState(() {});
   }
 
   void changed() {
+    updates.printerStateChanged();
     if (mounted) {
       if (ipInput.text.isEmpty && c.ip.isNotEmpty) ipInput.text = c.ip;
       setState(() {});
@@ -257,7 +322,7 @@ class _FixmaPixmaState extends State<FixmaPixma> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    updates.removeListener(changed);
+    updates.removeListener(updatesChanged);
     if (ownsUpdates) updates.dispose();
     ipInput.dispose();
     c.removeListener(changed);
@@ -278,6 +343,7 @@ class _FixmaPixmaState extends State<FixmaPixma> with WidgetsBindingObserver {
       });
     }
     return MaterialApp(
+      navigatorKey: navigatorKey,
       title: 'Fixma Pixma',
       debugShowCheckedModeBanner: false,
       theme: careTheme(Brightness.light),

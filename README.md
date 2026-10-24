@@ -10,13 +10,13 @@ discovery, status and connection checks and [send a model report](SUPPORT.md).
 A G7000 family name is not proof that another regional model is compatible.
 Do not bypass the model or firmware checks to try maintenance or resets.
 
-**[Download for Windows x64](https://github.com/themichaeldaniels/fixma-pixma/releases/download/v0.9.0-beta.10/FixmaPixma-Windows-0.9.0-beta.10.zip)**
+**[Download for Windows x64](https://github.com/themichaeldaniels/fixma-pixma/releases/download/v0.9.0-beta.11/FixmaPixma-Windows-0.9.0-beta.11.zip)**
 
-[Release notes and all downloads](https://github.com/themichaeldaniels/fixma-pixma/releases/tag/v0.9.0-beta.10)
- · [Checksums](https://github.com/themichaeldaniels/fixma-pixma/releases/download/v0.9.0-beta.10/SHA256SUMS.txt)
- · [Source archive](https://github.com/themichaeldaniels/fixma-pixma/releases/download/v0.9.0-beta.10/FixmaPixma-source-0.9.0-beta.10.zip)
+[Release notes and all downloads](https://github.com/themichaeldaniels/fixma-pixma/releases/tag/v0.9.0-beta.11)
+ · [Checksums](https://github.com/themichaeldaniels/fixma-pixma/releases/download/v0.9.0-beta.11/SHA256SUMS.txt)
+ · [Source archive](https://github.com/themichaeldaniels/fixma-pixma/releases/download/v0.9.0-beta.11/FixmaPixma-source-0.9.0-beta.11.zip)
 
-Current release: **0.9.0-beta.10**, Windows x64. Extract the entire ZIP, then run
+Current release: **0.9.0-beta.11**, Windows x64. Extract the entire ZIP, then run
 `fixma_pixma.exe`. No installer, Python setup, account, or purchased reset key is
 needed to use the app. macOS and Android builds are not available yet.
 
@@ -71,7 +71,7 @@ waste-ink absorber counter.
 ## Start here
 
 1. Download the Windows ZIP above and extract it into a regular folder.
-2. Keep `fixma_pixma.exe`, both helper executables, the DLLs and `data` together.
+2. Keep `fixma_pixma.exe`, all three helper executables, the DLLs and `data` together.
 3. Open the app with the printer powered on normally. Use **Find printers**, or
    **Add by address** if automatic network discovery is unavailable.
 4. Read the model, firmware, current errors and ink estimates in **Overview**.
@@ -187,20 +187,19 @@ before and after completion when available, and never repeats an uncertain comma
 
 ## Release status
 
-Extract the complete Windows ZIP and run `fixma_pixma.exe`. Keep both helper executables, DLLs, and the data directory together. See [START-HERE.txt](START-HERE.txt).
+Extract the complete Windows ZIP and run `fixma_pixma.exe`. Keep all three helper executables, DLLs, and the data directory together. See [START-HERE.txt](START-HERE.txt).
 
 The project was previously named Pixma Fixa. Existing local history, preferences and reset guards stay in the same `PrinterCare` application-data folder when upgrading.
 
-The current package is a Windows beta. Version 0.9.0-beta.10 passed all 191
-regression tests and static analysis, plus fresh Windows Sandbox startup, helper,
-offline update-dialog and diagnostic-report checks. A live public API check and
-the production Windows browser handoff were verified separately. Update selection
-and newer-version notices use controlled tests; no fake release was published.
-See [TESTING.md](TESTING.md) and [VALIDATION.md](VALIDATION.md) for the evidence.
-Distribution files are unsigned. Native nonzero waste-counter clear and
-printer-side in-flight cancellation remain Experimental and require acknowledgment.
-The waste reset also requires acknowledgment of the spill risk. Hardware testing
-still covers only the G7020, firmware 1.050.
+The current package is a Windows beta. Version 0.9.0-beta.11 passed 214
+regression tests and static analysis, plus fresh Windows Sandbox startup,
+native helper, real upgrade and recovery checks. New-version UI controls use
+controlled widget tests. See [TESTING.md](TESTING.md) and
+[VALIDATION.md](VALIDATION.md) for the evidence and limits. Distribution files
+are unsigned. Native nonzero waste-counter clear and printer-side in-flight
+cancellation remain Experimental and require acknowledgment. The waste reset
+also requires acknowledgment of the spill risk. Hardware testing still covers
+only the G7020, firmware 1.050.
 
 ## Build and test
 
@@ -219,32 +218,39 @@ Use Flutter 3.47.7 / Dart 3.13.5 and Visual Studio with Desktop development with
 ./tool/build-windows.ps1 -FlutterRoot C:/src/flutter
 ```
 
-The script resolves locked dependencies, runs static analysis and tests, compiles native USB/queue helpers, builds the release application, and creates a portable ZIP. Debug symbols are kept outside that ZIP. See [TESTING.md](TESTING.md) for the regression inventory and manual checks.
+The script resolves locked dependencies, runs static analysis and tests, compiles native USB/queue/update helpers, builds the release application, and creates a portable ZIP. Debug symbols are kept outside that ZIP. See [TESTING.md](TESTING.md) for the regression inventory and manual checks.
 
 ## Software updates
 
-Use **Check for updates** in the top-right toolbar. If a newer Windows release
-is available, **View release** opens its GitHub page with download links and notes.
-Beta builds include newer beta releases as well as stable releases; stable builds
-check for stable releases only. Drafts and releases without an uploaded Windows
-package are ignored. Versions are compared numerically, including beta numbers.
+Use **Check for updates** in the top-right toolbar, then **Download update**.
+The app checks the complete Windows package against GitHub's SHA-256 digest
+before unpacking it. Choose **Install and restart** when printer operations
+have finished. A confirmation explains the restart before the app closes.
+Downloads can be canceled. Errors leave the current version available.
+
+Updates are installed under `%LOCALAPPDATA%/PrinterCare/application`, without
+administrator rights. The previous program folder stays intact. The new version
+must confirm startup before it becomes active; if it fails to start, the updater
+reopens the previous version. Launching an older updater-aware copy forwards to
+the newer managed version. Keep the complete original portable folder available
+as a recovery copy. Settings, history and reset guards stay in their existing
+location. Installation does not send printer commands or restart the printer.
 
 Automatic checks are **off by default**. Enable **Check automatically once a day**
-in the update dialog to check at startup or while the app remains open. The choice
-and last attempt are stored locally in `PrinterCare/updates.json`, separately from
-printer settings and reset guards. A failed automatic check stays quiet; manual
-checks explain connection or GitHub rate-limit errors. A newer version shows a
-dismissible notice without interrupting printer operations.
+to check at startup or while the app is open. Downloads and installation always
+require your choice. Beta builds include beta and stable releases; stable builds
+check for stable releases only. Drafts and incomplete releases are ignored.
+Releases without a valid digest keep the **View release** manual-download option.
 
-Checks make an anonymous HTTPS request to GitHub's public release API. No printer
-identity, address, report, history or account token is sent. As with other web
-requests, GitHub can see the connecting IP address and the app version in the
-User-Agent header. No binary is downloaded or executed automatically.
+Checks contact GitHub's public release API anonymously. Downloads use GitHub's
+HTTPS release servers. No printer identity, address, report, history or account
+token is sent. GitHub sees the connecting IP address and app User-Agent. Update
+preferences are stored separately in `PrinterCare/updates.json`.
 
-To update, finish any printer operation, close the app, extract the complete
-Windows ZIP into a new folder and run `fixma_pixma.exe`. Existing local settings,
-history and transaction guards remain in `%LOCALAPPDATA%/PrinterCare`.
-Users of beta.9 or earlier must download beta.10 manually once to get update checks.
+**Beta.10 and earlier need one manual download of beta.11 to get in-app
+installation.** Extract the complete ZIP into a new folder and open it. Future
+updates can download and install through the app. The Windows files are unsigned;
+the digest verifies package integrity, not a publisher code-signing certificate.
 
 ## Data and transaction handling
 

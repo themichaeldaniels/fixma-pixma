@@ -23,7 +23,8 @@ freely, subject to the following restrictions:
    misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 
-Flutter, Dart, the Material icon font, and package:ffi are distributed under
+Flutter, Dart, the Material icon font, package:ffi, package:archive, package:crypto, package:posix and
+package:typed_data are distributed under
 their respective licenses. Flutter's generated notices are retained in the
 application's data/flutter_assets bundle. The adjacent Microsoft Visual C++
 runtime DLLs are the redistributable application-local runtime supplied with

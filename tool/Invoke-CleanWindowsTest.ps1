@@ -93,6 +93,10 @@ try {
     if (-not $queueReply.ok -and -not $queueReply.error) { throw 'Queue helper returned an invalid response.' }
     $report.tests['queueHelperResponsive'] = $true
     $report['queueListingAvailable'] = [bool]$queueReply.ok
+    $report['lastStep'] = 'Update helper rejects missing installation plan'
+    $updater = Invoke-TestProcess (Join-Path $appFolder 'fixma_pixma_updater.exe') ''
+    if ($updater.ExitCode -ne 2 -or $updater.Output) { throw 'Update helper invalid-argument check did not pass.' }
+    $report.tests['updateHelperRejectsMissingPlan'] = $true
     $report['lastStep'] = 'Graceful missing-helper startup'
     $missing = Join-Path $work 'Application without USB helper'
     New-Item -ItemType Directory -Path $missing | Out-Null

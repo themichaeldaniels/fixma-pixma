@@ -34,6 +34,8 @@ Private captures and photographs are excluded from public source and packages.
 
 | 0.9.0-beta.10 software updates | 191 tests and static analysis pass. Live public release selection, fresh offline normal-user Sandbox startup/helpers, both-theme manual update feedback, default opt-out, production release-page browser handoff and existing diagnostic save/cancel/browser flow verified. | New-version notices and channel/version edge cases use controlled tests. No fake release, automatic installer, issue submission or printer commands. Hardware limits unchanged. |
 
+| 0.9.0-beta.11 in-app installation | 214 tests, analysis, fresh normal-user Sandbox startup/helpers; real beta.10 upgrade and acknowledgment; failed executable, startup timeout, other-instance lock and cancellation recovery; original program and local state preserved; production shortcut forwarding. | Available-update UI uses controlled widgets. Unsigned packages; digest checks integrity. No printer commands or fake public releases. Later runtime/OS/hardware failures remain outside startup recovery. |
+
 The nozzle assessment follows Canon's [G7000 nozzle check guidance](https://ij.manual.canon/ij/webmanual/Manual/All/G7000%20series/EN/UG/ug-134.html).
 Canon distinguishes [printing alignment values from adjusting alignment](https://ij.manual.canon/ij/webmanual/PrinterDriver/W/G7000%20series/1.0/EN/PPG/Dg-printer_assistant.html).
 No cleaning, refill reset, waste reset, scanning or service-mode transition was

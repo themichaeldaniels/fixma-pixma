@@ -1234,6 +1234,35 @@ class CareController extends ChangeNotifier {
     });
   }
 
+  /// Holds the existing cross-instance printer-operation lock during update handoff.
+  RandomAccessFile reserveSoftwareUpdate() {
+    if (busy || disposed) {
+      throw StateError(
+        'Finish the current printer operation before installing an update.',
+      );
+    }
+    directory.createSync(recursive: true);
+    final lock = File('${directory.path}/operation.lock')
+        .openSync(mode: FileMode.append);
+    try {
+      lock.lockSync(FileLock.exclusive);
+    } catch (_) {
+      lock.closeSync();
+      throw StateError(
+        'Another instance is using the printer. Wait for it to finish before installing.',
+      );
+    }
+    busy = true;
+    notifyListeners();
+    return lock;
+  }
+
+  void releaseSoftwareUpdate(RandomAccessFile lock) {
+    lock.closeSync();
+    busy = false;
+    notifyListeners();
+  }
+
   Future<void> stop() async {
     await activePeer?.close();
   }

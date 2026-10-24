@@ -70,7 +70,23 @@ Uri releasePageUri(String tag) {
 class SoftwareRelease {
   final String tag;
   final ReleaseVersion version;
-  const SoftwareRelease._(this.tag, this.version);
+  final int? packageSize;
+  final String? packageHash;
+  const SoftwareRelease._(
+    this.tag,
+    this.version,
+    this.packageSize,
+    this.packageHash,
+  );
+  String get packageName => 'FixmaPixma-Windows-${version.text}.zip';
+  Uri get packageUri => Uri.parse(
+    '$repositoryUrl/releases/download/${Uri.encodeComponent(tag)}/${Uri.encodeComponent(packageName)}',
+  );
+  bool get canDownload =>
+      packageHash != null &&
+      packageSize != null &&
+      packageSize! > 0 &&
+      packageSize! <= 256 * 1024 * 1024;
   Uri get page => releasePageUri(tag);
 }
 
@@ -112,7 +128,21 @@ SoftwareRelease? findSoftwareUpdate(List<dynamic> releases, String installed) {
       continue;
     }
     if (newest == null || version.compareTo(newest.version) > 0) {
-      newest = SoftwareRelease._(tag, version);
+      final asset = assets.cast<dynamic>().firstWhere(
+        (a) =>
+            a is Map &&
+            a['name'] == 'FixmaPixma-Windows-${version.text}.zip' &&
+            a['state'] == 'uploaded' &&
+            a['size'] is int &&
+            a['size'] > 0,
+      );
+      final digest = asset['digest'];
+      final hash =
+          digest is String &&
+              RegExp(r'^sha256:[0-9a-fA-F]{64}$').hasMatch(digest)
+          ? digest.substring(7).toLowerCase()
+          : null;
+      newest = SoftwareRelease._(tag, version, asset['size'] as int, hash);
     }
   }
   return newest;
