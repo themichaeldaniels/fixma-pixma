@@ -10,6 +10,8 @@ discovery, status and connection checks and [send a model report](SUPPORT.md).
 A G7000 family name is not proof that another regional model is compatible.
 Do not bypass the model or firmware checks to try maintenance or resets.
 
+Please note use of this product is at your own risk and I am not responsible for any hardware or software issues you encounter as a result of using it.
+
 **[Download for Windows x64](https://github.com/themichaeldaniels/fixma-pixma/releases/download/v0.9.0-beta.11/FixmaPixma-Windows-0.9.0-beta.11.zip)**
 
 [Release notes and all downloads](https://github.com/themichaeldaniels/fixma-pixma/releases/tag/v0.9.0-beta.11)
