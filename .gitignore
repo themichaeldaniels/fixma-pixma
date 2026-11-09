@@ -50,3 +50,10 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+# Agent and secret files: local to each machine, and may hold credentials
+.claude/settings.local.json
+.claude/worktrees/
+.env
+.env.*
+!.env.example
